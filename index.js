@@ -47,6 +47,7 @@ const handleEvent = (event) => {
 
   if(text === 'クイズ'){
     message = 'クイズしよう';
+    console.log('quizfetch @@@');
     quizFetcher(id);
   }else{
     message = text;
@@ -66,6 +67,7 @@ const quizFetcher = async (id) => {
     gameState.quizzes = data.results;
     gameState.currentIndex = 0;
     gameState.numberOfCorrects = 0;
+    console.log('quizzes:',quizzes);
     setNextQuiz(id);
   }catch(error){
     console.error(error.message);
@@ -77,6 +79,7 @@ const quizFetcher = async (id) => {
 }
 
 const setNextQuiz = () => {
+  console.log('setNextQuiz');
   const quiz = gameState.quizzes[gameState.currentIndex];
   return client.pushMessage(id,{
     type:'text',

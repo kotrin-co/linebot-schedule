@@ -2,6 +2,7 @@ const express = require('express')
 const app = express();
 const path = require('path')
 const line = require('@line/bot-sdk');
+const fetch = require('node-fetch');
 const PORT = process.env.PORT || 5000
 
 const config = {

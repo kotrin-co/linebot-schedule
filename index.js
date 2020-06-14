@@ -41,7 +41,7 @@ const handleEvent = (event) => {
   }
 
   let message = '';
-  const text = (event.message.type === 'text') ? event.message.type : '';
+  const text = (event.message.type === 'text') ? event.message.text : '';
   const id = event.source.userId;
 
   if(text === 'クイズ'){

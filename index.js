@@ -67,7 +67,7 @@ const quizFetcher = async (id) => {
     gameState.quizzes = data.results;
     gameState.currentIndex = 0;
     gameState.numberOfCorrects = 0;
-    console.log('quizzes:',quizzes);
+    console.log('quizzes:',gameState.quizzes);
     setNextQuiz(id);
   }catch(error){
     console.error(error.message);

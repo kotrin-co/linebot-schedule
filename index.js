@@ -53,10 +53,10 @@ const handleEvent = (event) => {
     message = text;
   }
 
-  // return client.replyMessage(event.replyToken,{
-  //   type:'text',
-  //   text:message
-  // });
+  return client.replyMessage(event.replyToken,{
+    type:'text',
+    text:message
+  });
 }
 
 const quizFetcher = async (id) => {
@@ -72,10 +72,10 @@ const quizFetcher = async (id) => {
   }catch(error){
     console.error(error.message);
   }
-  // return client.pushMessage(id,{
-  //   type:'text',
-  //   text:message
-  // });
+  return client.pushMessage(id,{
+    type:'text',
+    text:message
+  });
 }
 
 const setNextQuiz = (id) => {

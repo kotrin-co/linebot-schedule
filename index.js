@@ -69,10 +69,10 @@ const quizFetcher = async (id) => {
   }catch(error){
     console.error(error.message);
   }
-  return client.pushMessage(id,{
-    type:'text',
-    text:message
-  });
+  // return client.pushMessage(id,{
+  //   type:'text',
+  //   text:message
+  // });
 }
 
 const setNextQuiz = () => {

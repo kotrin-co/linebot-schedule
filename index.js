@@ -93,7 +93,7 @@ const setNextQuiz = (id) => {
 
 const makeQuiz = (id,quiz) => {
   const answers = buildAnswers(quiz);
-  const question = quiz.question;
+  const question = unescapeHTML(quiz.question);
   const quizMessage = buildFlexMessage(question,answers);
   return client.pushMessage(id,quizMessage);
 }
@@ -296,4 +296,12 @@ const finishQuiz = (id) =>{
     type:'text',
     text:'クイズ終了です。お疲れ様でした。'
   });
+}
+
+const unescapeHTML = (str) => {
+  return str.replace(/</g,"&lt;")
+            .replace(/>/g,"&gt;")
+            .replace(/ /g, "&nbsp;")
+            .replace(/\r/g, "&#13;")
+            .replace(/\n/g, "&#10;");
 }

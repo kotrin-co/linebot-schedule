@@ -55,6 +55,10 @@ const handleEvent = (event) => {
     quizFetcher(id);
   }else{
     message = text;
+    client.pushMessage(event.replyToken,{
+      type:'text',
+      text:message
+    });
   }
 }
 
@@ -79,10 +83,37 @@ const quizFetcher = async (id) => {
 
 const setNextQuiz = (id) => {
   console.log('setNextQuiz');
-  const quiz = gameState.quizzes[gameState.currentIndex];
-  return client.pushMessage(id,{
+  if(gameState.currentIndex<gameState.quizzes.length){
+    const quiz = gameState.quizzes[gameState.currentIndex];
+    makeQuiz(id,quiz);
+  }else{
+    finishQuiz(id);
+  }
+}
+
+const makeQuiz = (id,quiz) => {
+  const question = quiz.question;
+  const correct_answer = quiz.correct_answer;
+  const incorrect_answers = quiz.incorrect_answers;
+  client.pushMessage(id,{
     type:'text',
-    text:quiz.question
+    text:question
+  });
+  client.pushMessage(id,{
+    type:'text',
+    text:correct_answer
+  });
+  incorrect_answers.forEach((value,index)=>{
+    client.pushMessage(id,{
+      type:'text',
+      text:`${index}:${value}`
+    });
   });
 }
 
+const finishQuiz = (id) =>{
+  client.pushMessage(id,{
+    type:'text',
+    text:'クイズ終了です。お疲れ様でした。'
+  });
+}

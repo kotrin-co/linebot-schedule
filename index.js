@@ -94,16 +94,8 @@ const setNextQuiz = (id) => {
 const makeQuiz = (id,quiz) => {
   const answers = buildAnswers(quiz);
   const question = quiz.question;
-  client.pushMessage(id,{
-    type:'text',
-    text:question
-  });
-  answers.forEach((value,index)=>{
-    client.pushMessage(id,{
-      type:'text',
-      text:`${index}:${value}`
-    });
-  });
+  const quizMessage = buildFlexMessage(question,answers);
+  return client.pushMessage(id,quizMessage);
 }
 
 const buildAnswers = (quiz) => {
@@ -123,6 +115,180 @@ const shuffle = (answers) => {
     [copiedAnswers[i],copiedAnswers[rand]] = [copiedAnswers[rand],copiedAnswers[i]];
   }
   return copiedAnswers;
+}
+
+const buildFlexMessage = (question,answers) => {
+  return {
+      "type": "flex",
+      "altText": "quizFlexMessage",
+      "contents": {
+        "type": "bubble",
+        "body": {
+          "type": "box",
+          "layout": "vertical",
+          "spacing": "md",
+          "contents": [
+            {
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": `Q${gameState.currentIndex+1}`,
+                  "align": "center",
+                  "size": "xxl",
+                  "weight": "bold"
+                },
+                {
+                  "type": "text",
+                  "text": `${question}`,
+                  "wrap": true,
+                  "weight": "bold",
+                  "margin": "lg"
+                }
+              ]
+            },
+            {
+              "type": "separator"
+            },
+            {
+              "type": "box",
+              "layout": "vertical",
+              "margin": "lg",
+              "contents": [
+                {
+                  "type": "box",
+                  "layout": "baseline",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "1.",
+                      "flex": 1,
+                      "size": "lg",
+                      "weight": "bold",
+                      "color": "#666666"
+                    },
+                    {
+                      "type": "text",
+                      "text": `${answers[0]}`,
+                      "wrap": true,
+                      "flex": 9
+                    }
+                  ]
+                },
+                {
+                  "type": "box",
+                  "layout": "baseline",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "2.",
+                      "flex": 1,
+                      "size": "lg",
+                      "weight": "bold",
+                      "color": "#666666"
+                    },
+                    {
+                      "type": "text",
+                      "text": `${answers[1]}`,
+                      "wrap": true,
+                      "flex": 9
+                    }
+                  ]
+                },
+                {
+                  "type": "box",
+                  "layout": "baseline",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "3.",
+                      "flex": 1,
+                      "size": "lg",
+                      "weight": "bold",
+                      "color": "#666666"
+                    },
+                    {
+                      "type": "text",
+                      "text": `${answers[2]}`,
+                      "wrap": true,
+                      "flex": 9
+                    }
+                  ]
+                },
+                {
+                  "type": "box",
+                  "layout": "baseline",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "4.",
+                      "flex": 1,
+                      "size": "lg",
+                      "weight": "bold",
+                      "color": "#666666"
+                    },
+                    {
+                      "type": "text",
+                      "text": `${answers[3]}`,
+                      "wrap": true,
+                      "flex": 9
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "footer": {
+          "type": "box",
+          "layout": "horizontal",
+          "spacing": "sm",
+          "contents": [
+            {
+              "type": "button",
+              "style": "primary",
+              "height": "sm",
+              "action": {
+                "type": "message",
+                "label": "1",
+                "text": `${answers[0]}`
+              }
+            },
+            {
+              "type": "button",
+              "style": "primary",
+              "height": "sm",
+              "action": {
+                "type": "message",
+                "label": "2",
+                "text": `${answers[1]}`
+              }
+            },
+            {
+              "type": "button",
+              "style": "primary",
+              "height": "sm",
+              "action": {
+                "type": "message",
+                "label": "3",
+                "text": `${answers[2]}`
+              }
+            },
+            {
+              "type": "button",
+              "style": "primary",
+              "height": "sm",
+              "action": {
+                "type": "message",
+                "label": "4",
+                "text": `${answers[3]}`
+              }
+            }
+          ]
+        }
+      }
+    }
 }
 
 const finishQuiz = (id) =>{

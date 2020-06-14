@@ -57,7 +57,29 @@ const handleEvent = (event) => {
   });
 }
 
-const quizFetcher = (id) => {
+const quizFetcher = async (id) => {
+  let message = 'Now loading...';
+  try{
+    const response = await fetch(API_URL);
+    const data = await response.json();
+    gameState.quizzes = data.results;
+    gameState.currentIndex = 0;
+    gameState.numberOfCorrects = 0;
+    setNextQuiz(id);
+  }catch(error){
+    console.error(error.message);
+  }
+  return client.pushMessage(id,{
+    type:'text',
+    text:message
+  });
+}
 
+const setNextQuiz = () => {
+  const quiz = gameState.quizzes[gameState.currentIndex];
+  return client.pushMessage(id,{
+    type:'text',
+    text:quiz.question
+  });
 }
 

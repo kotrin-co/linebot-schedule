@@ -78,7 +78,7 @@ const quizFetcher = async (id) => {
   // });
 }
 
-const setNextQuiz = () => {
+const setNextQuiz = (id) => {
   console.log('setNextQuiz');
   const quiz = gameState.quizzes[gameState.currentIndex];
   return client.pushMessage(id,{

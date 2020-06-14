@@ -10,32 +10,54 @@ const config = {
 };
 const client = new line.Client(config);
 
+const API_URL = 'https://opentdb.com/api.php?amount=10&type=multiple';
+const gameState = {
+  quizzes:[],
+  currentIndex:0,
+  numberOfCorrects:0
+};
 
 app
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
-  .post('/hook',line.middleware(config),(req,res)=>lineBot(req,res))
+  .post('/hook',line.middleware(config),(req,res)=>{
+    res.sendStatus(200);
+    Promise
+      .all(req.body.events.map(handleEvent))
+      .then((result)=>{
+        console.log('event proceed');
+      });
+  })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
-const lineBot = (req,res) => {
-  res.status(200).end();
-  const events = req.body.events;
-  const promises = [];
-  for(let i=0;i<events.length;i++){
-    const ev = events[i];
-    promises.push(echoman(ev));
+const handleEvent = (event) => {
+  if(event.type !== 'message'){
+    return Promise.resolve(null);
   }
-  Promise
-    .all(promises)
-    .then(console.log('pass @@@@'));
-}
+  if((event.message.type !== 'text') && (event.message.type !== 'follow')){
+    return Promise.resolve(null);
+  }
 
-const echoman = async (ev) => {
-  const pro = await client.getProfile(ev.source.userId);
-  return client.replyMessage(ev.replyToken,{
+  let message = '';
+  const text = (event.message.type === 'text') ? event.message.type : '';
+  const id = event.source.userId;
+
+  if(text === 'クイズ'){
+    message = 'クイズしよう';
+    quizFetcher(id);
+  }else{
+    message = text;
+  }
+
+  return client.replyMessage(event.replyToken,{
     type:'text',
-    text:`${ev.message.text}`
+    text:message
   });
 }
+
+const quizFetcher = (id) => {
+
+}
+

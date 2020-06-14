@@ -93,7 +93,7 @@ const setNextQuiz = (id) => {
 
 const makeQuiz = (id,quiz) => {
   const answers = buildAnswers(quiz);
-  const question = unescapeHTML(quiz.question);
+  const question = quiz.question;
   const quizMessage = buildFlexMessage(question,answers);
   return client.pushMessage(id,quizMessage);
 }
@@ -298,10 +298,10 @@ const finishQuiz = (id) =>{
   });
 }
 
-const unescapeHTML = (str) => {
-  return str.replace(/</g,"&lt;")
-            .replace(/>/g,"&gt;")
-            .replace(/ /g, "&nbsp;")
-            .replace(/\r/g, "&#13;")
-            .replace(/\n/g, "&#10;");
-}
+// const unescapeHTML = (str) => {
+//   return str.replace(/</g,"&lt;")
+//             .replace(/>/g,"&gt;")
+//             .replace(/ /g, "&nbsp;")
+//             .replace(/\r/g, "&#13;")
+//             .replace(/\n/g, "&#10;");
+// }

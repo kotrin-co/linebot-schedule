@@ -47,16 +47,15 @@ const handleEvent = (event) => {
 
   if(text === 'クイズ'){
     message = 'クイズしよう';
+    client.pushMessage(event.replyToken,{
+      type:'text',
+      text:message
+    });
     console.log('quizfetch @@@');
     quizFetcher(id);
   }else{
     message = text;
   }
-
-  return client.replyMessage(event.replyToken,{
-    type:'text',
-    text:message
-  });
 }
 
 const quizFetcher = async (id) => {

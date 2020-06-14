@@ -92,23 +92,37 @@ const setNextQuiz = (id) => {
 }
 
 const makeQuiz = (id,quiz) => {
+  const answers = buildAnswers(quiz);
   const question = quiz.question;
-  const correct_answer = quiz.correct_answer;
-  const incorrect_answers = quiz.incorrect_answers;
   client.pushMessage(id,{
     type:'text',
     text:question
   });
-  client.pushMessage(id,{
-    type:'text',
-    text:correct_answer
-  });
-  incorrect_answers.forEach((value,index)=>{
+  answers.forEach((value,index)=>{
     client.pushMessage(id,{
       type:'text',
       text:`${index}:${value}`
     });
   });
+}
+
+const buildAnswers = (quiz) => {
+  const answers = [
+    quiz.correct_answer,
+    ...quiz.incorrect_answers
+  ];
+  const shuffledAnswers = shuffle(answers);
+
+  return shuffledAnswers;
+}
+
+const shuffle = (answers) => {
+  const copiedAnswers = answers.slice();
+  for(let i=copiedAnswers.length-1;i>=0;i--){
+    const rand = Math.floor(Math.random()*(i+1));
+    [copiedAnswers[i],copiedAnswers[rand]] = [copiedAnswers[rand],copiedAnswers[i]];
+  }
+  return copiedAnswers;
 }
 
 const finishQuiz = (id) =>{

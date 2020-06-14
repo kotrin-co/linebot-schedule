@@ -54,7 +54,7 @@ const handleEvent = (event) => {
   // return client.replyMessage(event.replyToken,{
   //   type:'text',
   //   text:message
-  });
+  // });
 }
 
 const quizFetcher = async (id) => {

@@ -61,6 +61,10 @@ const handleEvent = (event) => {
 
 const quizFetcher = async (id) => {
   let message = 'Now loading...';
+  client.pushMessage(id,{
+    type:'text',
+    text:message
+  });
   try{
     const response = await fetch(API_URL);
     const data = await response.json();
@@ -72,10 +76,6 @@ const quizFetcher = async (id) => {
   }catch(error){
     console.error(error.message);
   }
-  return client.pushMessage(id,{
-    type:'text',
-    text:message
-  });
 }
 
 const setNextQuiz = (id) => {

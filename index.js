@@ -51,9 +51,9 @@ const handleEvent = (event) => {
     message = text;
   }
 
-  return client.replyMessage(event.replyToken,{
-    type:'text',
-    text:message
+  // return client.replyMessage(event.replyToken,{
+  //   type:'text',
+  //   text:message
   });
 }
 

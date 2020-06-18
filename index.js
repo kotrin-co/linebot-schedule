@@ -34,6 +34,7 @@ app
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
 const handleEvent = (event) => {
+  console.log('handleEvent @@@');
   if((event.type !== 'message') && (event.type !== 'postback')){
     return Promise.resolve(null);
   }

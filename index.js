@@ -34,7 +34,7 @@ app
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
 const handleEvent = (event) => {
-  if(event.type !== 'message'){
+  if((event.type !== 'message') && (event.type !== 'postback')){
     return Promise.resolve(null);
   }
   if((event.message.type !== 'text') && (event.message.type !== 'follow')){
@@ -44,6 +44,14 @@ const handleEvent = (event) => {
   let message = '';
   const text = (event.message.type === 'text') ? event.message.text : '';
   const id = event.source.userId;
+
+  // ここからテスト
+  if(event.type === 'postback'){
+    client.pushMessage(event.replyToken,{
+      type:'text',
+      text:`${event.postback.data}`
+    });
+  }
 
   if(text === 'クイズ'){
     message = 'クイズしよう';
@@ -83,6 +91,7 @@ const quizFetcher = async (id) => {
 
 const setNextQuiz = (id) => {
   console.log('setNextQuiz');
+  gameState.currentIndex++;
   if(gameState.currentIndex<gameState.quizzes.length){
     const quiz = gameState.quizzes[gameState.currentIndex];
     makeQuiz(id,quiz);
@@ -250,8 +259,9 @@ const buildFlexMessage = (question,answers) => {
               "style": "primary",
               "height": "sm",
               "action": {
-                "type": "message",
+                "type": "postback",
                 "label": "1",
+                "data":"test_data",
                 "text": `${answers[0]}`
               }
             },

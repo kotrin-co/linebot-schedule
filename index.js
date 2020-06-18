@@ -37,9 +37,9 @@ const handleEvent = (event) => {
   if((event.type !== 'message') && (event.type !== 'postback')){
     return Promise.resolve(null);
   }
-  if((event.message.type !== 'text') && (event.message.type !== 'follow')){
-    return Promise.resolve(null);
-  }
+  // if((event.message.type !== 'text') && (event.message.type !== 'follow')){
+  //   return Promise.resolve(null);
+  // }
 
   let message = '';
   const text = (event.message.type === 'text') ? event.message.text : '';
@@ -47,6 +47,8 @@ const handleEvent = (event) => {
 
   // ここからテスト
   if(event.type === 'postback'){
+    console.log('postback start',event.postback.data);
+
     client.pushMessage(event.replyToken,{
       type:'text',
       text:`${event.postback.data}`

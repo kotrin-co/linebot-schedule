@@ -65,12 +65,15 @@ const handleEvent = (event) => {
 
   // ここからテスト
   if(event.type === 'postback'){
-    console.log('postback start',event.postback.data);
     const id = event.source.userId;
-    client.pushMessage(id,{
-      type:'text',
-      text:`${event.postback.data}`
-    });
+    const data = event.postback.data;
+    judgeCorrectness(data,id);
+    // console.log('postback start',event.postback.data);
+    // const id = event.source.userId;
+    // client.pushMessage(id,{
+    //   type:'text',
+    //   text:`${event.postback.data}`
+    // });
   }
  
 }
@@ -95,10 +98,10 @@ const quizFetcher = async (id) => {
 
 const setNextQuiz = (id) => {
   console.log('setNextQuiz');
-  gameState.currentIndex++;
   if(gameState.currentIndex<gameState.quizzes.length){
     const quiz = gameState.quizzes[gameState.currentIndex];
     makeQuiz(id,quiz);
+    gameState.currentIndex++;
   }else{
     finishQuiz(id);
   }
@@ -131,6 +134,22 @@ const shuffle = (answers) => {
     correctness:copiedCorrectness
   }
   return arrangedAnswers;
+}
+
+const judgeCorrectness = (data,id) => {
+  if(data === '0'){
+    client.pushMessage(id,{
+      type:'text',
+      text:'間違ってるよーん'
+    });
+  }else{
+    client.pushMessage(id,{
+      type:'text',
+      text:'正解！！'
+    });
+    gameState.numberOfCorrects++;
+    setNextQuiz(id);
+  }
 }
 
 const buildFlexMessage = (question,answers) => {

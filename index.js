@@ -66,7 +66,8 @@ const handleEvent = (event) => {
   // ここからテスト
   if(event.type === 'postback'){
     console.log('postback start',event.postback.data);
-    client.pushMessage(event.replyToken,{
+    const id = event.source.userId;
+    client.pushMessage(id,{
       type:'text',
       text:`${event.postback.data}`
     });

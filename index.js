@@ -38,39 +38,40 @@ const handleEvent = (event) => {
   if((event.type !== 'message') && (event.type !== 'postback')){
     return Promise.resolve(null);
   }
-  // if((event.message.type !== 'text') && (event.message.type !== 'follow')){
-  //   return Promise.resolve(null);
-  // }
 
-  let message = '';
-  const text = (event.message.type === 'text') ? event.message.text : '';
-  const id = event.source.userId;
+  if(event.type === 'message'){
+    if((event.message.type !== 'text') && (event.message.type !== 'follow')){
+      return Promise.resolve(null);
+    }
+    const id = event.source.userId;
+    let message = '';
+    const text = (event.message.type === 'text') ? event.message.text : '';
+    if(text === 'クイズ'){
+      message = 'クイズしよう';
+      client.pushMessage(event.replyToken,{
+        type:'text',
+        text:message
+      });
+      console.log('quizfetch @@@');
+      quizFetcher(id);
+    }else{
+      message = text;
+      client.pushMessage(event.replyToken,{
+        type:'text',
+        text:message
+      });
+    }
+  }
 
   // ここからテスト
   if(event.type === 'postback'){
     console.log('postback start',event.postback.data);
-
     client.pushMessage(event.replyToken,{
       type:'text',
       text:`${event.postback.data}`
     });
   }
-
-  if(text === 'クイズ'){
-    message = 'クイズしよう';
-    client.pushMessage(event.replyToken,{
-      type:'text',
-      text:message
-    });
-    console.log('quizfetch @@@');
-    quizFetcher(id);
-  }else{
-    message = text;
-    client.pushMessage(event.replyToken,{
-      type:'text',
-      text:message
-    });
-  }
+ 
 }
 
 const quizFetcher = async (id) => {

@@ -146,7 +146,9 @@ const judgeCorrectness = (data,id) => {
       resolve(id);
     });
     promise.then((id)=>{
-      setNextQuiz(id);
+      setTimeout(()=>{
+        setNextQuiz(id);
+      },1000);
     });
   }else{
     const promise = new Promise((resolve,reject)=>{
@@ -158,7 +160,9 @@ const judgeCorrectness = (data,id) => {
       resolve(id);
     });
     promise.then((id)=>{
-      setNextQuiz(id);
+      setTimeout(()=>{
+        setNextQuiz(id);
+      },1000);
     });
   }
 }

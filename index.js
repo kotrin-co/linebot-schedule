@@ -348,7 +348,7 @@ const buildFlexMessage = (question,answers) => {
 const finishQuiz = (id) =>{
   client.pushMessage(id,{
     type:'text',
-    text:'クイズ終了です。お疲れ様でした。'
+    text:`クイズ終了です。正解数は${gameState.numberOfCorrects}/${gameState.quizzes.length}です。お疲れ様でした。`
   });
 }
 

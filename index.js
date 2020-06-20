@@ -220,7 +220,7 @@ const buildFlexMessage = (question,answers) => {
                     },
                     {
                       "type": "text",
-                      "text": `${answers.list[0]}`,
+                      "text": `${unEscape(answers.list[0])}`,
                       "wrap": true,
                       "flex": 9
                     }
@@ -240,7 +240,7 @@ const buildFlexMessage = (question,answers) => {
                     },
                     {
                       "type": "text",
-                      "text": `${answers.list[1]}`,
+                      "text": `${unEscape(answers.list[1])}`,
                       "wrap": true,
                       "flex": 9
                     }
@@ -260,7 +260,7 @@ const buildFlexMessage = (question,answers) => {
                     },
                     {
                       "type": "text",
-                      "text": `${answers.list[2]}`,
+                      "text": `${unEscape(answers.list[2])}`,
                       "wrap": true,
                       "flex": 9
                     }
@@ -280,7 +280,7 @@ const buildFlexMessage = (question,answers) => {
                     },
                     {
                       "type": "text",
-                      "text": `${answers.list[3]}`,
+                      "text": `${unEscape(answers.list[3])}`,
                       "wrap": true,
                       "flex": 9
                     }
@@ -303,7 +303,7 @@ const buildFlexMessage = (question,answers) => {
                 "type": "postback",
                 "label": "1",
                 "data":`${answers.correctness[0]}`,
-                "text": `${answers.list[0]}`
+                "text": `${unEscape(answers.list[0])}`
               }
             },
             {
@@ -314,7 +314,7 @@ const buildFlexMessage = (question,answers) => {
                 "type": "postback",
                 "label": "2",
                 "data":`${answers.correctness[1]}`,
-                "text": `${answers.list[1]}`
+                "text": `${unEscape(answers.list[1])}`
               }
             },
             {
@@ -325,7 +325,7 @@ const buildFlexMessage = (question,answers) => {
                 "type": "postback",
                 "label": "3",
                 "data":`${answers.correctness[2]}`,
-                "text": `${answers.list[2]}`
+                "text": `${unEscape(answers.list[2])}`
               }
             },
             {
@@ -336,7 +336,7 @@ const buildFlexMessage = (question,answers) => {
                 "type": "postback",
                 "label": "4",
                 "data":`${answers.correctness[3]}`,
-                "text": `${answers.list[3]}`
+                "text": `${unEscape(answers.list[3])}`
               }
             }
           ]
@@ -353,5 +353,10 @@ const finishQuiz = (id) =>{
 }
 
 const unEscape = (str) => {
-  return str.replace(/&quot;/g,'"');
+  return str
+    .replace(/&quot;/g,'"')
+    .replace(/&#039;/g,"'")
+    .replace(/&amp;/g,'&')
+    .replace(/&lt;/g,'<')
+    .replace(/&gt;/g,'>');
 }

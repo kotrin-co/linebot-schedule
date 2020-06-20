@@ -265,7 +265,7 @@ const buildFlexMessage = (question,answers) => {
                 "type": "postback",
                 "label": "1",
                 "data":"test_data",
-                "text": `${answers[0]}`
+                // "text": `${answers[0]}`
               }
             },
             {

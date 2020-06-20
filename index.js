@@ -148,8 +148,8 @@ const judgeCorrectness = (data,id) => {
       text:'正解！！'
     });
     gameState.numberOfCorrects++;
-    setNextQuiz(id);
   }
+  setNextQuiz(id);
 }
 
 const buildFlexMessage = (question,answers) => {

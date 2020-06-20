@@ -34,7 +34,7 @@ app
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
 const handleEvent = (event) => {
-  console.log('handleEvent @@@');
+  console.log('handleEvent @@@:',event);
   if((event.type !== 'message') && (event.type !== 'postback')){
     return Promise.resolve(null);
   }
@@ -85,7 +85,6 @@ const quizFetcher = async (id) => {
     gameState.quizzes = data.results;
     gameState.currentIndex = 0;
     gameState.numberOfCorrects = 0;
-    console.log('quizzes:',gameState.quizzes);
     setNextQuiz(id);
   }catch(error){
     console.error(error.message);

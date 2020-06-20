@@ -112,22 +112,25 @@ const makeQuiz = (id,quiz) => {
 }
 
 const buildAnswers = (quiz) => {
-  const answers = [
-    quiz.correct_answer,
-    ...quiz.incorrect_answers
-  ];
+  const answers = {list:[quiz.correct_answer, ...quiz.incorrect_answers],
+                   correctness:[1,0,0,0]};
   const shuffledAnswers = shuffle(answers);
-
   return shuffledAnswers;
 }
 
 const shuffle = (answers) => {
-  const copiedAnswers = answers.slice();
+  const copiedAnswers = answers.list.slice();
+  const copiedCorrectness = answers.correctness.slice()
   for(let i=copiedAnswers.length-1;i>=0;i--){
     const rand = Math.floor(Math.random()*(i+1));
     [copiedAnswers[i],copiedAnswers[rand]] = [copiedAnswers[rand],copiedAnswers[i]];
+    [copiedCorrectness[i],copiedCorrectness[rand]] = [copiedCorrectness[rand],copiedCorrectness[i]];
   }
-  return copiedAnswers;
+  const arrangedAnswers = {
+    list:copiedAnswers,
+    correctness:copiedCorrectness
+  }
+  return arrangedAnswers;
 }
 
 const buildFlexMessage = (question,answers) => {
@@ -183,7 +186,7 @@ const buildFlexMessage = (question,answers) => {
                     },
                     {
                       "type": "text",
-                      "text": `${answers[0]}`,
+                      "text": `${answers.list[0]}`,
                       "wrap": true,
                       "flex": 9
                     }
@@ -203,7 +206,7 @@ const buildFlexMessage = (question,answers) => {
                     },
                     {
                       "type": "text",
-                      "text": `${answers[1]}`,
+                      "text": `${answers.list[1]}`,
                       "wrap": true,
                       "flex": 9
                     }
@@ -223,7 +226,7 @@ const buildFlexMessage = (question,answers) => {
                     },
                     {
                       "type": "text",
-                      "text": `${answers[2]}`,
+                      "text": `${answers.list[2]}`,
                       "wrap": true,
                       "flex": 9
                     }
@@ -243,7 +246,7 @@ const buildFlexMessage = (question,answers) => {
                     },
                     {
                       "type": "text",
-                      "text": `${answers[3]}`,
+                      "text": `${answers.list[3]}`,
                       "wrap": true,
                       "flex": 9
                     }
@@ -265,8 +268,8 @@ const buildFlexMessage = (question,answers) => {
               "action": {
                 "type": "postback",
                 "label": "1",
-                "data":"test_data",
-                // "text": `${answers[0]}`
+                "data":`${answers.correctness[0]}`,
+                "text": `${answers.list[0]}`
               }
             },
             {
@@ -274,9 +277,10 @@ const buildFlexMessage = (question,answers) => {
               "style": "primary",
               "height": "sm",
               "action": {
-                "type": "message",
+                "type": "postback",
                 "label": "2",
-                "text": `${answers[1]}`
+                "data":`${answers.correctness[1]}`,
+                "text": `${answers.list[1]}`
               }
             },
             {
@@ -284,9 +288,10 @@ const buildFlexMessage = (question,answers) => {
               "style": "primary",
               "height": "sm",
               "action": {
-                "type": "message",
+                "type": "postback",
                 "label": "3",
-                "text": `${answers[2]}`
+                "data":`${answers.correctness[2]}`,
+                "text": `${answers.list[2]}`
               }
             },
             {
@@ -294,9 +299,10 @@ const buildFlexMessage = (question,answers) => {
               "style": "primary",
               "height": "sm",
               "action": {
-                "type": "message",
+                "type": "postback",
                 "label": "4",
-                "text": `${answers[3]}`
+                "data":`${answers.correctness[3]}`,
+                "text": `${answers.list[3]}`
               }
             }
           ]

@@ -138,18 +138,29 @@ const shuffle = (answers) => {
 
 const judgeCorrectness = (data,id) => {
   if(data === '0'){
-    client.pushMessage(id,{
-      type:'text',
-      text:'間違ってるよーん'
+    const promise = new Promise((resolve,reject)=>{
+      client.pushMessage(id,{
+        type:'text',
+        text:'間違ってるよーん'
+      });
+      resolve(id);
+    });
+    promise.then((id)=>{
+      setNextQuiz(id);
     });
   }else{
-    client.pushMessage(id,{
-      type:'text',
-      text:'正解！！'
+    const promise = new Promise((resolve,reject)=>{
+      client.pushMessage(id,{
+        type:'text',
+        text:'正解！！'
+      });
+      gameState.numberOfCorrects++;
+      resolve(id);
     });
-    gameState.numberOfCorrects++;
+    promise.then((id)=>{
+      setNextQuiz(id);
+    });
   }
-  setNextQuiz(id);
 }
 
 const buildFlexMessage = (question,answers) => {

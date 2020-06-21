@@ -137,7 +137,7 @@ const setQuizTable = (quizzes) => {
 const setNextQuiz = (id) => {
   console.log('setNextQuiz');
   const table_select = {
-    text:`SELECT * FROM quizzes WHERE id=${gameState.currentIndex};`
+    text:`SELECT * FROM quizzes WHERE id=${gameState.currentIndex+1};`
   }
   connection.query(table_select)
     .then(res =>{

@@ -136,16 +136,20 @@ const setQuizTable = (quizzes) => {
 
 const setNextQuiz = (id) => {
   console.log('setNextQuiz');
-  const table_select = {
-    text:`SELECT * FROM quizzes WHERE id=${gameState.currentIndex+1};`
+  if(gameState.currentIndex<gameState.quizzes.length){
+    const table_select = {
+      text:`SELECT * FROM quizzes WHERE id=${gameState.currentIndex+1};`
+    }
+    connection.query(table_select)
+      .then(res =>{
+        console.log('question:',res.rows[0]);
+        makeQuiz(id,res.rows[0]);
+        gameState.currentIndex++;
+      })
+      .catch(e=>console.error(e.stack));
+  }else{
+    finishQuiz(id);
   }
-  connection.query(table_select)
-    .then(res =>{
-      console.log('question:',res.rows[0]);
-      makeQuiz(id,res.rows[0]);
-      gameState.currentIndex++;
-    })
-    .catch(e=>console.error(e.stack));
   // if(gameState.currentIndex<gameState.quizzes.length){
   //   const quiz = gameState.quizzes[gameState.currentIndex];
   //   makeQuiz(id,quiz);
@@ -164,7 +168,7 @@ const makeQuiz = (id,quiz) => {
 }
 
 const buildAnswers = (quiz) => {
-  const answers = {list:[quiz.correct_answer,quiz.incorrect_answers1,quiz.incorrect_answer2,quiz.incorrect_answer3],
+  const answers = {list:[quiz.correct_answer,quiz.incorrect_answer1,quiz.incorrect_answer2,quiz.incorrect_answer3],
                    correctness:[1,0,0,0]};
   const shuffledAnswers = shuffle(answers);
   return shuffledAnswers;

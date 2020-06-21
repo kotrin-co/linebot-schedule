@@ -137,7 +137,7 @@ const setQuizTable = (quizzes) => {
 const setNextQuiz = (id) => {
   console.log('setNextQuiz');
   const table_select = {
-    text:'SELECT question FROM quizzes WHERE id=1;'
+    text:'SELECT * FROM quizzes WHERE id=1;'
   }
   connection.query(table_select)
     .then(res =>{

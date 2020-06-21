@@ -91,7 +91,6 @@ const handleEvent = (event) => {
     }
   }
 
-  // ここからテスト
   if(event.type === 'postback'){
     const id = event.source.userId;
     const data = event.postback.data;
@@ -121,7 +120,7 @@ const quizFetcher = async (id) => {
 }
 
 const setQuizTable = (quizzes) => {
-  console.log('setQuizTable @@@');
+  console.log('setQuizTable @@@',quizzes);
   for(let i=0;i<quizzes.length;i++){
     let table_insert = {
       text:'INSERT INTO quizzes (question, correct_answer, incorrect_answer1, incorrect_answer2, incorrect_answer3) VALUES($1,$2,$3,$4,$5)',

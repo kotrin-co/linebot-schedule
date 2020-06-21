@@ -140,8 +140,8 @@ const setNextQuiz = (id) => {
     text:'SELECT question FROM quizzes WHERE id=1;'
   }
   connection.query(table_select)
-    .then(()=>{
-      console.log('question:',question);
+    .then(res =>{
+      console.log('question:',res.rows[0]);
     })
     .catch(e=>console.error(e.stack));
   // if(gameState.currentIndex<gameState.quizzes.length){

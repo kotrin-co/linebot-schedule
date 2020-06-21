@@ -112,8 +112,8 @@ const quizFetcher = async (id) => {
     gameState.quizzes = data.results;
     gameState.currentIndex = 0;
     gameState.numberOfCorrects = 0;
-    // setNextQuiz(id);
     setQuizTable(gameState.quizzes);
+    setNextQuiz(id);
   }catch(error){
     console.error(error.message);
   }
@@ -136,13 +136,21 @@ const setQuizTable = (quizzes) => {
 
 const setNextQuiz = (id) => {
   console.log('setNextQuiz');
-  if(gameState.currentIndex<gameState.quizzes.length){
-    const quiz = gameState.quizzes[gameState.currentIndex];
-    makeQuiz(id,quiz);
-    gameState.currentIndex++;
-  }else{
-    finishQuiz(id);
+  const table_select = {
+    text:'SELECT question FROM quizzes WHERE id=1;'
   }
+  connection.query(table_select)
+    .then(()=>{
+      console.log('question:',question);
+    })
+    .catch(e=>console.error(e.stack));
+  // if(gameState.currentIndex<gameState.quizzes.length){
+  //   const quiz = gameState.quizzes[gameState.currentIndex];
+  //   makeQuiz(id,quiz);
+  //   gameState.currentIndex++;
+  // }else{
+  //   finishQuiz(id);
+  // }
 }
 
 const makeQuiz = (id,quiz) => {

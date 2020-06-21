@@ -29,12 +29,12 @@ const connection = new Client({
 connection.connect();
 
 const create_table = {
-  text:'CREATE TABLE IF NOT EXISTS quizzes (question VARCHAR(255) NOT NULL, correct_answer VARCHAR(100) NOT NULL, incorrect_answer1 VARCHAR(100), incorrect_answer2 VARCHAR(100), incorrect_answer3 VARCHAR(100))'
+  text:'CREATE TABLE IF NOT EXISTS quizzes (id integer NOT NULL UNIQUE, question VARCHAR(255) NOT NULL, correct_answer VARCHAR(100) NOT NULL, incorrect_answer1 VARCHAR(100), incorrect_answer2 VARCHAR(100), incorrect_answer3 VARCHAR(100))'
 }
 connection.query(create_table)
   .then(res=>console.log(res.row[0]))
   .catch(e=>console.error(e.stack));
-  
+
 app
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))

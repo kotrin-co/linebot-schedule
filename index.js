@@ -4,6 +4,7 @@ const path = require('path')
 const line = require('@line/bot-sdk');
 const fetch = require('node-fetch');
 const PORT = process.env.PORT || 5000
+const { Client } = require('pg');
 
 const config = {
   channelAccessToken: '3xoDGJ8KgOVxVsyS4/XJwYqXOemYOX2b3mDioaOgnMv2jc2vkZcuGBnSzrehcK+sYXWEXgwraDP4DDvm6uiez8PChvb77gEAAtndU93wGwLN+LnsqVlLnQQN8ybt6wIquvnU/xFiobFIY5IOFLjclQdB04t89/1O/w1cDnyilFU=',
@@ -17,6 +18,15 @@ const gameState = {
   currentIndex:0,
   numberOfCorrects:0
 };
+
+const connection = new Client({
+  user:'rlcrjkpobrvbdu',
+  host:'ec2-52-202-146-43.compute-1.amazonaws.com',
+  database:'d5vbt5iatapkp8',
+  password:'71d3ef3b6059fd8608bb05d8d4ccea813dd0d77cbd7dc13de92991279cb106e7',
+  port:5432
+});
+connection.connect();
 
 app
   .use(express.static(path.join(__dirname, 'public')))

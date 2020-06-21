@@ -29,7 +29,7 @@ const connection = new Client({
 connection.connect();
 
 const create_table = {
-  text:'CREATE TABLE IF NOT EXISTS quizzes (id integer NOT NULL UNIQUE, question VARCHAR(255) NOT NULL, correct_answer VARCHAR(100) NOT NULL, incorrect_answer1 VARCHAR(100), incorrect_answer2 VARCHAR(100), incorrect_answer3 VARCHAR(100))'
+  text:'CREATE TABLE IF NOT EXISTS quizzes (id SERIAL NOT NULL, question VARCHAR(255) NOT NULL, correct_answer VARCHAR(100) NOT NULL, incorrect_answer1 VARCHAR(100), incorrect_answer2 VARCHAR(100), incorrect_answer3 VARCHAR(100))'
 }
 connection.query(create_table)
   .then(res=>console.log(res.row[0]))
@@ -96,20 +96,29 @@ const handleEvent = (event) => {
 }
 
 const quizFetcher = async (id) => {
-  let message = 'Now loading...';
-  client.pushMessage(id,{
-    type:'text',
-    text:message
-  });
   try{
     const response = await fetch(API_URL);
     const data = await response.json();
     gameState.quizzes = data.results;
     gameState.currentIndex = 0;
     gameState.numberOfCorrects = 0;
-    setNextQuiz(id);
+    // setNextQuiz(id);
+    setQuizTable(gameState.quizzes);
   }catch(error){
     console.error(error.message);
+  }
+}
+
+const setQuizTable = (quizzes) => {
+  console.log('setQuizTable @@@');
+  for(let i=0;i<quizzes.length;i++){
+    let table_insert = {
+      text:'INSERT INTO quizzes (question, correct_answer, incorrect_answer1, incorrect_answer2, incorrect_answer3) VALUES($1,$2,$3,$4,$5)',
+      values:[quizzes[i].question,quizzes[i].correct_answer,quizzes[i].incorrect_answers[0],quizzes[i].incorrect_answers[1],quizzes[i].incorrect_answers[2]]
+    };
+    connection.query(table_insert)
+      .then(res=>console.log(res.row[0]))
+      .catch(e=>console.error(e.stack));
   }
 }
 

@@ -28,11 +28,22 @@ const connection = new Client({
 });
 connection.connect();
 
+const drop_table = {
+  text:'DROP TABLE IF EXISTS quizzes;'
+}
+connection.query(drop_table)
+  .then(()=>{
+    console.log('table dropped successfully!');
+  })
+  .catch(e=>console.error(e.stack));
+
 const create_table = {
-  text:'CREATE TABLE IF NOT EXISTS quizzes (id SERIAL NOT NULL, question VARCHAR(255) NOT NULL, correct_answer VARCHAR(100) NOT NULL, incorrect_answer1 VARCHAR(100), incorrect_answer2 VARCHAR(100), incorrect_answer3 VARCHAR(100))'
+  text:'CREATE TABLE IF NOT EXISTS quizzes (id SERIAL NOT NULL, question VARCHAR(255) NOT NULL, correct_answer VARCHAR(100) NOT NULL, incorrect_answer1 VARCHAR(100), incorrect_answer2 VARCHAR(100), incorrect_answer3 VARCHAR(100));'
 }
 connection.query(create_table)
-  .then(res=>console.log(res.row[0]))
+  .then(()=>{
+    console.log('table created successfully!');
+  })
   .catch(e=>console.error(e.stack));
 
 app
@@ -117,7 +128,9 @@ const setQuizTable = (quizzes) => {
       values:[quizzes[i].question,quizzes[i].correct_answer,quizzes[i].incorrect_answers[0],quizzes[i].incorrect_answers[1],quizzes[i].incorrect_answers[2]]
     };
     connection.query(table_insert)
-      .then(res=>console.log(res.row[0]))
+      .then(()=>{
+        console.log('table inserted successfully!');
+      })
       .catch(e=>console.error(e.stack));
   }
 }

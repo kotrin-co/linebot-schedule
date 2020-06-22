@@ -56,11 +56,15 @@ app
 
 const handleEvent = (event) => {
   console.log('handleEvent!!',event);
-  if(event.type !== 'message'){
+  if((event.type !== 'message') && (event.type !== 'postback')){
     return Promise.resolve(null);
   }
 
-  const id = event.source.userId;
+  if(event.type === 'message'){
+    if(event.message.type !== 'text'){
+      return Promise.resolve(null);
+    }
+    const id = event.source.userId;
   let message = "";
   const text = (event.message.type === 'text') ? event.message.text : '';
   
@@ -83,8 +87,9 @@ const handleEvent = (event) => {
           },
           "actions": [
               {
-                "type": "postback",
+                "type": "datetimepicker",
                 "label": "予約する",
+                "mode":"date",
                 "data": "action=reserve"
               },
               {
@@ -100,7 +105,9 @@ const handleEvent = (event) => {
           ]
       }
         })
-      }
+    }
+  }
+  
 }
 
 // const handleEvent = (event) => {

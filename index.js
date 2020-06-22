@@ -70,32 +70,32 @@ const handleEvent = (event) => {
       "altText": "This is a buttons template",
       "template": {
           "type": "buttons",
-          "thumbnailImageUrl": "https://example.com/bot/images/image.jpg",
+          "thumbnailImageUrl": "https://katene.chuden.jp/campaign/kateneko/images/character_dance.png",
           "imageAspectRatio": "rectangle",
           "imageSize": "cover",
           "imageBackgroundColor": "#FFFFFF",
-          "title": "Menu",
-          "text": "Please select",
+          "title": "カットハウス　カテエネ",
+          "text": "選択してください",
           "defaultAction": {
               "type": "uri",
-              "label": "View detail",
-              "uri": "http://example.com/page/123"
+              "label": "Google",
+              "uri": "http://google.co.jp"
           },
           "actions": [
               {
                 "type": "postback",
-                "label": "Buy",
-                "data": "action=buy&itemid=123"
+                "label": "予約する",
+                "data": "action=reserve"
               },
               {
                 "type": "postback",
-                "label": "Add to cart",
-                "data": "action=add&itemid=123"
+                "label": "キャンセル",
+                "data": "action=cancel"
               },
               {
                 "type": "uri",
-                "label": "View detail",
-                "uri": "http://example.com/page/123"
+                "label": "ホームページへ",
+                "uri": "http://google.co.jp"
               }
           ]
       }

@@ -82,7 +82,8 @@ const lineBot = (req,res) => {
 
   Promise
     .all(promises)
-    .then(console.log('all promises passed @@@'));
+    .then(console.log('all promises passed @@@'))
+    .catch(e=>console.error(e.stack));
 }
 
 const greeting_follow = async (ev) => {
@@ -90,20 +91,33 @@ const greeting_follow = async (ev) => {
   console.log('profile:',pro);
   const timeStamp = getDate(ev.timestamp);
 
-  const table_insert = {
-    text:'INSERT INTO users (line_uid,display_name,timestamp) VALUES($1,$2,$3)',
-    values:[ev.source.userId,pro.displayName,timeStamp]
-  };
-  connection.query(table_insert)
-    .then(()=>{
-      console.log('insert successfully!!@@')
+  const user_check = {
+    text:`SELECT id FROM users WHERE line_uid=${ev.source.userId};`
+  }
+  connection.query(user_check)
+    .then(res=>{
+      console.log('res:',res.rows[0]);
+      if(res.rows[0]){
+        console.log('すでに存在するユーザーです。');
+        return;
+      }else{
+        const table_insert = {
+          text:'INSERT INTO users (line_uid,display_name,timestamp) VALUES($1,$2,$3)',
+          values:[ev.source.userId,pro.displayName,timeStamp]
+        };
+        connection.query(table_insert)
+          .then(()=>{
+            console.log('insert successfully!!@@')
+          })
+          .catch(e=>console.error(e.stack));
+      
+        return client.replyMessage(ev.replyToken,{
+          "type":"text",
+          "text":`${pro.displayName}さん、フォローありがとうございます！`
+        });
+      }
     })
     .catch(e=>console.error(e.stack));
-
-  return client.replyMessage(ev.replyToken,{
-    "type":"text",
-    "text":`${pro.displayName}さん、フォローありがとうございます！`
-  });
 }
 
 const getDate = (timestamp) => {

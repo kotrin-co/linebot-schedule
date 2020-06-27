@@ -22,7 +22,7 @@ const connection = new Client({
 connection.connect();
 
 const create_utable = {
-  text:'CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL, line_uid VARCHAR(255) NOT NULL, display_name VARCHAR(255) NOT NULL, timestamp TIMESTAMP_DATA NOT NULL);'
+  text:'CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL, line_uid VARCHAR(255) NOT NULL, display_name VARCHAR(255) NOT NULL, timestamp VARCHAR(255) NOT NULL);'
 };
 connection.query(create_utable)
   .then(()=>{

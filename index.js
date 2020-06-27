@@ -68,46 +68,49 @@ const handleEvent = (event) => {
   let message = "";
   const text = (event.message.type === 'text') ? event.message.text : '';
   
-  if(text === '予約'){
-    client.replyMessage(event.replyToken,{
-      "type": "template",
-      "altText": "This is a buttons template",
-      "template": {
-          "type": "buttons",
-          "thumbnailImageUrl": "https://katene.chuden.jp/campaign/kateneko/images/character_dance.png",
-          "imageAspectRatio": "rectangle",
-          "imageSize": "cover",
-          "imageBackgroundColor": "#FFFFFF",
-          "title": "カットハウス　カテエネ",
-          "text": "選択してください",
-          "defaultAction": {
-              "type": "uri",
-              "label": "Google",
-              "uri": "http://google.co.jp"
-          },
-          "actions": [
-              {
-                "type": "datetimepicker",
-                "label": "予約する",
-                "mode":"date",
-                "data": "action=reserve"
-              },
-              {
-                "type": "postback",
-                "label": "キャンセル",
-                "data": "action=cancel"
-              },
-              {
+    if(text === '予約'){
+      client.replyMessage(event.replyToken,{
+        "type": "template",
+        "altText": "This is a buttons template",
+        "template": {
+            "type": "buttons",
+            "thumbnailImageUrl": "https://katene.chuden.jp/campaign/kateneko/images/character_dance.png",
+            "imageAspectRatio": "rectangle",
+            "imageSize": "cover",
+            "imageBackgroundColor": "#FFFFFF",
+            "title": "カットハウス　カテエネ",
+            "text": "選択してください",
+            "defaultAction": {
                 "type": "uri",
-                "label": "ホームページへ",
+                "label": "Google",
                 "uri": "http://google.co.jp"
-              }
-          ]
+            },
+            "actions": [
+                {
+                  "type": "datetimepicker",
+                  "label": "予約する",
+                  "mode":"datetime",
+                  "data": "action=reserve"
+                },
+                {
+                  "type": "postback",
+                  "label": "キャンセル",
+                  "data": "action=cancel"
+                },
+                {
+                  "type": "uri",
+                  "label": "ホームページへ",
+                  "uri": "http://google.co.jp"
+                }
+            ]
+        }
+          })
       }
-        })
-    }
   }
   
+  if(event.type === 'postback'){
+
+  }
 }
 
 // const handleEvent = (event) => {

@@ -107,7 +107,7 @@ const greeting_follow = async (ev) => {
 }
 
 const getDate = (timestamp) => {
-  const date = new Date(timestamp);
+  const date = new Date(timestamp+32400000);
   const y = date.getFullYear();
   const m = ("0" + (date.getMonth()+1)).slice(-2);
   const d = ("0" + date.getDate()).slice(-2);

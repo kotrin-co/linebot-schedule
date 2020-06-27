@@ -220,48 +220,14 @@ const handleMessageEvent = async (ev) => {
   }
 
 const handlePostbackEvent = async (ev) => {
-  client.replyMessage(ev.replyToken,{
-    "type":"text",
-    "text":`${ev.postback.params.date}ですね・・・`
-  });
-  client.pushMessage(ev.source.userId,{
-    "type": "template",
-    "altText": "This is a buttons template",
-    "template": {
-        "type": "buttons",
-        "thumbnailImageUrl": "https://www.img03.ekiten.jp/image_charge2/52/6772952/list/s150_1000145_20141001102156.jpg",
-        "imageAspectRatio": "rectangle",
-        "imageSize": "cover",
-        "imageBackgroundColor": "#FFFFFF",
-        "title": "カットハウス　カテエネ",
-        "text": "選択してください",
-        "defaultAction": {
-            "type": "uri",
-            "label": "Google",
-            "uri": "http://google.co.jp"
-        },
-        "actions": [
-            {
-              "type": "datetimepicker",
-              "label": "時間を選択する",
-              "mode":"time",
-              "max":"19:00",
-              "min":"10:00",
-              "data": "action=reserve"
-            },
-            {
-              "type": "postback",
-              "label": "キャンセル",
-              "data": "action=cancel"
-            },
-            {
-              "type": "uri",
-              "label": "ホームページへ",
-              "uri": "http://google.co.jp"
-            }
-          ]
-        }
-      });
+  const pro = await client.getProfile(ev.source.userId);
+  console.log('postback event:',ev);
+  if(ev.postback.data === 'cut'){
+    client.replyMessage(ev.replyToken,{
+      "type":"text",
+      "text":`${pro.displayName}さん、次のご予約はカットですね。`
+    });
+  }
 }
 
 // client.replyMessage(ev.replyToken,{

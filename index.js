@@ -29,6 +29,15 @@ connection.query(create_utable)
     console.log('table users created successfully!!');
   })
   .catch(e=>console.error(e.stack));
+
+const create_stable = {
+  text:'CREATE TABLE IF NOT EXISTS schedules (id SERIAL NOT NULL, line_uid VARCHAR(255), name VARCHAR(100), scheduledate DATE, starttime TIME, endtime TIME, menu VARCHAR(50));'
+}
+connection.query(create_stable)
+  .then(()=>{
+    console.log('table schedules created successfully!!');
+  })
+  .catch(e=>console.error(e.stack));
 // const drop_table = {
 //   text:'DROP TABLE IF EXISTS quizzes;'
 // }
@@ -46,6 +55,11 @@ connection.query(create_utable)
 //     console.log('table created successfully!');
 //   })
 //   .catch(e=>console.error(e.stack));
+
+const reservation_order = {
+  menu:'',
+  date:''
+};
 
 app
   .use(express.static(path.join(__dirname, 'public')))
@@ -223,22 +237,43 @@ const handlePostbackEvent = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
   const id = ev.source.userId;
   console.log('postback event:',ev);
-  if(ev.postback.data === 'cut'){
-    client.replyMessage(ev.replyToken,{
-      "type":"text",
-      "text":`${pro.displayName}さん、次のご予約はカットですね。`
-    });
-  }else if(ev.postback.data === 'cutandshampoo'){
-    client.replyMessage(ev.replyToken,{
-      "type":"text",
-      "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。`
-    });
-  }else if(ev.postback.data === 'color'){
-    client.replyMessage(ev.replyToken,{
-      "type":"text",
-      "text":`${pro.displayName}さん、次のご予約はカラーリングですね。`
-    });
+
+  switch(ev.postback.data){
+    case 'cut':
+      reservation_order.menu = ev.postback.data;
+      client.replyMessage(ev.replyToken,{
+        "type":"text",
+        "text":`${pro.displayName}さん、次のご予約はカットですね。`
+      });
+      pushDateSelector(id);
+
+    case 'cutandshampoo':
+      reservation_order.menu = ev.postback.data;
+      client.replyMessage(ev.replyToken,{
+        "type":"text",
+        "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。`
+      });
+      pushDateSelector(id);
+
+    case 'color':
+      reservation_order.menu = ev.postback.data;
+      client.replyMessage(ev.replyToken,{
+        "type":"text",
+        "text":`${pro.displayName}さん、次のご予約はカラーリングですね。`
+      });
+      pushDateSelector(id);
+
+    case 'cancel':
+      reservation_order.menu='';
+      reservation_order.date='';
+    case 'date_select':
+      reservation_order.date = ev.postback.params.date;
+      console.log('reservation_order:',reservation_order);
+      pushTimeSelector(id);
   }
+}
+
+const pushDateSelector = (id) => {
   client.pushMessage(id,{
     "type":"flex",
     "altText":"date_selector",
@@ -290,7 +325,65 @@ const handlePostbackEvent = async (ev) => {
         }
       }
     }
-  )
+  );
+}
+
+const pushTimeSelector = (id) => {
+  client.pushMessage(id,{
+    "type":"flex",
+    "altText":"date_selector",
+    "contents":
+    {
+      "type": "bubble",
+      "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "希望する時間帯を選択してください。",
+            "size": "md"
+          }
+        ]
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "separator",
+            "margin": "xs"
+          },
+          {
+            "type": "button",
+            "action": {
+              "type": "datetimepicker",
+              "label": "時間の選択",
+              "data": "time_select",
+              "mode": "time",
+              "max": "20:00",
+              "min": "09:00"
+            },
+            "position": "relative",
+            "style": "primary",
+            "margin": "lg"
+          },
+          {
+            "type": "button",
+            "action": {
+              "type": "postback",
+              "label": "キャンセル",
+              "data": "cancel"
+            },
+            "position": "relative",
+            "margin": "lg",
+            "style": "secondary"
+          }
+        ]
+      }
+    }
+  }
+  );
 }
 
 // client.replyMessage(ev.replyToken,{

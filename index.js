@@ -21,6 +21,14 @@ const connection = new Client({
 });
 connection.connect();
 
+const create_utable = {
+  text:'CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL, line_uid VARCHAR(255) NOT NULL, display_name VARCHAR(255) NOT NULL, timestamp INTEGER NOT NULL);'
+};
+connection.query(create_utable)
+  .then(()=>{
+    console.log('table users created successfully!!');
+  })
+  .catch(e=>console.error(e.stack));
 // const drop_table = {
 //   text:'DROP TABLE IF EXISTS quizzes;'
 // }
@@ -44,76 +52,66 @@ app
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
-  .post('/hook',line.middleware(config),(req,res)=>{
-    res.sendStatus(200);
-    Promise
-      .all(req.body.events.map(handleEvent))
-      .then((result)=>{
-        console.log('event proceed');
-      });
-  })
+  .post('/hook',line.middleware(config),(req,res)=> lineBot(req,res))
+  // {
+  //   res.sendStatus(200);
+  //   Promise
+  //     .all(req.body.events.map(handleEvent))
+  //     .then((result)=>{
+  //       console.log('event proceed');
+  //     });
+  // })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
-const handleEvent = (event) => {
-  console.log('handleEvent!!',event);
-  if((event.type !== 'message') && (event.type !== 'postback')){
-    return Promise.resolve(null);
+const lineBot = (req,res) => {
+  res.status(200).end();
+  const events = req.body.events;
+  const promises = [];
+  for(let i=0;i<events.length;i++){
+    const ev = events[i];
+
+    switch(ev.type){
+      case 'follow':
+        promises.push(greeting_follow(ev));
+      case 'message':
+        promises.push(handleMessageEvent(ev));
+      case 'postback':
+        promises.push(handlePostbackEvent(ev));
+    }
   }
 
-  if(event.type === 'message'){
-    if(event.message.type !== 'text'){
-      return Promise.resolve(null);
-    }
-    const id = event.source.userId;
-  let message = "";
-  const text = (event.message.type === 'text') ? event.message.text : '';
-  
-    if(text === '予約'){
-      client.replyMessage(event.replyToken,{
-        "type": "template",
-        "altText": "This is a buttons template",
-        "template": {
-            "type": "buttons",
-            "thumbnailImageUrl": "https://www.img03.ekiten.jp/image_charge2/52/6772952/list/s150_1000145_20141001102156.jpg",
-            "imageAspectRatio": "rectangle",
-            "imageSize": "cover",
-            "imageBackgroundColor": "#FFFFFF",
-            "title": "カットハウス　カテエネ",
-            "text": "選択してください",
-            "defaultAction": {
-                "type": "uri",
-                "label": "Google",
-                "uri": "http://google.co.jp"
-            },
-            "actions": [
-                {
-                  "type": "datetimepicker",
-                  "label": "予約する",
-                  "mode":"date",
-                  "data": "action=reserve"
-                },
-                {
-                  "type": "postback",
-                  "label": "キャンセル",
-                  "data": "action=cancel"
-                },
-                {
-                  "type": "uri",
-                  "label": "ホームページへ",
-                  "uri": "http://google.co.jp"
-                }
-            ]
-        }
-          })
-      }
-  }
-  
-  if(event.type === 'postback'){
-    client.replyMessage(event.replyToken,{
-      "type":"text",
-      "text":`${event.postback.params.date}ですね・・・`
-    });
-    client.pushMessage(event.source.userId,{
+  Promise
+    .all(promises)
+    .then(console.log('all promises passed @@@'));
+}
+
+const greeting_follow = async (ev) => {
+  const pro = await client.getProfile(ev.source.userId);
+  console.log('profile:',pro);
+
+  const table_insert = {
+    text:'INSERT INTO users (line_uid,display_name,timestamp) VALUES($1,$2,$3)',
+    values:[ev.source.userId,pro.displayName,ev.timestamp]
+  };
+  connection.query(table_insert)
+    .then(()=>{
+      console.log('insert successfully!!@@')
+    })
+    .catch(e=>console.error(e.stack));
+
+  return client.replyMessage(ev.replyToken,{
+    "type":"text",
+    "text":`${pro.displayName}さん、フォローありがとうございます！`
+  });
+}
+
+const handleMessageEvent = async (ev) => {
+  console.log('handleMessageEvent!!',ev);
+
+  const text = (ev.message.type === 'text') ? ev.message.text : '';
+
+  if(text === '予約'){
+    client.replyMessage(ev.replyToken,{
       "type": "template",
       "altText": "This is a buttons template",
       "template": {
@@ -128,14 +126,12 @@ const handleEvent = (event) => {
               "type": "uri",
               "label": "Google",
               "uri": "http://google.co.jp"
-          },
+            },
           "actions": [
               {
                 "type": "datetimepicker",
-                "label": "時間を選択する",
-                "mode":"time",
-                "max":"19:00",
-                "min":"10:00",
+                "label": "予約する",
+                "mode":"date",
                 "data": "action=reserve"
               },
               {
@@ -151,7 +147,57 @@ const handleEvent = (event) => {
             ]
           }
         });
+      }else{
+        return client.replyMessage(ev.replyToken,{
+          "type":"text",
+          "text":"来店予約の方は”予約”をメッセージとして送ってね"
+        });
+      }
   }
+
+const handlePostbackEvent = async (ev) => {
+  client.replyMessage(event.replyToken,{
+    "type":"text",
+    "text":`${event.postback.params.date}ですね・・・`
+  });
+  client.pushMessage(event.source.userId,{
+    "type": "template",
+    "altText": "This is a buttons template",
+    "template": {
+        "type": "buttons",
+        "thumbnailImageUrl": "https://www.img03.ekiten.jp/image_charge2/52/6772952/list/s150_1000145_20141001102156.jpg",
+        "imageAspectRatio": "rectangle",
+        "imageSize": "cover",
+        "imageBackgroundColor": "#FFFFFF",
+        "title": "カットハウス　カテエネ",
+        "text": "選択してください",
+        "defaultAction": {
+            "type": "uri",
+            "label": "Google",
+            "uri": "http://google.co.jp"
+        },
+        "actions": [
+            {
+              "type": "datetimepicker",
+              "label": "時間を選択する",
+              "mode":"time",
+              "max":"19:00",
+              "min":"10:00",
+              "data": "action=reserve"
+            },
+            {
+              "type": "postback",
+              "label": "キャンセル",
+              "data": "action=cancel"
+            },
+            {
+              "type": "uri",
+              "label": "ホームページへ",
+              "uri": "http://google.co.jp"
+            }
+          ]
+        }
+      });
 }
 
 // const handleEvent = (event) => {

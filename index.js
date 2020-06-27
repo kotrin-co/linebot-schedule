@@ -221,13 +221,76 @@ const handleMessageEvent = async (ev) => {
 
 const handlePostbackEvent = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
+  const id = ev.source.userId;
   console.log('postback event:',ev);
   if(ev.postback.data === 'cut'){
     client.replyMessage(ev.replyToken,{
       "type":"text",
       "text":`${pro.displayName}さん、次のご予約はカットですね。`
     });
+  }else if(ev.postback.data === 'cutandshampoo'){
+    client.replyMessage(ev.replyToken,{
+      "type":"text",
+      "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。`
+    });
+  }else if(ev.postback.data === 'color'){
+    client.replyMessage(ev.replyToken,{
+      "type":"text",
+      "text":`${pro.displayName}さん、次のご予約はカラーリングですね。`
+    });
   }
+  client.pushMessage(id,{
+    "type":"flex",
+    "altText":"date_selector",
+    "contents":
+      {
+        "type": "bubble",
+        "header": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": "来店希望日を選択してください。"
+            }
+          ]
+        },
+        "body": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "separator",
+              "margin": "xs"
+            },
+            {
+              "type": "button",
+              "action": {
+                "type": "datetimepicker",
+                "label": "日にちの選択",
+                "data": "date_select",
+                "mode": "date"
+              },
+              "position": "relative",
+              "style": "primary",
+              "margin": "lg"
+            },
+            {
+              "type": "button",
+              "action": {
+                "type": "postback",
+                "label": "キャンセル",
+                "data": "cancel"
+              },
+              "position": "relative",
+              "margin": "lg",
+              "style": "secondary"
+            }
+          ]
+        }
+      }
+    }
+  )
 }
 
 // client.replyMessage(ev.replyToken,{

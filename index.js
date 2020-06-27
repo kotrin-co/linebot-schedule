@@ -22,7 +22,7 @@ const connection = new Client({
 connection.connect();
 
 const create_utable = {
-  text:'CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL, line_uid VARCHAR(255) NOT NULL, display_name VARCHAR(255) NOT NULL, timestamp INTEGER NOT NULL);'
+  text:'CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL, line_uid VARCHAR(255) NOT NULL, display_name VARCHAR(255) NOT NULL, timestamp TIMESTAMP_DATA NOT NULL);'
 };
 connection.query(create_utable)
   .then(()=>{
@@ -88,10 +88,11 @@ const lineBot = (req,res) => {
 const greeting_follow = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
   console.log('profile:',pro);
+  const timeStamp = getDate(ev.timestamp);
 
   const table_insert = {
     text:'INSERT INTO users (line_uid,display_name,timestamp) VALUES($1,$2,$3)',
-    values:[ev.source.userId,pro.displayName,ev.timestamp]
+    values:[ev.source.userId,pro.displayName,timeStamp]
   };
   connection.query(table_insert)
     .then(()=>{
@@ -103,6 +104,18 @@ const greeting_follow = async (ev) => {
     "type":"text",
     "text":`${pro.displayName}さん、フォローありがとうございます！`
   });
+}
+
+const getDate = (timestamp) => {
+  const date = new Date(timestamp);
+  const y = date.getFullYear();
+  const m = ("0" + (date.getMonth()+1)).slice(-2);
+  const d = ("0" + date.getDate()).slice(-2);
+  const h = ("0" + date.getHours()).slice(-2);
+  const i = ("0" + date.getMinutes()).slice(-2);
+  const s = ("0" + date.getSeconds()).slice(-2);
+  console.log(`タイムスタンプ変換${timestamp}　→　${y}/${m}/${d} ${h}:${i}:${s}`);
+  return `${y}/${m}/${d} ${h}:${i}:${s}`;
 }
 
 const handleMessageEvent = async (ev) => {
@@ -156,11 +169,11 @@ const handleMessageEvent = async (ev) => {
   }
 
 const handlePostbackEvent = async (ev) => {
-  client.replyMessage(event.replyToken,{
+  client.replyMessage(ev.replyToken,{
     "type":"text",
-    "text":`${event.postback.params.date}ですね・・・`
+    "text":`${ev.postback.params.date}ですね・・・`
   });
-  client.pushMessage(event.source.userId,{
+  client.pushMessage(ev.source.userId,{
     "type": "template",
     "altText": "This is a buttons template",
     "template": {

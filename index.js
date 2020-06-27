@@ -89,7 +89,7 @@ const handleEvent = (event) => {
                 {
                   "type": "datetimepicker",
                   "label": "予約する",
-                  "mode":"datetime",
+                  "mode":"date",
                   "data": "action=reserve"
                 },
                 {
@@ -109,7 +109,10 @@ const handleEvent = (event) => {
   }
   
   if(event.type === 'postback'){
-
+    client.replyMessage(event.replyToken,{
+      "type":"text",
+      "text":`${event.postback.params.date}ですね・・・`
+    });
   }
 }
 

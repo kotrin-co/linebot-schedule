@@ -87,10 +87,13 @@ const lineBot = (req,res) => {
     switch(ev.type){
       case 'follow':
         promises.push(greeting_follow(ev));
+        break;
       case 'message':
         promises.push(handleMessageEvent(ev));
+        break;
       case 'postback':
         promises.push(handlePostbackEvent(ev));
+        break;
     }
   }
 
@@ -237,39 +240,35 @@ const handlePostbackEvent = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
   const id = ev.source.userId;
   console.log('postback event:',ev);
-
-  switch(ev.postback.data){
-    case 'cut':
-      reservation_order.menu = ev.postback.data;
+  
+  if(ev.postback.data === 'cut'){
+    reservation_order.menu = ev.postback.data;
       client.replyMessage(ev.replyToken,{
         "type":"text",
         "text":`${pro.displayName}さん、次のご予約はカットですね。`
       });
       pushDateSelector(id);
-
-    case 'cutandshampoo':
-      reservation_order.menu = ev.postback.data;
+  }else if(ev.postback.data === 'cutandshampoo'){
+    reservation_order.menu = ev.postback.data;
       client.replyMessage(ev.replyToken,{
         "type":"text",
         "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。`
       });
       pushDateSelector(id);
-
-    case 'color':
-      reservation_order.menu = ev.postback.data;
+  }else if(ev.postback.data === 'color'){
+    reservation_order.menu = ev.postback.data;
       client.replyMessage(ev.replyToken,{
         "type":"text",
         "text":`${pro.displayName}さん、次のご予約はカラーリングですね。`
       });
       pushDateSelector(id);
-
-    case 'cancel':
-      reservation_order.menu='';
-      reservation_order.date='';
-    case 'date_select':
-      reservation_order.date = ev.postback.params.date;
-      console.log('reservation_order:',reservation_order);
-      pushTimeSelector(id);
+  }else if(ev.postback.data === 'cancel'){
+    reservation_order.menu='';
+    reservation_order.date='';
+  }else if(ev.postback.data === 'date_select'){
+    reservation_order.date = ev.postback.params.date;
+    console.log('reservation_order:',reservation_order);
+    pushTimeSelector(id);
   }
 }
 

@@ -134,6 +134,8 @@ const handleEvent = (event) => {
                 "type": "datetimepicker",
                 "label": "時間を選択する",
                 "mode":"time",
+                "max":"19:00",
+                "min":"10:00",
                 "data": "action=reserve"
               },
               {

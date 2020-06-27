@@ -74,7 +74,7 @@ const handleEvent = (event) => {
         "altText": "This is a buttons template",
         "template": {
             "type": "buttons",
-            "thumbnailImageUrl": "https://katene.chuden.jp/campaign/kateneko/images/character_dance.png",
+            "thumbnailImageUrl": "https://www.img03.ekiten.jp/image_charge2/52/6772952/list/s150_1000145_20141001102156.jpg",
             "imageAspectRatio": "rectangle",
             "imageSize": "cover",
             "imageBackgroundColor": "#FFFFFF",
@@ -113,6 +113,42 @@ const handleEvent = (event) => {
       "type":"text",
       "text":`${event.postback.params.date}ですね・・・`
     });
+    client.replyMessage(event.replyToken,{
+      "type": "template",
+      "altText": "This is a buttons template",
+      "template": {
+          "type": "buttons",
+          "thumbnailImageUrl": "https://www.img03.ekiten.jp/image_charge2/52/6772952/list/s150_1000145_20141001102156.jpg",
+          "imageAspectRatio": "rectangle",
+          "imageSize": "cover",
+          "imageBackgroundColor": "#FFFFFF",
+          "title": "カットハウス　カテエネ",
+          "text": "選択してください",
+          "defaultAction": {
+              "type": "uri",
+              "label": "Google",
+              "uri": "http://google.co.jp"
+          },
+          "actions": [
+              {
+                "type": "datetimepicker",
+                "label": "時間を選択する",
+                "mode":"time",
+                "data": "action=reserve"
+              },
+              {
+                "type": "postback",
+                "label": "キャンセル",
+                "data": "action=cancel"
+              },
+              {
+                "type": "uri",
+                "label": "ホームページへ",
+                "uri": "http://google.co.jp"
+              }
+            ]
+          }
+        });
   }
 }
 

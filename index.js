@@ -57,10 +57,12 @@ connection.query(create_stable)
 //   .catch(e=>console.error(e.stack));
 
 const reservation_order = {
-  menu:'',
-  date:'',
-  time:''
+  menu:null,
+  date:null,
+  time:null
 };
+
+const TIMES_OF_MENU = [900,1200,1800];
 
 app
   .use(express.static(path.join(__dirname, 'public')))
@@ -244,21 +246,21 @@ const handlePostbackEvent = async (ev) => {
   console.log('postback event:',ev);
   
   if(ev.postback.data === 'cut'){
-    reservation_order.menu = ev.postback.data;
+    reservation_order.menu = 0;
       client.replyMessage(ev.replyToken,{
         "type":"text",
         "text":`${pro.displayName}さん、次のご予約はカットですね。`
       });
       pushDateSelector(id);
   }else if(ev.postback.data === 'cutandshampoo'){
-    reservation_order.menu = ev.postback.data;
+    reservation_order.menu = 1;
       client.replyMessage(ev.replyToken,{
         "type":"text",
         "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。`
       });
       pushDateSelector(id);
   }else if(ev.postback.data === 'color'){
-    reservation_order.menu = ev.postback.data;
+    reservation_order.menu = 2;
       client.replyMessage(ev.replyToken,{
         "type":"text",
         "text":`${pro.displayName}さん、次のご予約はカラーリングですね。`
@@ -272,14 +274,14 @@ const handlePostbackEvent = async (ev) => {
     pushTimeSelector(id);
   }else if(ev.postback.data === 'time_select'){
     reservation_order.time = ev.postback.params.time;
-    judgeReservation(id);
+    judgeReservation(id,pro);
   }
 }
 
 const resetReservationOrder = () => {
-  reservation_order.menu = '';
-  reservation_order.date = '';
-  reservation_order.time = '';
+  reservation_order.menu = null;
+  reservation_order.date = null;
+  reservation_order.time = null;
 }
 
 const pushDateSelector = (id) => {
@@ -395,10 +397,27 @@ const pushTimeSelector = (id) => {
   );
 }
 
-const judgeReservation = (id) => {
+const judgeReservation = (id,pro) => {
+  const startTime = reservation_order.time;
   const date = new Date(`${reservation_order.date} ${reservation_order.time}`);
   const timestamp = date.getTime()/1000;
-  console.log(`${date}:`,timestamp);
+  const endTime = new Date((timestamp + TIMES_OF_MENU[reservation_order.menu])*1000);
+  console.log(`startTime:`,startTime);
+  console.log('endTime:',endTime);
+
+  const select_query = {
+    text:'SELECT * FROM schedules WHERE date = $1',
+    values:[`${reservation_order.date}`]
+  };
+  const insert_query = {
+    text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+    values:[id,pro.displayName,reservation_order.date,]
+  }
+  connect.query(select_query)
+    .then(res=>{
+      console.log('res.rows[0]:',res.rows[0]);
+    })
+    .catch(e=>console.error(e.stack));
 }
 
 // client.replyMessage(ev.replyToken,{

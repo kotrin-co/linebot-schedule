@@ -139,41 +139,78 @@ const handleMessageEvent = async (ev) => {
 
   if(text === '予約'){
     client.replyMessage(ev.replyToken,{
-      "type": "template",
-      "altText": "This is a buttons template",
-      "template": {
-          "type": "buttons",
-          "thumbnailImageUrl": "https://www.img03.ekiten.jp/image_charge2/52/6772952/list/s150_1000145_20141001102156.jpg",
-          "imageAspectRatio": "rectangle",
-          "imageSize": "cover",
-          "imageBackgroundColor": "#FFFFFF",
-          "title": "カットハウス　カテエネ",
-          "text": "選択してください",
-          "defaultAction": {
-              "type": "uri",
-              "label": "Google",
-              "uri": "http://google.co.jp"
-            },
-          "actions": [
+      "type":"flex",
+      "altText":"FlexMessage",
+      "contents":
+        {
+          "type": "bubble",
+          "header": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
               {
-                "type": "datetimepicker",
-                "label": "予約する",
-                "mode":"date",
-                "data": "action=reserve"
-              },
-              {
-                "type": "postback",
-                "label": "キャンセル",
-                "data": "action=cancel"
-              },
-              {
-                "type": "uri",
-                "label": "ホームページへ",
-                "uri": "http://google.co.jp"
+                "type": "text",
+                "text": "メニューを選択してください。",
+                "contents": [],
+                "position": "relative",
+                "wrap": false,
+                "gravity": "center",
+                "decoration": "none",
+                "style": "normal",
+                "weight": "regular",
+                "size": "md"
               }
             ]
+          },
+          "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "カット ¥1,500",
+                  "data": "cut"
+                },
+                "style": "primary",
+                "position": "relative"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "カット＆シャンプー　¥2,000",
+                  "data": "cutandshampoo"
+                },
+                "style": "primary",
+                "margin": "md",
+                "position": "relative"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "カラー　¥3,000",
+                  "data": "color"
+                },
+                "position": "relative",
+                "margin": "md",
+                "style": "primary"
+              }
+            ]
+          },
+          "styles": {
+            "header": {
+              "separator": true,
+              "separatorColor": "#000000"
+            },
+            "footer": {
+              "separator": true
+            }
           }
-        });
+        }
+      })
       }else{
         return client.replyMessage(ev.replyToken,{
           "type":"text",
@@ -226,6 +263,45 @@ const handlePostbackEvent = async (ev) => {
         }
       });
 }
+
+// client.replyMessage(ev.replyToken,{
+  //   "type": "template",
+  //   "altText": "This is a buttons template",
+  //   "template": {
+  //       "type": "buttons",
+  //       "thumbnailImageUrl": "https://www.img03.ekiten.jp/image_charge2/52/6772952/list/s150_1000145_20141001102156.jpg",
+  //       "imageAspectRatio": "rectangle",
+  //       "imageSize": "cover",
+  //       "imageBackgroundColor": "#FFFFFF",
+  //       "title": "カットハウス　カテエネ",
+  //       "text": "選択してください",
+  //       "defaultAction": {
+  //           "type": "uri",
+  //           "label": "Google",
+  //           "uri": "http://google.co.jp"
+  //         },
+  //       "actions": [
+  //           {
+  //             "type": "datetimepicker",
+  //             "label": "予約する",
+  //             "mode":"date",
+  //             "data": "action=reserve"
+  //           },
+  //           {
+  //             "type": "postback",
+  //             "label": "キャンセル",
+  //             "data": "action=cancel"
+  //           },
+  //           {
+  //             "type": "uri",
+  //             "label": "ホームページへ",
+  //             "uri": "http://google.co.jp"
+  //           }
+  //         ]
+  //       }
+  //     });
+
+
 
 // const handleEvent = (event) => {
 //   console.log('handleEvent @@@:',event);

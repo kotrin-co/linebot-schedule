@@ -113,7 +113,7 @@ const handleEvent = (event) => {
       "type":"text",
       "text":`${event.postback.params.date}ですね・・・`
     });
-    client.replyMessage(event.replyToken,{
+    client.pushMessage(event.source.userId,{
       "type": "template",
       "altText": "This is a buttons template",
       "template": {

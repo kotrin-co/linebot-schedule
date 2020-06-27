@@ -92,7 +92,7 @@ const greeting_follow = async (ev) => {
   const timeStamp = getDate(ev.timestamp);
 
   const user_check = {
-    text:`SELECT id FROM users WHERE line_uid=${ev.source.userId};`
+    text:`SELECT * FROM users WHERE line_uid='${ev.source.userId}';`
   }
   connection.query(user_check)
     .then(res=>{

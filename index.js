@@ -403,9 +403,12 @@ const pushTimeSelector = (id) => {
           {
             "type": "button",
             "action": {
-              "type": "postback",
+              "type": "datetimepicker",
               "label": "希望時間を選択する",
-              "data": "time_select"
+              "data": "time_select",
+              "mode": "time",
+              "max": "20:00",
+              "min": "09:00"
             },
             "margin": "md",
             "style": "primary"

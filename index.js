@@ -484,15 +484,15 @@ const makeOptions = (id,pro) => {
     .then(res=>{
       console.log('res.rows:',res.rows);
       if(res.rows){
-        let check = 0;
-        if(requestPoint<param.endtime && requestPoint>param.starttime){
-          check = 1;
-          const l1 = requestEndPoint - param.starttime;
-          const l2 = param.endtime - requestPoint;
-        }
-        // const check = res.rows.some(param=>{
-        //   return ((requestPoint<param.endtime && requestPoint>param.starttime) || (param.starttime>requestPoint && param.endtime<requestEndPoint) || (param.starttime<requestEndPoint && param.endtime>requestEndPoint) || (param.starttime<requestPoint && param.endtime>requestEndPoint));
-        // });
+        // let check = 0;
+        // if(requestPoint<param.endtime && requestPoint>param.starttime){
+        //   check = 1;
+        //   const l1 = requestEndPoint - param.starttime;
+        //   const l2 = param.endtime - requestPoint;
+        // }
+        const check = res.rows.some(param=>{
+          return ((requestPoint<param.endtime && requestPoint>param.starttime) || (param.starttime>requestPoint && param.endtime<requestEndPoint) || (param.starttime<requestEndPoint && param.endtime>requestEndPoint) || (param.starttime<requestPoint && param.endtime>requestEndPoint));
+        });
         if(check){
           client.pushMessage(id,{
             "type":"text",

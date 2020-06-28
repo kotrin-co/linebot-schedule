@@ -459,7 +459,7 @@ const makeOptions = (id,pro) => {
       console.log('res.rows:',res.rows);
       if(res.rows){
         const check = res.rows.some(param=>{
-          return (((requestPoint>=param.starttime) && (requestPoint<=param.endtime)) && ((requestEndPoint>=param.starttime) && (requestEndPoint<=param.endtime)))
+          return ((requestPoint<param.endtime && requestPoint>param.starttime) || (param.starttime>requestPoint && param.endtime<requestEndPoint) || (param.starttime<requestEndPoint && param.endtime>requestEndPoint) || (param.starttime<requestPoint && param.endtime>requestEndPoint));
         });
         if(check){
           client.pushMessage(id,{

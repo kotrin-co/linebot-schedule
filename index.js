@@ -428,12 +428,14 @@ const judgeReservation = (id,pro) => {
   connection.query(select_query)
     .then(res=>{
       console.log('res.rows[0]:',res.rows[0]);
-      if(!res.rows[0]){
-        connection.query(insert_query)
-          .then(res=>{
-            console.log('res.rows[0]:',res.rows[0]);
-          })
-          .catch(e=>console.error(e.stack));
+      if(res.rows[0]){
+        if(endTimestamp<res.rows[0].starttime || startTimestamp>res.rows[0].endtime){
+          connection.query(insert_query)
+            .then(res=>{
+              console.log('res.rows[0]:',res.rows[0]);
+            })
+            .catch(e=>console.error(e.stack));
+        }
       }
     })
     .catch(e=>console.error(e.stack));

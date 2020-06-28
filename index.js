@@ -161,7 +161,7 @@ const handleMessageEvent = async (ev) => {
   const text = (ev.message.type === 'text') ? ev.message.text : '';
 
   if(text === '予約'){
-    resetReservationOrder(ev.source.userId);
+    resetReservationOrder(ev.source.userId,0);
     client.replyMessage(ev.replyToken,{
       "type":"flex",
       "altText":"FlexMessage",
@@ -270,7 +270,7 @@ const handlePostbackEvent = async (ev) => {
       });
       pushDateSelector(id);
   }else if(ev.postback.data === 'cancel'){
-    resetReservationOrder(id);
+    resetReservationOrder(id,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
     console.log('reservation_order:',reservation_order);
@@ -281,14 +281,16 @@ const handlePostbackEvent = async (ev) => {
   }
 }
 
-const resetReservationOrder = (id) => {
+const resetReservationOrder = (id,num) => {
   reservation_order.menu = null;
   reservation_order.date = null;
   reservation_order.time = null;
-  client.pushMessage(id,{
-    "type":"text",
-    "text":"キャンセルしました"
-  });
+  if(num === 1){
+    client.pushMessage(id,{
+      "type":"text",
+      "text":"キャンセルしました"
+    });
+  }
   console.log('reservation_order:',reservation_order);
 }
 
@@ -415,7 +417,7 @@ const judgeReservation = (id,pro) => {
   console.log('endTime:',endTime);
 
   const select_query = {
-    text:'SELECT * FROM schedules WHERE date = $1',
+    text:'SELECT * FROM schedules WHERE scheduledate = $1',
     values:[`${reservation_order.date}`]
   };
   const insert_query = {
@@ -425,6 +427,13 @@ const judgeReservation = (id,pro) => {
   connection.query(select_query)
     .then(res=>{
       console.log('res.rows[0]:',res.rows[0]);
+      if(!res.rows[0]){
+        connection.query(insert_query)
+          .then(res=>{
+            console.log('res.rows[0]:',res.rows[0]);
+          })
+          .catch(e=>console.error(e.stack));
+      }
     })
     .catch(e=>console.error(e.stack));
 }

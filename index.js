@@ -430,7 +430,7 @@ const judgeReservation = (id,pro) => {
       console.log('res.rows:',res.rows);
       if(res.rows){
         const check = res.rows.some(param => {
-          return ((startTimestamp<param.starttime && endTimestamp<param.endtime) || (startTimestamp>param.starttime && endTimestamp>param.endtime));
+          return ((startTimestamp<param.starttime && endTimestamp>param.starttime) || (startTimestamp<param.endtime && endTimestamp>param.endtime));
         });
         if(check){
           client.pushMessage(id,{

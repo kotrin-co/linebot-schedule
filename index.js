@@ -442,6 +442,7 @@ const makeOptions = (id,pro) => {
   const startPoint = openTime.getTime();
   const endPoint = closeTime.getTime();
   const requestPoint = requestTime.getTime();
+  const requestEndPoint = requestPoint+TIMES_OF_MENU[reservation_order.menu]*1000;
   console.log('startpoint:',startPoint);
   console.log('endpoint:',endPoint);
   console.log('requestpoint:',requestPoint);
@@ -451,14 +452,14 @@ const makeOptions = (id,pro) => {
   };
   const insert_query = {
   text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-  values:[id,pro.displayName,reservation_order.date,requestPoint,requestPoint+TIMES_OF_MENU[reservation_order.menu]*1000,MENU[reservation_order.menu]]
+  values:[id,pro.displayName,reservation_order.date,requestPoint,requestEndPoint,MENU[reservation_order.menu]]
   };
   connection.query(select_query)
     .then(res=>{
       console.log('res.rows:',res.rows);
       if(res.rows){
         const check = res.rows.some(param=>{
-          return ((requestPoint>=param.starttime) && (requestPoint<=param.endtime))
+          return (((requestPoint>=param.starttime) && (requestPoint<=param.endtime)) && ((requestEndPoint>=param.starttime) && (requestEndPoint<=param.endtime)))
         });
         if(check){
           client.pushMessage(id,{

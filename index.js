@@ -442,17 +442,18 @@ const makeOptions = (id,pro) => {
   connection.query(select_query)
     .then(res=>{
       console.log('res.rows:',res.rows);
+      const s_array = [];
+      const e_array = [];
       if(res.rows){
-        for(let i=0;i<res.rows.length;i++){
-          console.log('starttime:',get_Date(res.rows[i].starttime));
-        }
+        res.rows.forEach(param=>{
+          s_array.push(param.starttime);
+          e_array.push(param.endtime);
+        });
+        console.log(s_array);
+        console.log(e_array);
       }
     })
     .catch(e=>{console.error(e.stack)});
-  console.log('startTimeArray:',startTimeArray);
-  console.log('endTimeArray:',endTimeArray);
-  const d = get_Date(startTimeArray[0]);
-  console.log('getDate:',d);
 }
 
 const judgeReservation = (id,pro) => {

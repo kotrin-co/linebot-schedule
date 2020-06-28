@@ -110,8 +110,7 @@ const lineBot = (req,res) => {
 const greeting_follow = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
   console.log('profile:',pro);
-  const timeArray = get_Date(ev.timestamp+32400000,0);
-  const timeStamp = `${timeArray[0]}/${timeArray[1]}/${timeArray[2]} ${timeArray[3]}:${timeArray[4]}:${timeArray[5]}`;
+  const timeStamp = get_Date(ev.timestamp+32400000,0);
 
   const user_check = {
     text:`SELECT * FROM users WHERE line_uid='${ev.source.userId}';`
@@ -447,15 +446,16 @@ const makeOptions = (id,pro) => {
   connection.query(select_query)
     .then(res=>{
       console.log('res.rows:',res.rows);
-      const s_array = [];
-      const e_array = [];
+      const reserved_array = [];
       if(res.rows){
         res.rows.forEach(param=>{
-          s_array.push(param.starttime);
-          e_array.push(param.endtime);
+          reserved_array.push({
+            start:parseInt(param.starttime),
+            end:parseInt(param.endtime)
+          });
         });
-        console.log(s_array,get_Date(parseInt(s_array[0]),1));
-        console.log(e_array,get_Date(parseInt(e_array[0]),1));
+        console.log(`${get_Date(reserved_array[0].start)} - ${get_Date(reserved_array[0].end)}`);
+        console.log(`${get_Date(reserved_array[1].start)} - ${get_Date(reserved_array[1].end)}`);
       }
     })
     .catch(e=>{console.error(e.stack)});

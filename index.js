@@ -252,32 +252,39 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.menu = 0;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":`${pro.displayName}さん、次のご予約はカットですね。`
+        "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
       });
-      pushDateSelector(id);
+      setTimeout(()=>{
+        pushDateSelector(id);
+      },1000);
   }else if(ev.postback.data === 'cutandshampoo'){
     reservation_order.menu = 1;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。`
+        "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。ご希望の日にちを選択してください。`
       });
-      pushDateSelector(id);
+      setTimeout(()=>{
+        pushDateSelector(id);
+      },1000);
   }else if(ev.postback.data === 'color'){
     reservation_order.menu = 2;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":`${pro.displayName}さん、次のご予約はカラーリングですね。`
+        "text":`${pro.displayName}さん、次のご予約はカラーリングですね。ご希望の日にちを選択してください。`
       });
-      pushDateSelector(id);
+      setTimeout(()=>{
+        pushDateSelector(id);
+      },1000);
   }else if(ev.postback.data === 'cancel'){
     resetReservationOrder(id,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
     console.log('reservation_order:',reservation_order);
     pushTimeSelector(id);
-  }else if(ev.postback.data === 'time_select'){
-    reservation_order.time = ev.postback.params.time;
-    judgeReservation(id,pro);
+  }else if((ev.postback.data === 'am') || (ev.postback.data === 'pm')){
+    reservation_order.time = ev.postback.data;
+    // judgeReservation(id,pro);
+    makeOptions(id,pro);
   }
 }
 
@@ -378,12 +385,9 @@ const pushTimeSelector = (id) => {
           {
             "type": "button",
             "action": {
-              "type": "datetimepicker",
-              "label": "時間の選択",
-              "data": "time_select",
-              "mode": "time",
-              "max": "20:00",
-              "min": "09:00"
+              "type": "postback",
+              "label": "午前中（AM）",
+              "data": "am"
             },
             "position": "relative",
             "style": "primary",
@@ -393,7 +397,18 @@ const pushTimeSelector = (id) => {
             "type": "button",
             "action": {
               "type": "postback",
-              "label": "キャンセル",
+              "label": "午後（PM）",
+              "data": "pm"
+            },
+            "position": "relative",
+            "margin": "lg",
+            "style": "primary"
+          },
+          {
+            "type": "button",
+            "action": {
+              "type": "postback",
+              "label": "終了",
               "data": "cancel"
             },
             "position": "relative",
@@ -405,6 +420,32 @@ const pushTimeSelector = (id) => {
     }
   }
   );
+}
+
+const makeOptions = (id,pro) => {
+  const openTime = new Date(`${reservation_order.date} 09:00`);
+  const closeTime = new Date(`${reservation_order.date} 20:00`);
+  const startPoint = openTime.getTime();
+  const endPoint = closeTime.getTime();
+  console.log(openTime);
+  console.log(closeTime);
+  console.log(startPoint);
+  console.log(endPoint);
+  const select_query = {
+    text:'SELECT * FROM schedules WHERE scheduledate = $1',
+    values:[`${reservation_order.date}`]
+  };
+  connection.query(select_query)
+    .then(res=>{
+      console.log('res.rows:',res.rows);
+      if(res.rows){
+        res.rows.forEach(param=>{
+          console.log('starttime:',getDate(param.starttime));
+          console.log('endtime:',getDate(param.endtime));
+        });
+      }
+    })
+    .catch(e=>{console.error(e.stack)});
 }
 
 const judgeReservation = (id,pro) => {

@@ -427,7 +427,7 @@ const judgeReservation = (id,pro) => {
   }
   connection.query(select_query)
     .then(res=>{
-      console.log('res.rows[0]:',res.rows[0]);
+      console.log('res.rows:',res.rows);
       if(res.rows[0]){
         if(endTimestamp<res.rows[0].starttime || startTimestamp>res.rows[0].endtime){
           connection.query(insert_query)

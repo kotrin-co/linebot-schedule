@@ -454,8 +454,8 @@ const makeOptions = (id,pro) => {
             end:parseInt(param.endtime)
           });
         });
-        console.log(`${get_Date(reserved_array[0].start)} - ${get_Date(reserved_array[0].end)}`);
-        console.log(`${get_Date(reserved_array[1].start)} - ${get_Date(reserved_array[1].end)}`);
+        console.log(`${get_Date(reserved_array[0].start,1)} - ${get_Date(reserved_array[0].end,1)}`);
+        console.log(`${get_Date(reserved_array[1].start,1)} - ${get_Date(reserved_array[1].end,1)}`);
       }
     })
     .catch(e=>{console.error(e.stack)});

@@ -428,11 +428,23 @@ const judgeReservation = (id,pro) => {
   connection.query(select_query)
     .then(res=>{
       console.log('res.rows:',res.rows);
-      if(res.rows[0]){
-        if(endTimestamp<res.rows[0].starttime || startTimestamp>res.rows[0].endtime){
+      if(res.rows){
+        const check = res.rows.some(param => {
+          return ((startTimestamp<param.starttime && endTimestamp<param.endtime) || (startTimestamp>param.starttime && endTimestamp>param.endtime));
+        });
+        if(check){
+          client.pushMessage(id,{
+            "type":"text",
+            "text":"予約の重複がありましたので、予約できません。もう一度リクエストお願いします。"
+          });
+        }else{
           connection.query(insert_query)
             .then(res=>{
-              console.log('res.rows[0]:',res.rows[0]);
+              console.log('res:',res);
+              client.pushMessage(id,{
+                "type":"text",
+                "text":"予約が完了しました。"
+              });
             })
             .catch(e=>console.error(e.stack));
         }

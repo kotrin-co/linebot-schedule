@@ -443,10 +443,9 @@ const makeOptions = (id,pro) => {
     .then(res=>{
       console.log('res.rows:',res.rows);
       if(res.rows){
-        res.rows.forEach(param=>{
-          console.log('param:',param);
-          console.log('starttime:',get_Date(param.starttime));
-        });
+        for(let i=0;i<res.rows.length;i++){
+          console.log('starttime:',get_Date(res.rows[i].starttime));
+        }
       }
     })
     .catch(e=>{console.error(e.stack)});

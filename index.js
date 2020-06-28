@@ -444,8 +444,8 @@ const makeOptions = (id,pro) => {
       console.log('res.rows:',res.rows);
       if(res.rows){
         res.rows.forEach(param=>{
-          startTimeArray.push(param.starttime);
-          endTimeArray.push(param.endtime);
+          console.log('param:',param);
+          console.log('starttime',param.starttime);
         });
       }
     })

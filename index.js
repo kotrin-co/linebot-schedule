@@ -429,6 +429,8 @@ const makeOptions = (id,pro) => {
   const closeTime = new Date(`${reservation_order.date} 20:00`);
   const startPoint = openTime.getTime();
   const endPoint = closeTime.getTime();
+  const startTimeArray = [];
+  const endTimeArray = [];
   console.log(openTime);
   console.log(closeTime);
   console.log(startPoint);
@@ -442,12 +444,16 @@ const makeOptions = (id,pro) => {
       console.log('res.rows:',res.rows);
       if(res.rows){
         res.rows.forEach(param=>{
-          console.log('starttime:',getDate(param.starttime));
-          console.log('endtime:',getDate(param.endtime));
+          startTimeArray.push(param.starttime);
+          endTimeArray.push(param.endtime);
         });
       }
     })
     .catch(e=>{console.error(e.stack)});
+  console.log('startTimeArray:',startTimeArray);
+  console.log('endTimeArray:',endTimeArray);
+  const d = getDate(startTimeArray[0]);
+  console.log('getDate:',d);
 }
 
 const judgeReservation = (id,pro) => {

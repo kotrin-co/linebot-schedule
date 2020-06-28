@@ -110,7 +110,7 @@ const lineBot = (req,res) => {
 const greeting_follow = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
   console.log('profile:',pro);
-  const timeArray = getDate(ev.timestamp+32400000);
+  const timeArray = get_Date(ev.timestamp+32400000);
   const timeStamp = `${timeArray[0]}/${timeArray[1]}/${timeArray[2]} ${timeArray[3]}:${timeArray[4]}:${timeArray[5]}`;
 
   const user_check = {
@@ -142,7 +142,7 @@ const greeting_follow = async (ev) => {
     .catch(e=>console.error(e.stack));
 }
 
-const getDate = (timestamp) => {
+const get_Date = (timestamp) => {
   const date = new Date(timestamp);
   console.log('date:',date);
   const y = date.getFullYear();
@@ -445,14 +445,14 @@ const makeOptions = (id,pro) => {
       if(res.rows){
         res.rows.forEach(param=>{
           console.log('param:',param);
-          console.log('starttime',param.starttime);
+          console.log('starttime:',get_Date(param.starttime));
         });
       }
     })
     .catch(e=>{console.error(e.stack)});
   console.log('startTimeArray:',startTimeArray);
   console.log('endTimeArray:',endTimeArray);
-  const d = getDate(startTimeArray[0]);
+  const d = get_Date(startTimeArray[0]);
   console.log('getDate:',d);
 }
 
@@ -461,7 +461,7 @@ const judgeReservation = (id,pro) => {
   const date = new Date(`${reservation_order.date} ${reservation_order.time}`);
   const startTimestamp = date.getTime();
   const endTimestamp = startTimestamp + TIMES_OF_MENU[reservation_order.menu]*1000
-  const endTimeArray = getDate(endTimestamp);
+  const endTimeArray = get_Date(endTimestamp);
   const endTime = `${endTimeArray[3]}:${endTimeArray[4]}`;
   console.log(`startTime:`,startTime);
   console.log('endTime:',endTime);

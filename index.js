@@ -286,8 +286,8 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.date = ev.postback.params.date;
     console.log('reservation_order:',reservation_order);
     pushTimeSelector(id);
-  }else if((ev.postback.data === 'am') || (ev.postback.data === 'pm')){
-    reservation_order.time = ev.postback.data;
+  }else if(ev.postback.data === 'time_select'){
+    reservation_order.time = ev.postback.params.time;
     // judgeReservation(id,pro);
     makeOptions(id,pro);
   }
@@ -374,8 +374,24 @@ const pushTimeSelector = (id) => {
         "contents": [
           {
             "type": "text",
+            "text": `${reservation_order.date}`,
+            "size": "xl",
+            "weight": "bold",
+            "position": "relative",
+            "align": "center"
+          }
+        ]
+      },
+      "hero": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
             "text": "希望する時間帯を選択してください。",
-            "size": "md"
+            "margin": "md",
+            "size": "md",
+            "align": "center"
           }
         ]
       },
@@ -390,24 +406,16 @@ const pushTimeSelector = (id) => {
           {
             "type": "button",
             "action": {
-              "type": "postback",
-              "label": "午前中（AM）",
-              "data": "am"
+              "type": "datetimepicker",
+              "label": "希望時間を選択する",
+              "data": "time_select",
+              "mode": "time",
+              "max": "20:00",
+              "min": "09:00"
             },
             "position": "relative",
             "style": "primary",
             "margin": "lg"
-          },
-          {
-            "type": "button",
-            "action": {
-              "type": "postback",
-              "label": "午後（PM）",
-              "data": "pm"
-            },
-            "position": "relative",
-            "margin": "lg",
-            "style": "primary"
           },
           {
             "type": "button",
@@ -429,80 +437,92 @@ const pushTimeSelector = (id) => {
 
 const makeOptions = (id,pro) => {
   const openTime = new Date(`${reservation_order.date} 09:00`);
-  const noonTime = new Date(`${reservation_order.date} 12:00`);
   const closeTime = new Date(`${reservation_order.date} 20:00`);
+  const requestTime = new Date(`${reservation_order.date} ${reservation_order.time}`);
   const startPoint = openTime.getTime();
   const endPoint = closeTime.getTime();
-  const startTimeArray = [];
-  const endTimeArray = [];
-  console.log(openTime);
-  console.log(closeTime);
-  console.log(startPoint);
-  console.log(endPoint);
-  const select_query = {
-    text:'SELECT * FROM schedules WHERE scheduledate = $1',
-    values:[`${reservation_order.date}`]
-  };
-  connection.query(select_query)
-    .then(res=>{
-      console.log('res.rows:',res.rows);
-      const reserved_array = [];
-      if(res.rows){
-        res.rows.forEach(param=>{
-          reserved_array.push({
-            start:parseInt(param.starttime),
-            end:parseInt(param.endtime)
-          });
-        });
-        console.log(`${get_Date(reserved_array[0].start,1)} - ${get_Date(reserved_array[0].end,1)}`);
-        console.log(`${get_Date(reserved_array[1].start,1)} - ${get_Date(reserved_array[1].end,1)}`);
-      }
-    })
-    .catch(e=>{console.error(e.stack)});
-}
-
-const judgeReservation = (id,pro) => {
-  const startTime = reservation_order.time;
-  const date = new Date(`${reservation_order.date} ${reservation_order.time}`);
-  const startTimestamp = date.getTime();
-  const endTimestamp = startTimestamp + TIMES_OF_MENU[reservation_order.menu]*1000
-  const endTimeArray = get_Date(endTimestamp);
-  const endTime = `${endTimeArray[3]}:${endTimeArray[4]}`;
-  console.log(`startTime:`,startTime);
-  console.log('endTime:',endTime);
-
+  const requestPoint = requestTime.getTime();
+  console.log('startpoint:',startPoint);
+  console.log('endpoint:',endPoint);
+  console.log('requestpoint:',requestPoint);
   const select_query = {
     text:'SELECT * FROM schedules WHERE scheduledate = $1',
     values:[`${reservation_order.date}`]
   };
   const insert_query = {
-    text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-    values:[id,pro.displayName,reservation_order.date,startTimestamp,endTimestamp,MENU[reservation_order.menu]]
-  }
+  text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+  values:[id,pro.displayName,reservation_order.date,startPoint,endPoint,MENU[reservation_order.menu]]
+  };
   connection.query(select_query)
     .then(res=>{
       console.log('res.rows:',res.rows);
       if(res.rows){
-        const check = res.rows.some(param => {
-          return ((startTimestamp<param.starttime && endTimestamp>param.starttime) || (startTimestamp<param.endtime && endTimestamp>param.endtime));
+        const check = res.rows.some(param=>{
+          return ((requestPoint>=param.stattime) && (requestPoint<=param.endtime))
         });
         if(check){
           client.pushMessage(id,{
             "type":"text",
-            "text":"予約の重複がありましたので、予約できません。もう一度リクエストお願いします。"
+            "text":"希望時間に予約重複がありました。再度試してみてください。"
           });
         }else{
           connection.query(insert_query)
             .then(res=>{
-              console.log('res:',res);
+              console.log('res.rows[0] insert:',res.rows[0])
               client.pushMessage(id,{
                 "type":"text",
-                "text":"予約が完了しました。"
+                "text":"予約しました。ご予約ありがとうございます。"
               });
             })
             .catch(e=>console.error(e.stack));
         }
       }
     })
-    .catch(e=>console.error(e.stack));
+    .catch(e=>{console.error(e.stack)});
 }
+
+// const judgeReservation = (id,pro) => {
+//   const startTime = reservation_order.time;
+//   const date = new Date(`${reservation_order.date} ${reservation_order.time}`);
+//   const startTimestamp = date.getTime();
+//   const endTimestamp = startTimestamp + TIMES_OF_MENU[reservation_order.menu]*1000
+//   const endTimeArray = get_Date(endTimestamp);
+//   const endTime = `${endTimeArray[3]}:${endTimeArray[4]}`;
+//   console.log(`startTime:`,startTime);
+//   console.log('endTime:',endTime);
+
+//   const select_query = {
+//     text:'SELECT * FROM schedules WHERE scheduledate = $1',
+//     values:[`${reservation_order.date}`]
+//   };
+//   const insert_query = {
+//     text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+//     values:[id,pro.displayName,reservation_order.date,startTimestamp,endTimestamp,MENU[reservation_order.menu]]
+//   }
+//   connection.query(select_query)
+//     .then(res=>{
+//       console.log('res.rows:',res.rows);
+//       if(res.rows){
+//         const check = res.rows.some(param => {
+//           return ((startTimestamp<param.starttime && endTimestamp>param.starttime) || (startTimestamp<param.endtime && endTimestamp>param.endtime));
+//         });
+//         if(check){
+//           client.pushMessage(id,{
+//             "type":"text",
+//             "text":"予約の重複がありましたので、予約できません。もう一度リクエストお願いします。"
+//           });
+//         }else{
+//           connection.query(insert_query)
+//             .then(res=>{
+//               console.log('res:',res);
+//               client.pushMessage(id,{
+//                 "type":"text",
+//                 "text":"予約が完了しました。"
+//               });
+//             })
+//             .catch(e=>console.error(e.stack));
+//         }
+//       }
+//     })
+//     .catch(e=>console.error(e.stack));
+// }

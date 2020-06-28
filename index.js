@@ -458,7 +458,7 @@ const makeOptions = (id,pro) => {
       console.log('res.rows:',res.rows);
       if(res.rows){
         const check = res.rows.some(param=>{
-          return ((requestPoint>=param.stattime) && (requestPoint<=param.endtime))
+          return ((requestPoint>=param.starttime) && (requestPoint<=param.endtime))
         });
         if(check){
           client.pushMessage(id,{
@@ -468,7 +468,7 @@ const makeOptions = (id,pro) => {
         }else{
           connection.query(insert_query)
             .then(res=>{
-              console.log('res.rows[0] insert:',res.rows[0])
+              console.log('res insert:',res)
               client.pushMessage(id,{
                 "type":"text",
                 "text":"予約しました。ご予約ありがとうございます。"

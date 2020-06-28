@@ -31,7 +31,7 @@ connection.query(create_utable)
   .catch(e=>console.error(e.stack));
 
 const create_stable = {
-  text:'CREATE TABLE IF NOT EXISTS schedules (id SERIAL NOT NULL, line_uid VARCHAR(255), name VARCHAR(100), scheduledate DATE, starttime TIME, endtime TIME, menu VARCHAR(50));'
+  text:'CREATE TABLE IF NOT EXISTS schedules (id SERIAL NOT NULL, line_uid VARCHAR(255), name VARCHAR(100), scheduledate DATE, starttime BIGINT, endtime BIGINT, menu VARCHAR(50));'
 }
 connection.query(create_stable)
   .then(()=>{
@@ -410,8 +410,9 @@ const pushTimeSelector = (id) => {
 const judgeReservation = (id,pro) => {
   const startTime = reservation_order.time;
   const date = new Date(`${reservation_order.date} ${reservation_order.time}`);
-  const timestamp = date.getTime();
-  const endTimeArray = getDate(timestamp+TIMES_OF_MENU[reservation_order.menu]*1000);
+  const startTimestamp = date.getTime();
+  const endTimestamp = startTimestamp + TIMES_OF_MENU[reservation_order.menu]*1000
+  const endTimeArray = getDate(endTimestamp);
   const endTime = `${endTimeArray[3]}:${endTimeArray[4]}`;
   console.log(`startTime:`,startTime);
   console.log('endTime:',endTime);
@@ -422,7 +423,7 @@ const judgeReservation = (id,pro) => {
   };
   const insert_query = {
     text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-    values:[id,pro.displayName,reservation_order.date,startTime,endTime,MENU[reservation_order.menu]]
+    values:[id,pro.displayName,reservation_order.date,startTimestamp,endTimestamp,MENU[reservation_order.menu]]
   }
   connection.query(select_query)
     .then(res=>{

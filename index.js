@@ -110,7 +110,8 @@ const lineBot = (req,res) => {
 const greeting_follow = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
   console.log('profile:',pro);
-  const timeStamp = getDate(ev.timestamp);
+  const timeArray = getDate(ev.timestamp+32400000);
+  const timeStamp = `${timeArray[0]}/${timeArray[1]}/${timeArray[2]} ${timeArray[3]}:${timeArray[4]}:${timeArray[5]}`;
 
   const user_check = {
     text:`SELECT * FROM users WHERE line_uid='${ev.source.userId}';`
@@ -142,7 +143,7 @@ const greeting_follow = async (ev) => {
 }
 
 const getDate = (timestamp) => {
-  const date = new Date(timestamp+32400000);
+  const date = new Date(timestamp);
   const y = date.getFullYear();
   const m = ("0" + (date.getMonth()+1)).slice(-2);
   const d = ("0" + date.getDate()).slice(-2);
@@ -150,7 +151,8 @@ const getDate = (timestamp) => {
   const i = ("0" + date.getMinutes()).slice(-2);
   const s = ("0" + date.getSeconds()).slice(-2);
   console.log(`タイムスタンプ変換${timestamp}　→　${y}/${m}/${d} ${h}:${i}:${s}`);
-  return `${y}/${m}/${d} ${h}:${i}:${s}`;
+  return [y,m,d,h,i,s];
+  // return `${y}/${m}/${d} ${h}:${i}:${s}`;
 }
 
 const handleMessageEvent = async (ev) => {
@@ -401,9 +403,9 @@ const pushTimeSelector = (id) => {
 const judgeReservation = (id,pro) => {
   const startTime = reservation_order.time;
   const date = new Date(`${reservation_order.date} ${reservation_order.time}`);
-  const timestamp = date.getTime()/1000;
-  const _endTime = new Date((timestamp + TIMES_OF_MENU[reservation_order.menu])*1000);
-  const endTime = _endTime.slice(11,16);
+  const timestamp = date.getTime();
+  const endTimeArray = getDate(timestamp);
+  const endTime = `${endTimeArray[3]}:${endTimeArray[4]}`;
   console.log(`startTime:`,startTime);
   console.log('endTime:',endTime);
 

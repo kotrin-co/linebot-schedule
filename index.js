@@ -144,6 +144,7 @@ const greeting_follow = async (ev) => {
 
 const getDate = (timestamp) => {
   const date = new Date(timestamp);
+  console.log('date:',date);
   const y = date.getFullYear();
   const m = ("0" + (date.getMonth()+1)).slice(-2);
   const d = ("0" + date.getDate()).slice(-2);
@@ -424,6 +425,7 @@ const pushTimeSelector = (id) => {
 
 const makeOptions = (id,pro) => {
   const openTime = new Date(`${reservation_order.date} 09:00`);
+  const noonTime = new Date(`${reservation_order.date} 12:00`);
   const closeTime = new Date(`${reservation_order.date} 20:00`);
   const startPoint = openTime.getTime();
   const endPoint = closeTime.getTime();

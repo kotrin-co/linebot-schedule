@@ -290,6 +290,8 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.time = ev.postback.params.time;
     // judgeReservation(id,pro);
     makeOptions(id,pro);
+  }else if(ev.postback.data === 'reservable_time'){
+    confirmOptions(id,pro);
   }
 }
 
@@ -377,8 +379,8 @@ const pushTimeSelector = (id) => {
             "text": `${reservation_order.date}`,
             "size": "xl",
             "weight": "bold",
-            "position": "relative",
-            "align": "center"
+            "align": "center",
+            "gravity": "center"
           }
         ]
       },
@@ -389,7 +391,6 @@ const pushTimeSelector = (id) => {
           {
             "type": "text",
             "text": "希望する時間帯を選択してください。",
-            "margin": "md",
             "size": "md",
             "align": "center"
           }
@@ -400,22 +401,24 @@ const pushTimeSelector = (id) => {
         "layout": "vertical",
         "contents": [
           {
-            "type": "separator",
-            "margin": "xs"
+            "type": "button",
+            "action": {
+              "type": "postback",
+              "label": "希望時間を選択する",
+              "data": "time_select"
+            },
+            "margin": "md",
+            "style": "primary"
           },
           {
             "type": "button",
             "action": {
-              "type": "datetimepicker",
-              "label": "希望時間を選択する",
-              "data": "time_select",
-              "mode": "time",
-              "max": "20:00",
-              "min": "09:00"
+              "type": "postback",
+              "label": "予約可能時間帯の確認",
+              "data": "reservable_time"
             },
-            "position": "relative",
-            "style": "primary",
-            "margin": "lg"
+            "margin": "md",
+            "style": "primary"
           },
           {
             "type": "button",
@@ -424,8 +427,7 @@ const pushTimeSelector = (id) => {
               "label": "終了",
               "data": "cancel"
             },
-            "position": "relative",
-            "margin": "lg",
+            "margin": "md",
             "style": "secondary"
           }
         ]
@@ -433,6 +435,27 @@ const pushTimeSelector = (id) => {
     }
   }
   );
+}
+
+const confirmOptions = (id,pro) => {
+  const select_query = {
+    text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
+    values:[`${reservation_order.date}`]
+  };
+  connection.query(select_query)
+    .then(res=>{
+      if(res.rows){
+        let reserved_time = '';
+        res.rows.forEach(param=>{
+          reserved_time += `${get_Date(parseInt(param.starttime),1)} - ${get_Date(parseInt(param.endtime),1)}, `
+        });
+        client.pushMessage(id,{
+          "type":"text",
+          "text":reserved_time
+        });
+      }
+    })
+    .catch(e=>console.log(e.stack));
 }
 
 const makeOptions = (id,pro) => {
@@ -458,9 +481,15 @@ const makeOptions = (id,pro) => {
     .then(res=>{
       console.log('res.rows:',res.rows);
       if(res.rows){
-        const check = res.rows.some(param=>{
-          return ((requestPoint<param.endtime && requestPoint>param.starttime) || (param.starttime>requestPoint && param.endtime<requestEndPoint) || (param.starttime<requestEndPoint && param.endtime>requestEndPoint) || (param.starttime<requestPoint && param.endtime>requestEndPoint));
-        });
+        let check = 0;
+        if(requestPoint<param.endtime && requestPoint>param.starttime){
+          check = 1;
+          const l1 = requestEndPoint - param.starttime;
+          const l2 = param.endtime - requestPoint;
+        }
+        // const check = res.rows.some(param=>{
+        //   return ((requestPoint<param.endtime && requestPoint>param.starttime) || (param.starttime>requestPoint && param.endtime<requestEndPoint) || (param.starttime<requestEndPoint && param.endtime>requestEndPoint) || (param.starttime<requestPoint && param.endtime>requestEndPoint));
+        // });
         if(check){
           client.pushMessage(id,{
             "type":"text",

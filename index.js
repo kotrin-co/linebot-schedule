@@ -110,7 +110,7 @@ const lineBot = (req,res) => {
 const greeting_follow = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
   console.log('profile:',pro);
-  const timeArray = get_Date(ev.timestamp+32400000);
+  const timeArray = get_Date(ev.timestamp+32400000,0);
   const timeStamp = `${timeArray[0]}/${timeArray[1]}/${timeArray[2]} ${timeArray[3]}:${timeArray[4]}:${timeArray[5]}`;
 
   const user_check = {
@@ -142,7 +142,7 @@ const greeting_follow = async (ev) => {
     .catch(e=>console.error(e.stack));
 }
 
-const get_Date = (timestamp) => {
+const get_Date = (timestamp,mode) => {
   const date = new Date(timestamp);
   console.log('date:',date);
   const y = date.getFullYear();
@@ -152,8 +152,13 @@ const get_Date = (timestamp) => {
   const i = ("0" + date.getMinutes()).slice(-2);
   const s = ("0" + date.getSeconds()).slice(-2);
   console.log(`タイムスタンプ変換${timestamp}　→　${y}/${m}/${d} ${h}:${i}:${s}`);
-  return [y,m,d,h,i,s];
-  // return `${y}/${m}/${d} ${h}:${i}:${s}`;
+  // return [y,m,d,h,i,s];
+  if(mode === 0){
+    return `${y}/${m}/${d} ${h}:${i}:${s}`;
+  }else if(mode === 1){
+    return `${h}:${i}`;
+  }
+  
 }
 
 const handleMessageEvent = async (ev) => {
@@ -449,8 +454,8 @@ const makeOptions = (id,pro) => {
           s_array.push(param.starttime);
           e_array.push(param.endtime);
         });
-        console.log(s_array);
-        console.log(e_array);
+        console.log(s_array,get_Date(s_array[0],1));
+        console.log(e_array,get_Date(e_array[0],1));
       }
     })
     .catch(e=>{console.error(e.stack)});

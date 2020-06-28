@@ -161,7 +161,7 @@ const handleMessageEvent = async (ev) => {
   const text = (ev.message.type === 'text') ? ev.message.text : '';
 
   if(text === '予約'){
-    resetReservationOrder();
+    resetReservationOrder(ev.source.userId);
     client.replyMessage(ev.replyToken,{
       "type":"flex",
       "altText":"FlexMessage",
@@ -270,7 +270,7 @@ const handlePostbackEvent = async (ev) => {
       });
       pushDateSelector(id);
   }else if(ev.postback.data === 'cancel'){
-    resetReservationOrder();
+    resetReservationOrder(id);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
     console.log('reservation_order:',reservation_order);
@@ -281,10 +281,15 @@ const handlePostbackEvent = async (ev) => {
   }
 }
 
-const resetReservationOrder = () => {
+const resetReservationOrder = (id) => {
   reservation_order.menu = null;
   reservation_order.date = null;
   reservation_order.time = null;
+  client.pushMessage(id,{
+    "type":"text",
+    "text":"キャンセルしました"
+  });
+  console.log('reservation_order:',reservation_order);
 }
 
 const pushDateSelector = (id) => {
@@ -404,7 +409,7 @@ const judgeReservation = (id,pro) => {
   const startTime = reservation_order.time;
   const date = new Date(`${reservation_order.date} ${reservation_order.time}`);
   const timestamp = date.getTime();
-  const endTimeArray = getDate(timestamp);
+  const endTimeArray = getDate(timestamp+TIMES_OF_MENU[reservation_order.menu]*1000);
   const endTime = `${endTimeArray[3]}:${endTimeArray[4]}`;
   console.log(`startTime:`,startTime);
   console.log('endTime:',endTime);

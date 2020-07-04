@@ -564,6 +564,8 @@ const judgeReservation = (id,pro,time) => {
   const endPoint = endTime.getTime();
   console.log('judgeReservation doing:',startPoint,endPoint);
   const treatmentTime = TIMES_OF_MENU[reservation_order.time];
+  console.log('typeof:',typeof startPoint);
+  console.log('typeof:',typeof treatmentTime);
   const select_query = {
     text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
     values:[`${reservation_order.date}`]

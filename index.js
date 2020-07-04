@@ -578,7 +578,7 @@ const judgeReservation = (id,pro,time) => {
         let reserved_eTimes = [];
         let proposalTime = 0;
         res.rows.forEach(param=>{
-          if(param.starttime<startPoinnt && param.endtime>startPoint){
+          if(param.starttime<startPoint && param.endtime>startPoint){
             reserved_sTimes.push(0);
             reserved_eTimes.push(param.endtime);
           }else if(param.starttime>startPoint && param.starttime<endPoint){

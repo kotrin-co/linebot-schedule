@@ -570,7 +570,7 @@ const judgeReservation = (id,pro,time) => {
   };
   connection.query(select_query)
     .then(res=>{
-      if(res.rows){
+      if(res.rows.length){
         console.log('res.rows:',res.rows);
         let reserved_sTimes = [];
         let reserved_eTimes = [];
@@ -641,6 +641,7 @@ const judgeReservation = (id,pro,time) => {
           });
         }
       }else{
+        console.log('res.rows.length判定がfalse');
         const reservedTime = get_Date(startPoint,1);
         const insert_query = {
           text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',

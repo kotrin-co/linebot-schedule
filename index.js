@@ -563,7 +563,7 @@ const judgeReservation = (id,pro,time) => {
   const endTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
   const endPoint = endTime.getTime();
   console.log('judgeReservation doing:',startPoint,endPoint);
-  const treatmentTime = TIMES_OF_MENU[reservation_order.time];
+  const treatmentTime = TIMES_OF_MENU[reservation_order.menu];
   console.log('typeof:',typeof startPoint);
   console.log('typeof:',typeof treatmentTime);
   const select_query = {

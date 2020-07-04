@@ -571,6 +571,7 @@ const judgeReservation = (id,pro,time) => {
   connection.query(select_query)
     .then(res=>{
       if(res.rows){
+        console.log('res.rows:',res.rows);
         let reserved_sTimes = [];
         let reserved_eTimes = [];
         let proposalTime = 0;

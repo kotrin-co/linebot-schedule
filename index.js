@@ -563,6 +563,7 @@ const judgeReservation = (id,pro,time) => {
   const endTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
   const endPoint = endTime.getTime();
   console.log('judgeReservation doing:',startPoint,endPoint);
+  const treatmentTime = TIMES_OF_MENU[reservation_order.time];
   const select_query = {
     text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
     values:[`${reservation_order.date}`]
@@ -570,9 +571,88 @@ const judgeReservation = (id,pro,time) => {
   connection.query(select_query)
     .then(res=>{
       if(res.rows){
+        let reserved_sTimes = [];
+        let reserved_eTimes = [];
+        let proposalTime = 0;
         res.rows.forEach(param=>{
-          console.log(param.starttime);
+          if(param.starttime<startPoinnt && param.endtime>startPoint){
+            reserved_sTimes.push(0);
+            reserved_eTimes.push(param.endtime);
+          }else if(param.starttime>startPoint && param.starttime<endPoint){
+            reserved_sTimes.push(param.starttime);
+            if(param.endtime>startPoint && param.endtime<endPoint){
+              reserved_eTimes.push(param.endtime);
+            }else{
+              reserved_eTimes.push(0);
+            }
+          }
         });
+        console.log('reservedTimes',reserved_sTimes,reserved_eTimes);
+        for(let i=0;i<reserved_sTimes.length;i++){
+          if(reserved_sTimes[0] === 0){
+            proposalTime = reserved_sTimes[i+1] - reserved_eTimes[i]>treatmentTime
+            ? reserved_eTimes[i]
+            : 0;
+          }else if(reserved_eTimes[reserved_eTimes.length] === 0){
+            if(i===0){
+              proposalTime = reserved_sTimes[i] - startPoint > treatmentTime
+              ? startPoint
+              : 0;
+            }else{
+              proposalTime = reserved_sTimes[i] - reserved_eTimes[i-1] > treatmentTime
+              ? reserved_eTimes[i-1]
+              : 0;
+            }
+          }else{
+            if(i===0){
+              proposalTime = reserved_sTimes[i] - startPoint > treatmentTime
+              ? startPoint
+              : 0;
+            }else{
+              proposalTime = reserved_sTimes[i] - reserved_eTimes[i-1] > treatmentTime
+              ? reserved_eTimes[i-1]
+              : 0;
+            }
+          }
+        }
+        if(proposalTime === 0){
+          // 後でendpoint超えた最初のstarttimeも考慮に入れる必要あり。
+          proposalTime = endPoint - reserved_eTimes[reserved_eTimes.length];
+        }
+        if(proposalTime !== 0){
+          const insert_query = {
+          text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+          values:[id,pro.displayName,reservation_order.date,proposalTime,proposalTime+treatmentTime,MENU[reservation_order.menu]]
+          };
+          connection.query(insert_query)
+            .then(res=>{
+              const reservedTime = get_Date(proposalTime,1);
+              client.pushMessage(id,{
+                "type":"text",
+                "text":`${reservedTime}に予約しました。ご予約ありがとうございます。`
+              });
+            })
+            .catch(e=>console.log(e.stack));
+        }else{
+          client.pushMessage(id,{
+            "type":"text",
+            "text":"この時間帯には空いている時間がありませんでした。別の時間帯を選択してください。"
+          });
+        }
+      }else{
+        const reservedTime = get_Date(startPoint,1);
+        const insert_query = {
+          text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+          values:[id,pro.displayName,reservation_order.date,proposalTime,proposalTime+treatmentTime,MENU[reservation_order.menu]]
+        };
+        connection.query(insert_query)
+          .then(res=>{
+            client.pushMessage(id,{
+              "type":"text",
+              "text":`${reservedTime}に予約しました。ご予約ありがとうございます。`
+            });
+          })
+          .catch(e=>console.error(e.stack));
       }
     })
     .catch(e=>console.log(e.stack));

@@ -562,10 +562,7 @@ const judgeReservation = (id,pro,time) => {
   const startPoint = startTime.getTime();
   const endTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
   const endPoint = endTime.getTime();
-  console.log('judgeReservation doing:',startPoint,endPoint);
   const treatmentTime = TIMES_OF_MENU[reservation_order.menu];
-  console.log('typeof:',typeof startPoint);
-  console.log('typeof:',typeof treatmentTime);
   const select_query = {
     text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
     values:[`${reservation_order.date}`]
@@ -578,12 +575,13 @@ const judgeReservation = (id,pro,time) => {
         let reserved_eTimes = [];
         let proposalTime = 0;
         res.rows.forEach(param=>{
-          if(param.starttime<startPoint && param.endtime>startPoint){
+          console.log('typeof:',typeof param.starttime);
+          if(param.starttime<=startPoint && param.endtime>=startPoint){
             reserved_sTimes.push(0);
             reserved_eTimes.push(param.endtime);
-          }else if(param.starttime>startPoint && param.starttime<endPoint){
+          }else if(param.starttime>=startPoint && param.starttime<=endPoint){
             reserved_sTimes.push(param.starttime);
-            if(param.endtime>startPoint && param.endtime<endPoint){
+            if(param.endtime>=startPoint && param.endtime<=endPoint){
               reserved_eTimes.push(param.endtime);
             }else{
               reserved_eTimes.push(0);

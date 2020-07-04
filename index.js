@@ -575,14 +575,13 @@ const judgeReservation = (id,pro,time) => {
         let reserved_eTimes = [];
         let proposalTime = 0;
         res.rows.forEach(param=>{
-          console.log('typeof:',typeof param.starttime);
-          if(param.starttime<=startPoint && param.endtime>=startPoint){
+          if(parseInt(param.starttime)<=startPoint && parseInt(param.endtime)>=startPoint){
             reserved_sTimes.push(0);
-            reserved_eTimes.push(param.endtime);
-          }else if(param.starttime>=startPoint && param.starttime<=endPoint){
-            reserved_sTimes.push(param.starttime);
-            if(param.endtime>=startPoint && param.endtime<=endPoint){
-              reserved_eTimes.push(param.endtime);
+            reserved_eTimes.push(parseInt(param.endtime));
+          }else if(parseInt(param.starttime)>=startPoint && parseInt(param.starttime)<=endPoint){
+            reserved_sTimes.push(parseInt(param.starttime));
+            if(param.endtime>=startPoint && parseInt(param.endtime)<=endPoint){
+              reserved_eTimes.push(parseInt(param.endtime));
             }else{
               reserved_eTimes.push(0);
             }

@@ -562,7 +562,7 @@ const judgeReservation = (id,pro,time) => {
   const startPoint = startTime.getTime();
   const endTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
   const endPoint = endTime.getTime();
-  console.log('judgeReservation doing:',startTime,endTime);
+  console.log('judgeReservation doing:',startPoint,endPoint);
   const select_query = {
     text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
     values:[`${reservation_order.date}`]

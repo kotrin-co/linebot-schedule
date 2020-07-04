@@ -645,7 +645,7 @@ const judgeReservation = (id,pro,time) => {
         const reservedTime = get_Date(startPoint,1);
         const insert_query = {
           text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-          values:[id,pro.displayName,reservation_order.date,proposalTime,proposalTime+treatmentTime,MENU[reservation_order.menu]]
+          values:[id,pro.displayName,reservation_order.date,startPoint,startPoint+treatmentTime,MENU[reservation_order.menu]]
         };
         connection.query(insert_query)
           .then(res=>{

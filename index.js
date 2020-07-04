@@ -615,6 +615,7 @@ const judgeReservation = (id,pro,time) => {
             }
           }
         }
+        console.log('proposal time:',proposalTime);
         if(proposalTime === 0){
           // 後でendpoint超えた最初のstarttimeも考慮に入れる必要あり。
           proposalTime = endPoint - reserved_eTimes[reserved_eTimes.length];

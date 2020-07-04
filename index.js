@@ -559,11 +559,13 @@ const pushTimeSelector = (id) => {
 const judgeReservation = (id,pro,time) => {
   const iTime = parseInt(time);
   const startTime = new Date(`${reservation_order.date} ${iTime}:00`);
+  const startPoint = startTime.getTime();
   const endTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
+  const endPoint = endTime.getTime();
   console.log('judgeReservation doing:',startTime,endTime);
   const select_query = {
     text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
-    value:[`${reservation_order.date}`]
+    values:[`${reservation_order.date}`]
   };
   connection.query(select_query)
     .then(res=>{

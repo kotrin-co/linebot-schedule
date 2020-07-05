@@ -618,6 +618,8 @@ const judgeReservation = (id,pro,time) => {
           }
         }else{
           console.log('ここが実行');
+          console.log('endpoint:',endPoint);
+          console.log('treatmentTime:',treatmentTime);
           if(reserved_sTimes[0] - startPoint>treatmentTime){
             console.log(reserved_sTimes[0] - startPoint>treatmentTime);
             proposalTimes.push(startPoint);
@@ -629,7 +631,6 @@ const judgeReservation = (id,pro,time) => {
             }
           }
           if(endPoint - reserved_eTimes[reserved_eTimes.length]>treatmentTime){
-            console.log(endPoint - reserved_eTimes[reserved_eTimes.length]>treatmentTime);
             proposalTimes.push(reserved_eTimes[reserved_eTimes.length]);
           }
         }

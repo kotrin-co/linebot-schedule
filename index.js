@@ -562,9 +562,23 @@ const judgeReservation = (id,pro,time) => {
   const startPoint = startTime.getTime();
   const endTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
   const endPoint = endTime.getTime();
+  const nextTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
+  const nextPoint = nextTime.getTime();
   const treatmentTime = TIMES_OF_MENU[reservation_order.menu]*1000;
   console.log('startPoint:',startPoint);
   console.log('endPoint:',endPoint);
+  
+  // iTimeより１つ次の時間帯の最初のstarttimeを抜き出す処理
+  const select_query = {
+    text:'SELECT starttime from schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
+    values:[`${reservation_order.date}`]
+  };
+  connection.query(select_query)
+  　.then(res=>{
+    console.log('res.rows starttime:',res.rows);
+    })
+    .catch(e=>console.log(e.stack));
+
   const select_query = {
     text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
     values:[`${reservation_order.date}`]
@@ -606,7 +620,7 @@ const judgeReservation = (id,pro,time) => {
               }
             }
             // 後々、ここはendpointでなく、次の時間帯のstartsTimesと比較しなくてはだめ
-            if(endPoint - reserved_eTimes[reserved_eTimes.length]>=treatmentTime){
+            if(endPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
               proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
             }
           }else if(reserved_sTimes[0] !== 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){

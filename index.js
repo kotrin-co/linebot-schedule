@@ -365,6 +365,7 @@ const pushDateSelector = (id) => {
 const checkReservableTimes = () => {
   const oneHour = 3600000;
   const timeStamps = [];
+  var filteredArray = [];
   for(let i=0;i<12;i++){
     let baseTime = new Date(`${reservation_order.date} ${9+i}:00`);
     timeStamps.push(baseTime.getTime());
@@ -378,7 +379,6 @@ const checkReservableTimes = () => {
   connection.query(select_query)
     .then(res=>{
       if(res.rows.length){
-        const filteredArray = [];
         const reservedArray = res.rows.map(object=>{
           return [parseInt(object.starttime),parseInt(object.endtime)];
         });

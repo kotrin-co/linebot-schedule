@@ -591,13 +591,13 @@ const judgeReservation = (id,pro,time) => {
         });
         console.log('reservedTimes',reserved_sTimes,reserved_eTimes);
 
-        if(reserved_sTimes === 0 && reserved_eTimes === 0){
+        if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length] === 0){
           for(let i=0;i<reserved_sTimes.length-1;i++){
             if(reserved_sTimes[i+1]-reserved_eTimes[i]>treatmentTime){
               proposalTimes.push(reserved_eTimes[i]);
             }
           }
-        }else if(reserved_sTimes === 0 && reserved_eTimes>0){
+        }else if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length] !== 0){
           for(let i=0;i<reserved_sTimes.length-1;i++){
             if(reserved_sTimes[i+1]-reserved_eTimes[i]>treatmentTime){
               proposalTimes.push(reserved_eTimes[i]);
@@ -607,7 +607,7 @@ const judgeReservation = (id,pro,time) => {
           if(endPoint - reserved_eTimes[reserved_eTimes.length]>treatmentTime){
             proposalTimes.push(reserved_eTimes[reserved_eTimes.length]);
           }
-        }else if(reserved_sTimes>0 && reserved_eTimes === 0){
+        }else if(reserved_sTimes[0] !== 0 && reserved_eTimes[reserved_eTimes.length] === 0){
           if(reserved_sTimes[0] - startPoint>treatmentTime){
             proposalTimes.push(startPoint);
           }

@@ -619,14 +619,17 @@ const judgeReservation = (id,pro,time) => {
         }else{
           console.log('ここが実行');
           if(reserved_sTimes[0] - startPoint>treatmentTime){
+            console.log(reserved_sTimes[0] - startPoint>treatmentTime);
             proposalTimes.push(startPoint);
           }
           for(let i=1;i<reserved_sTimes.length;i++){
             if(reserved_sTimes[i] - reserved_eTimes[i-1]>treatmentTime){
+              console.log(reserved_sTimes[i] - reserved_eTimes[i-1]>treatmentTime)
               proposalTimes.push(reserved_eTimes[i-1]);
             }
           }
           if(endPoint - reserved_eTimes[reserved_eTimes.length]>treatmentTime){
+            console.log(endPoint - reserved_eTimes[reserved_eTimes.length]>treatmentTime);
             proposalTimes.push(reserved_eTimes[reserved_eTimes.length]);
           }
         }

@@ -564,6 +564,7 @@ const judgeReservation = (id,pro,time) => {
   const endPoint = endTime.getTime();
   const nextTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
   const nextPoint = nextTime.getTime();
+  let nearestPoint = 0;
   const treatmentTime = TIMES_OF_MENU[reservation_order.menu]*1000;
   console.log('startPoint:',startPoint);
   console.log('endPoint:',endPoint);
@@ -575,7 +576,15 @@ const judgeReservation = (id,pro,time) => {
   };
   connection.query(select_query1)
   　.then(res=>{
-    console.log('res.rows starttime:',res.rows);
+      if(res.rows.length){
+        console.log('res.rows starttime:',res.rows);
+        const sTimeArray = res.rows.map(param=>parseInt(param.starttime));
+        console.log('sTimeArray:',sTimeArray);
+        const dFromNextPoint = sTimeArray.filter(param=>(param-nextPoint)>0);
+        console.log('dFromNextPoint:',dFromNextPoint);
+        nearestPoint = dFromNextPoint[0];
+        console.log('nearestPoint:',nearestPoint);
+      }
     })
     .catch(e=>console.log(e.stack));
 

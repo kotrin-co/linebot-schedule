@@ -596,17 +596,19 @@ const judgeReservation = (id,pro,time) => {
     .then(res=>{
       if(res.rows.length){
         console.log('res.rows:',res.rows);
-        let reserved_sTimes = [];
-        let reserved_eTimes = [];
-        let proposalTimes = [];
+        const reserved_sTimes = [];
+        const reserved_eTimes = [];
+        const proposalTimes = [];
         res.rows.forEach(param=>{
-          if(parseInt(param.starttime)<startPoint && parseInt(param.endtime)>startPoint){
+          const sTime = parseInt(param.starttime);
+          const eTime = parseInt(param.endtime);
+          if(sTime<startPoint && eTime>startPoint){
             reserved_sTimes.push(0);
-            reserved_eTimes.push(parseInt(param.endtime));
-          }else if(parseInt(param.starttime)>=startPoint && parseInt(param.starttime)<=endPoint){
-            reserved_sTimes.push(parseInt(param.starttime));
-            if(parseInt(param.endtime)>=startPoint && parseInt(param.endtime)<=endPoint){
-              reserved_eTimes.push(parseInt(param.endtime));
+            reserved_eTimes.push(eTime);
+          }else if(sTime>=startPoint && sTime<=endPoint){
+            reserved_sTimes.push(sTime);
+            if(eTime>=startPoint && eTime<=endPoint){
+              reserved_eTimes.push(eTime);
             }else{
               reserved_eTimes.push(0);
             }
@@ -622,13 +624,11 @@ const judgeReservation = (id,pro,time) => {
               }
             }
           }else if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length-1] !== 0){
-            for(let i=0;i<reserved_sTimes.length-1;i++){
-  
+            for(let i=0;i<reserved_sTimes.length-1;i++){  
               if(reserved_sTimes[i+1]-reserved_eTimes[i]>=treatmentTime){
                 proposalTimes.push(reserved_eTimes[i]);
               }
             }
-            // 後々、ここはendpointでなく、次の時間帯のstartsTimesと比較しなくてはだめ
             if(nearestPoint !== 0){
               if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
                 proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
@@ -669,7 +669,11 @@ const judgeReservation = (id,pro,time) => {
             }  
           }
         }else{
-          proposalTimes.push(startPoint);
+          let i = 0;
+          while(startPoint+treatmentTime*i<endPoint){
+            proposalTimes.push(startPoint+treatmentTime*i);
+            i++;
+          }
         }
 
         console.log('proposal time:',proposalTimes);

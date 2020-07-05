@@ -382,9 +382,9 @@ const checkReservableTimes = () => {
           return [parseInt(object.starttime),parseInt(object.endtime)];
         });
         console.log('reservedArray:',reservedArray);
-        const filteredArray = [];
+        // const filteredArray = [];
         for(let i=0;i<12;i++){
-          filteredArray = reservedArray.filter(array=>{
+          const filteredArray = reservedArray.filter(array=>{
             if((array[0]-timeStamps[i]>=0 && array[0]-timeStamps[i]<=oneHour) || 
                 array[1]-timeStamps[i]>=0 && array[1]-timeStamps[i]<=oneHour){
               return true;

@@ -633,7 +633,7 @@ const judgeReservation = (id,pro,time) => {
             }
           }
           if(endPoint - reserved_eTimes[reserved_eTimes.length-1]>treatmentTime){
-            proposalTimes.push(reserved_eTimes[reserved_eTimes.length]);
+            proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
           }
         }
 

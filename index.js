@@ -285,13 +285,8 @@ const handlePostbackEvent = async (ev) => {
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
     console.log('reservation_order:',reservation_order);
+    checkReservableTimes();
     pushTimeSelector(id);
-  }else if(ev.postback.data === 'time_select'){
-    reservation_order.time = ev.postback.params.time;
-    // judgeReservation(id,pro);
-    makeOptions(id,pro);
-  }else if(ev.postback.data === 'reservable_time'){
-    confirmOptions(id,pro);
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = ev.postback.data.slice(4,6);
     console.log('postback time proceeding! time:',time);
@@ -365,6 +360,43 @@ const pushDateSelector = (id) => {
       }
     }
   );
+}
+
+const checkReservableTimes = () => {
+  const oneHour = 3600000;
+  const timeStamps = [];
+  for(let i=0;i<12;i++){
+    let baseTime = new Date(`${reservation_order.date} ${9+i}:00`);
+    timeStamps.push(baseTime.getTime());
+  }
+  console.log('timeStamps:',timeStamps);
+
+  const select_query = {
+    text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
+    values:[`${reservation_order.date}`]
+  };
+  connection.query(select_query)
+    .then(res=>{
+      if(res.rows.length){
+        const reservedArray = res.rows.map(object=>{
+          return [parseInt(object.starttime),parseInt(object.endtime)];
+        });
+        console.log('reservedArray:',reservedArray);
+        const filteredArray = [];
+        for(let i=0;i<12;i++){
+          filteredArray = reservedArray.filter(array=>{
+            if((array[0]-timeStamps[i]>=0 && array[0]-timeStamps[i]<=oneHour) || 
+                array[1]-timeStamps[i]>=0 && array[1]-timeStamps[i]<=oneHour){
+              return true;
+            }else{
+              return false;
+            }
+          });
+          console.log('filteredArray:',filteredArray);
+        }
+      }
+    })
+    .catch(e=>console.error(e.stack));
 }
 
 const pushTimeSelector = (id) => {
@@ -555,6 +587,8 @@ const pushTimeSelector = (id) => {
   }
   );
 }
+
+const checkReservableTimes = (id,pro,time) 
 
 const judgeReservation = (id,pro,time) => {
   const iTime = parseInt(time);

@@ -12,361 +12,709 @@ const config = {
 };
 const client = new line.Client(config);
 
-const API_URL = 'https://opentdb.com/api.php?amount=10&type=multiple';
-const gameState = {
-  quizzes:[],
-  currentIndex:0,
-  numberOfCorrects:0
-};
-
 const connection = new Client({
-  user:'rlcrjkpobrvbdu',
-  host:'ec2-52-202-146-43.compute-1.amazonaws.com',
-  database:'d5vbt5iatapkp8',
-  password:'71d3ef3b6059fd8608bb05d8d4ccea813dd0d77cbd7dc13de92991279cb106e7',
+  user:'mbxilcnkpaokbm',
+  host:'ec2-34-224-229-81.compute-1.amazonaws.com',
+  database:'d813abm4ls6no1',
+  password:'dca0256369b1d647f910687e6505daec3fe664173240370730eefe5ebad1a36d',
   port:5432
 });
 connection.connect();
+
+const create_utable = {
+  text:'CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL, line_uid VARCHAR(255) NOT NULL, display_name VARCHAR(255) NOT NULL, timestamp VARCHAR(255) NOT NULL);'
+};
+connection.query(create_utable)
+  .then(()=>{
+    console.log('table users created successfully!!');
+  })
+  .catch(e=>console.error(e.stack));
+
+const create_stable = {
+  text:'CREATE TABLE IF NOT EXISTS schedules (id SERIAL NOT NULL, line_uid VARCHAR(255), name VARCHAR(100), scheduledate DATE, starttime BIGINT, endtime BIGINT, menu VARCHAR(50));'
+}
+connection.query(create_stable)
+  .then(()=>{
+    console.log('table schedules created successfully!!');
+  })
+  .catch(e=>console.error(e.stack));
+// const drop_table = {
+//   text:'DROP TABLE IF EXISTS quizzes;'
+// }
+// connection.query(drop_table)
+//   .then(()=>{
+//     console.log('table dropped successfully!');
+//   })
+//   .catch(e=>console.error(e.stack));
+
+// const create_table = {
+//   text:'CREATE TABLE IF NOT EXISTS quizzes (id SERIAL NOT NULL, question VARCHAR(255) NOT NULL, correct_answer VARCHAR(100) NOT NULL, incorrect_answer1 VARCHAR(100), incorrect_answer2 VARCHAR(100), incorrect_answer3 VARCHAR(100));'
+// }
+// connection.query(create_table)
+//   .then(()=>{
+//     console.log('table created successfully!');
+//   })
+//   .catch(e=>console.error(e.stack));
+
+const reservation_order = {
+  menu:null,
+  date:null,
+  time:null
+};
+
+const MENU = ['cut','cut&shampoo','color'];
+const TIMES_OF_MENU = [900,1200,1800];
 
 app
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
-  .post('/hook',line.middleware(config),(req,res)=>{
-    res.sendStatus(200);
-    Promise
-      .all(req.body.events.map(handleEvent))
-      .then((result)=>{
-        console.log('event proceed');
-      });
-  })
+  .post('/hook',line.middleware(config),(req,res)=> lineBot(req,res))
+  // {
+  //   res.sendStatus(200);
+  //   Promise
+  //     .all(req.body.events.map(handleEvent))
+  //     .then((result)=>{
+  //       console.log('event proceed');
+  //     });
+  // })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
-const handleEvent = (event) => {
-  console.log('handleEvent @@@:',event);
-  if((event.type !== 'message') && (event.type !== 'postback')){
-    return Promise.resolve(null);
-  }
+const lineBot = (req,res) => {
+  res.status(200).end();
+  const events = req.body.events;
+  const promises = [];
+  for(let i=0;i<events.length;i++){
+    const ev = events[i];
 
-  if(event.type === 'message'){
-    if((event.message.type !== 'text') && (event.message.type !== 'follow')){
-      return Promise.resolve(null);
-    }
-    const id = event.source.userId;
-    let message = '';
-    const text = (event.message.type === 'text') ? event.message.text : '';
-    if(text === 'クイズ'){
-      message = 'クイズしよう';
-      client.pushMessage(event.replyToken,{
-        type:'text',
-        text:message
-      });
-      console.log('quizfetch @@@');
-      quizFetcher(id);
-    }else{
-      message = text;
-      client.pushMessage(event.replyToken,{
-        type:'text',
-        text:message
-      });
+    switch(ev.type){
+      case 'follow':
+        promises.push(greeting_follow(ev));
+        break;
+      case 'message':
+        promises.push(handleMessageEvent(ev));
+        break;
+      case 'postback':
+        promises.push(handlePostbackEvent(ev));
+        break;
     }
   }
 
-  // ここからテスト
-  if(event.type === 'postback'){
-    const id = event.source.userId;
-    const data = event.postback.data;
-    judgeCorrectness(data,id);
-    // console.log('postback start',event.postback.data);
-    // const id = event.source.userId;
-    // client.pushMessage(id,{
-    //   type:'text',
-    //   text:`${event.postback.data}`
-    // });
-  }
- 
+  Promise
+    .all(promises)
+    .then(console.log('all promises passed @@@'))
+    .catch(e=>console.error(e.stack));
 }
 
-const quizFetcher = async (id) => {
-  let message = 'Now loading...';
+const greeting_follow = async (ev) => {
+  const pro = await client.getProfile(ev.source.userId);
+  console.log('profile:',pro);
+  const timeStamp = get_Date(ev.timestamp+32400000,0);
+
+  const user_check = {
+    text:`SELECT * FROM users WHERE line_uid='${ev.source.userId}';`
+  }
+  connection.query(user_check)
+    .then(res=>{
+      console.log('res:',res.rows[0]);
+      if(res.rows[0]){
+        console.log('すでに存在するユーザーです。');
+        return;
+      }else{
+        const table_insert = {
+          text:'INSERT INTO users (line_uid,display_name,timestamp) VALUES($1,$2,$3)',
+          values:[ev.source.userId,pro.displayName,timeStamp]
+        };
+        connection.query(table_insert)
+          .then(()=>{
+            console.log('insert successfully!!@@')
+          })
+          .catch(e=>console.error(e.stack));
+      
+        return client.replyMessage(ev.replyToken,{
+          "type":"text",
+          "text":`${pro.displayName}さん、フォローありがとうございます！`
+        });
+      }
+    })
+    .catch(e=>console.error(e.stack));
+}
+
+const get_Date = (timestamp,mode) => {
+  const date = new Date(timestamp);
+  console.log('date:',date);
+  const y = date.getFullYear();
+  const m = ("0" + (date.getMonth()+1)).slice(-2);
+  const d = ("0" + date.getDate()).slice(-2);
+  const h = ("0" + date.getHours()).slice(-2);
+  const i = ("0" + date.getMinutes()).slice(-2);
+  const s = ("0" + date.getSeconds()).slice(-2);
+  console.log(`タイムスタンプ変換${timestamp}　→　${y}/${m}/${d} ${h}:${i}:${s}`);
+  // return [y,m,d,h,i,s];
+  if(mode === 0){
+    return `${y}/${m}/${d} ${h}:${i}:${s}`;
+  }else if(mode === 1){
+    return `${h}:${i}`;
+  }
+  
+}
+
+const handleMessageEvent = async (ev) => {
+  console.log('handleMessageEvent!!',ev);
+
+  const text = (ev.message.type === 'text') ? ev.message.text : '';
+
+  if(text === '予約'){
+    resetReservationOrder(ev.source.userId,0);
+    client.replyMessage(ev.replyToken,{
+      "type":"flex",
+      "altText":"FlexMessage",
+      "contents":
+        {
+          "type": "bubble",
+          "header": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "text",
+                "text": "メニューを選択してください。",
+                "contents": [],
+                "position": "relative",
+                "wrap": false,
+                "gravity": "center",
+                "decoration": "none",
+                "style": "normal",
+                "weight": "regular",
+                "size": "md"
+              }
+            ]
+          },
+          "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "カット ¥1,500",
+                  "data": "cut"
+                },
+                "style": "primary",
+                "position": "relative"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "カット＆シャンプー　¥2,000",
+                  "data": "cutandshampoo"
+                },
+                "style": "primary",
+                "margin": "md",
+                "position": "relative"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "カラー　¥3,000",
+                  "data": "color"
+                },
+                "position": "relative",
+                "margin": "md",
+                "style": "primary"
+              }
+            ]
+          },
+          "styles": {
+            "header": {
+              "separator": true,
+              "separatorColor": "#000000"
+            },
+            "footer": {
+              "separator": true
+            }
+          }
+        }
+      })
+      }else{
+        return client.replyMessage(ev.replyToken,{
+          "type":"text",
+          "text":"来店予約の方は”予約”をメッセージとして送ってね"
+        });
+      }
+  }
+
+const handlePostbackEvent = async (ev) => {
+  const pro = await client.getProfile(ev.source.userId);
+  const id = ev.source.userId;
+  console.log('postback event:',ev);
+  
+  if(ev.postback.data === 'cut'){
+    reservation_order.menu = 0;
+      client.replyMessage(ev.replyToken,{
+        "type":"text",
+        "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
+      });
+      setTimeout(()=>{
+        pushDateSelector(id);
+      },1000);
+  }else if(ev.postback.data === 'cutandshampoo'){
+    reservation_order.menu = 1;
+      client.replyMessage(ev.replyToken,{
+        "type":"text",
+        "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。ご希望の日にちを選択してください。`
+      });
+      setTimeout(()=>{
+        pushDateSelector(id);
+      },1000);
+  }else if(ev.postback.data === 'color'){
+    reservation_order.menu = 2;
+      client.replyMessage(ev.replyToken,{
+        "type":"text",
+        "text":`${pro.displayName}さん、次のご予約はカラーリングですね。ご希望の日にちを選択してください。`
+      });
+      setTimeout(()=>{
+        pushDateSelector(id);
+      },1000);
+  }else if(ev.postback.data === 'cancel'){
+    resetReservationOrder(id,1);
+  }else if(ev.postback.data === 'date_select'){
+    reservation_order.date = ev.postback.params.date;
+    console.log('reservation_order:',reservation_order);
+    pushTimeSelector(id);
+  }else if(ev.postback.data === 'time_select'){
+    reservation_order.time = ev.postback.params.time;
+    // judgeReservation(id,pro);
+    makeOptions(id,pro);
+  }else if(ev.postback.data === 'reservable_time'){
+    confirmOptions(id,pro);
+  }else if(ev.postback.data.slice(0,4) === 'time'){
+    time = ev.postback.data.slice(4,6);
+    console.log('postback time proceeding! time:',time);
+    judgeReservation(id,pro,time);
+  }
+}
+
+const resetReservationOrder = (id,num) => {
+  reservation_order.menu = null;
+  reservation_order.date = null;
+  reservation_order.time = null;
+  if(num === 1){
+    client.pushMessage(id,{
+      "type":"text",
+      "text":"キャンセルしました"
+    });
+  }
+  console.log('reservation_order:',reservation_order);
+}
+
+const pushDateSelector = (id) => {
   client.pushMessage(id,{
-    type:'text',
-    text:message
-  });
-  try{
-    const response = await fetch(API_URL);
-    const data = await response.json();
-    gameState.quizzes = data.results;
-    gameState.currentIndex = 0;
-    gameState.numberOfCorrects = 0;
-    setNextQuiz(id);
-  }catch(error){
-    console.error(error.message);
-  }
-}
-
-const setNextQuiz = (id) => {
-  console.log('setNextQuiz');
-  if(gameState.currentIndex<gameState.quizzes.length){
-    const quiz = gameState.quizzes[gameState.currentIndex];
-    makeQuiz(id,quiz);
-    gameState.currentIndex++;
-  }else{
-    finishQuiz(id);
-  }
-}
-
-const makeQuiz = (id,quiz) => {
-  const answers = buildAnswers(quiz);
-  const question = unEscape(quiz.question);
-  const quizMessage = buildFlexMessage(question,answers);
-  return client.pushMessage(id,quizMessage);
-}
-
-const buildAnswers = (quiz) => {
-  const answers = {list:[quiz.correct_answer, ...quiz.incorrect_answers],
-                   correctness:[1,0,0,0]};
-  const shuffledAnswers = shuffle(answers);
-  return shuffledAnswers;
-}
-
-const shuffle = (answers) => {
-  const copiedAnswers = answers.list.slice();
-  const copiedCorrectness = answers.correctness.slice()
-  for(let i=copiedAnswers.length-1;i>=0;i--){
-    const rand = Math.floor(Math.random()*(i+1));
-    [copiedAnswers[i],copiedAnswers[rand]] = [copiedAnswers[rand],copiedAnswers[i]];
-    [copiedCorrectness[i],copiedCorrectness[rand]] = [copiedCorrectness[rand],copiedCorrectness[i]];
-  }
-  const arrangedAnswers = {
-    list:copiedAnswers,
-    correctness:copiedCorrectness
-  }
-  return arrangedAnswers;
-}
-
-const judgeCorrectness = (data,id) => {
-  if(data === '0'){
-    const promise = new Promise((resolve,reject)=>{
-      client.pushMessage(id,{
-        type:'text',
-        text:'間違ってるよーん'
-      });
-      resolve(id);
-    });
-    promise.then((id)=>{
-      setTimeout(()=>{
-        setNextQuiz(id);
-      },1000);
-    });
-  }else{
-    const promise = new Promise((resolve,reject)=>{
-      client.pushMessage(id,{
-        type:'text',
-        text:'正解！！'
-      });
-      gameState.numberOfCorrects++;
-      resolve(id);
-    });
-    promise.then((id)=>{
-      setTimeout(()=>{
-        setNextQuiz(id);
-      },1000);
-    });
-  }
-}
-
-const buildFlexMessage = (question,answers) => {
-  return {
-      "type": "flex",
-      "altText": "quizFlexMessage",
-      "contents": {
+    "type":"flex",
+    "altText":"date_selector",
+    "contents":
+      {
         "type": "bubble",
-        "body": {
+        "header": {
           "type": "box",
           "layout": "vertical",
-          "spacing": "md",
           "contents": [
             {
-              "type": "box",
-              "layout": "vertical",
-              "contents": [
-                {
-                  "type": "text",
-                  "text": `Q${gameState.currentIndex+1}`,
-                  "align": "center",
-                  "size": "xxl",
-                  "weight": "bold"
-                },
-                {
-                  "type": "text",
-                  "text": `${question}`,
-                  "wrap": true,
-                  "weight": "bold",
-                  "margin": "lg"
-                }
-              ]
-            },
-            {
-              "type": "separator"
-            },
-            {
-              "type": "box",
-              "layout": "vertical",
-              "margin": "lg",
-              "contents": [
-                {
-                  "type": "box",
-                  "layout": "baseline",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "1.",
-                      "flex": 1,
-                      "size": "lg",
-                      "weight": "bold",
-                      "color": "#666666"
-                    },
-                    {
-                      "type": "text",
-                      "text": `${unEscape(answers.list[0])}`,
-                      "wrap": true,
-                      "flex": 9
-                    }
-                  ]
-                },
-                {
-                  "type": "box",
-                  "layout": "baseline",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "2.",
-                      "flex": 1,
-                      "size": "lg",
-                      "weight": "bold",
-                      "color": "#666666"
-                    },
-                    {
-                      "type": "text",
-                      "text": `${unEscape(answers.list[1])}`,
-                      "wrap": true,
-                      "flex": 9
-                    }
-                  ]
-                },
-                {
-                  "type": "box",
-                  "layout": "baseline",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "3.",
-                      "flex": 1,
-                      "size": "lg",
-                      "weight": "bold",
-                      "color": "#666666"
-                    },
-                    {
-                      "type": "text",
-                      "text": `${unEscape(answers.list[2])}`,
-                      "wrap": true,
-                      "flex": 9
-                    }
-                  ]
-                },
-                {
-                  "type": "box",
-                  "layout": "baseline",
-                  "contents": [
-                    {
-                      "type": "text",
-                      "text": "4.",
-                      "flex": 1,
-                      "size": "lg",
-                      "weight": "bold",
-                      "color": "#666666"
-                    },
-                    {
-                      "type": "text",
-                      "text": `${unEscape(answers.list[3])}`,
-                      "wrap": true,
-                      "flex": 9
-                    }
-                  ]
-                }
-              ]
+              "type": "text",
+              "text": "来店希望日を選択してください。"
             }
           ]
         },
-        "footer": {
+        "body": {
           "type": "box",
-          "layout": "horizontal",
-          "spacing": "sm",
+          "layout": "vertical",
           "contents": [
             {
-              "type": "button",
-              "style": "primary",
-              "height": "sm",
-              "action": {
-                "type": "postback",
-                "label": "1",
-                "data":`${answers.correctness[0]}`,
-                "text": `${unEscape(answers.list[0])}`
-              }
+              "type": "separator",
+              "margin": "xs"
             },
             {
               "type": "button",
-              "style": "primary",
-              "height": "sm",
               "action": {
-                "type": "postback",
-                "label": "2",
-                "data":`${answers.correctness[1]}`,
-                "text": `${unEscape(answers.list[1])}`
-              }
+                "type": "datetimepicker",
+                "label": "日にちの選択",
+                "data": "date_select",
+                "mode": "date"
+              },
+              "position": "relative",
+              "style": "primary",
+              "margin": "lg"
             },
             {
               "type": "button",
-              "style": "primary",
-              "height": "sm",
               "action": {
                 "type": "postback",
-                "label": "3",
-                "data":`${answers.correctness[2]}`,
-                "text": `${unEscape(answers.list[2])}`
-              }
-            },
-            {
-              "type": "button",
-              "style": "primary",
-              "height": "sm",
-              "action": {
-                "type": "postback",
-                "label": "4",
-                "data":`${answers.correctness[3]}`,
-                "text": `${unEscape(answers.list[3])}`
-              }
+                "label": "キャンセル",
+                "data": "cancel"
+              },
+              "position": "relative",
+              "margin": "lg",
+              "style": "secondary"
             }
           ]
         }
       }
     }
+  );
 }
 
-const finishQuiz = (id) =>{
+const pushTimeSelector = (id) => {
   client.pushMessage(id,{
-    type:'text',
-    text:`クイズ終了です。正解数は${gameState.numberOfCorrects}/${gameState.quizzes.length}です。お疲れ様でした。`
-  });
+    "type":"flex",
+    "altText":"date_selector",
+    "contents":
+    {
+      "type": "bubble",
+      "header": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": `${reservation_order.date}`,
+            "weight": "bold",
+            "size": "lg",
+            "align": "center"
+          }
+        ]
+      },
+      "hero": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "text",
+            "text": "ご希望の時間帯を選択してください。",
+            "align": "center"
+          }
+        ]
+      },
+      "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "horizontal",
+            "contents": [
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "9時〜",
+                  "data": "time09"
+                },
+                "style": "primary",
+                "margin": "md"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "10時〜",
+                  "data": "time10"
+                },
+                "style": "primary",
+                "margin": "md"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "11時〜",
+                  "data": "time11"
+                },
+                "margin": "md",
+                "style": "primary"
+              }
+            ]
+          },
+          {
+            "type": "box",
+            "layout": "horizontal",
+            "contents": [
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "12時〜",
+                  "data": "time12"
+                },
+                "margin": "md",
+                "style": "primary"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "13時〜",
+                  "data": "time13"
+                },
+                "margin": "md",
+                "style": "primary"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "14時〜",
+                  "data": "time14"
+                },
+                "margin": "md",
+                "style": "primary"
+              }
+            ],
+            "margin": "md"
+          },
+          {
+            "type": "box",
+            "layout": "horizontal",
+            "contents": [
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "15時〜",
+                  "data": "time15"
+                },
+                "margin": "md",
+                "style": "primary"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "16時〜",
+                  "data": "time16"
+                },
+                "margin": "md",
+                "style": "primary"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "17時〜",
+                  "data": "time17"
+                },
+                "margin": "md",
+                "style": "primary"
+              }
+            ],
+            "margin": "md"
+          },
+          {
+            "type": "box",
+            "layout": "horizontal",
+            "contents": [
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "18時〜",
+                  "data": "time18"
+                },
+                "margin": "md",
+                "style": "primary"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "19時〜",
+                  "data": "time19"
+                },
+                "margin": "md",
+                "style": "primary"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "終了",
+                  "data": "cancel"
+                },
+                "margin": "md",
+                "style": "secondary"
+              }
+            ],
+            "margin": "md"
+          }
+        ]
+      }
+    }
+  }
+  );
 }
 
-const unEscape = (str) => {
-  return str
-    .replace(/&quot;/g,'"')
-    .replace(/&#039;/g,"'")
-    .replace(/&amp;/g,'&')
-    .replace(/&lt;/g,'<')
-    .replace(/&gt;/g,'>');
+const judgeReservation = (id,pro,time) => {
+  const iTime = parseInt(time);
+  const startTime = new Date(`${reservation_order.date} ${iTime}:00`);
+  const startPoint = startTime.getTime();
+  const endTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
+  const endPoint = endTime.getTime();
+  const nextTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
+  const nextPoint = nextTime.getTime();
+  const nearestPoint = 0;
+  const treatmentTime = TIMES_OF_MENU[reservation_order.menu]*1000;
+  console.log('startPoint:',startPoint);
+  console.log('endPoint:',endPoint);
+  
+  // iTimeより１つ次の時間帯の最初のstarttimeを抜き出す処理
+  const select_query1 = {
+    text:'SELECT starttime from schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
+    values:[`${reservation_order.date}`]
+  };
+  connection.query(select_query1)
+  　.then(res=>{
+      if(res.rows.length){
+        console.log('res.rows starttime:',res.rows);
+        const sTimeArray = res.rows.map(param=>parseInt(param.starttime));
+        console.log('sTimeArray:',sTimeArray);
+        const dFromNextPoint = sTimeArray.filter(param=>(param-nextPoint)>0);
+        console.log('dFromNextPoint:',dFromNextPoint);
+        nearestPoint = dFromNextPoint[0];
+        console.log('nearestPoint:',nearestPoint);
+      }
+    })
+    .catch(e=>console.log(e.stack));
+
+  const select_query2 = {
+    text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
+    values:[`${reservation_order.date}`]
+  };
+  connection.query(select_query2)
+    .then(res=>{
+      if(res.rows.length){
+        console.log('res.rows:',res.rows);
+        const reserved_sTimes = [];
+        const reserved_eTimes = [];
+        const proposalTimes = [];
+        res.rows.forEach(param=>{
+          const sTime = parseInt(param.starttime);
+          const eTime = parseInt(param.endtime);
+          if(sTime<startPoint && eTime>startPoint){
+            reserved_sTimes.push(0);
+            reserved_eTimes.push(eTime);
+          }else if(sTime>=startPoint && sTime<=endPoint){
+            reserved_sTimes.push(sTime);
+            if(eTime>=startPoint && eTime<=endPoint){
+              reserved_eTimes.push(eTime);
+            }else{
+              reserved_eTimes.push(0);
+            }
+          }
+        });
+        console.log('reservedTimes',reserved_sTimes,reserved_eTimes);
+
+        if(reserved_sTimes.length && reserved_eTimes.length){
+          if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){
+            for(let i=0;i<reserved_sTimes.length-1;i++){
+              if(reserved_sTimes[i+1]-reserved_eTimes[i]>=treatmentTime){
+                proposalTimes.push(reserved_eTimes[i]);
+              }
+            }
+          }else if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length-1] !== 0){
+            for(let i=0;i<reserved_sTimes.length-1;i++){  
+              if(reserved_sTimes[i+1]-reserved_eTimes[i]>=treatmentTime){
+                proposalTimes.push(reserved_eTimes[i]);
+              }
+            }
+            if(nearestPoint !== 0){
+              if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
+                proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
+              }
+            }else{
+              proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
+            }
+          }else if(reserved_sTimes[0] !== 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){
+            if(reserved_sTimes[0] - startPoint>=treatmentTime){
+              proposalTimes.push(startPoint);
+            }
+            for(let i=1;i<reserved_sTimes.length;i++){
+              if(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime){
+                proposalTimes.push(reserved_eTimes[i-1]);
+              }
+            }
+          }else{
+            console.log('ここが実行');
+            console.log('endpoint:',endPoint);
+            console.log('treatmentTime:',treatmentTime);
+            console.log('eTimes:',reserved_eTimes);
+            console.log('sub:',endPoint - reserved_eTimes[reserved_eTimes.length-1]);
+            if(reserved_sTimes[0] - startPoint>=treatmentTime){
+              proposalTimes.push(startPoint);
+            }
+            for(let i=1;i<reserved_sTimes.length;i++){
+              if(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime){
+                console.log(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime)
+                proposalTimes.push(reserved_eTimes[i-1]);
+              }
+            }
+            if(nearestPoint !==0){
+              if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
+                proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
+              }
+            }else{
+              proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
+            }  
+          }
+        }else{
+          let i = 0;
+          while(startPoint+treatmentTime*i<endPoint){
+            proposalTimes.push(startPoint+treatmentTime*i);
+            i++;
+          }
+        }
+
+        console.log('proposal time:',proposalTimes);
+
+        // proposalTimesからの時間選択パート
+        if(proposalTimes.length){
+          const insert_query = {
+            text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+            values:[id,pro.displayName,reservation_order.date,proposalTimes[0],proposalTimes[0]+treatmentTime,MENU[reservation_order.menu]]
+          };
+          connection.query(insert_query)
+            .then(res=>{
+              const reservedTime = get_Date(proposalTimes[0],1);
+              client.pushMessage(id,{
+                "type":"text",
+                "text":`${reservedTime}に予約しました。ご予約ありがとうございます。`
+              });
+            })
+            .catch(e=>console.error(e.stack));
+        }else{
+          client.pushMessage(id,{
+            "type":"text",
+            "text":"この時間帯には空いている時間がありませんでした。別の時間帯を選択してください。"
+          });
+        }
+      }else{
+        console.log('res.rows.length判定がfalse');
+        const reservedTime = get_Date(startPoint,1);
+        const insert_query = {
+          text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+          values:[id,pro.displayName,reservation_order.date,startPoint,startPoint+treatmentTime,MENU[reservation_order.menu]]
+        };
+        connection.query(insert_query)
+          .then(res=>{
+            client.pushMessage(id,{
+              "type":"text",
+              "text":`${reservedTime}に予約しました。ご予約ありがとうございます。`
+            });
+          })
+          .catch(e=>console.error(e.stack));
+      }
+    })
+    .catch(e=>console.log(e.stack));
 }

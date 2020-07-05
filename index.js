@@ -620,7 +620,7 @@ const judgeReservation = (id,pro,time) => {
           console.log('ここが実行');
           console.log('endpoint:',endPoint);
           console.log('treatmentTime:',treatmentTime);
-          console.log('eTimes:',reserved_eTimes[reserved_eTimes.length]);
+          console.log('eTimes:',reserved_eTimes);
           console.log('sub:',endPoint - reserved_eTimes[reserved_eTimes.length]);
           if(reserved_sTimes[0] - startPoint>treatmentTime){
             console.log(reserved_sTimes[0] - startPoint>treatmentTime);

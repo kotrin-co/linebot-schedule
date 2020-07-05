@@ -564,7 +564,7 @@ const judgeReservation = (id,pro,time) => {
   const endPoint = endTime.getTime();
   const nextTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
   const nextPoint = nextTime.getTime();
-  let nearestPoint = 0;
+  const nearestPoint = 0;
   const treatmentTime = TIMES_OF_MENU[reservation_order.menu]*1000;
   console.log('startPoint:',startPoint);
   console.log('endPoint:',endPoint);
@@ -629,7 +629,11 @@ const judgeReservation = (id,pro,time) => {
               }
             }
             // 後々、ここはendpointでなく、次の時間帯のstartsTimesと比較しなくてはだめ
-            if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
+            if(nearestPoint !== 0){
+              if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
+                proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
+              }
+            }else{
               proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
             }
           }else if(reserved_sTimes[0] !== 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){
@@ -656,9 +660,13 @@ const judgeReservation = (id,pro,time) => {
                 proposalTimes.push(reserved_eTimes[i-1]);
               }
             }
-            if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
+            if(nearestPoint !==0){
+              if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
+                proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
+              }
+            }else{
               proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
-            }
+            }  
           }
         }else{
           proposalTimes.push(startPoint);

@@ -569,21 +569,21 @@ const judgeReservation = (id,pro,time) => {
   console.log('endPoint:',endPoint);
   
   // iTimeより１つ次の時間帯の最初のstarttimeを抜き出す処理
-  const select_query = {
+  const select_query1 = {
     text:'SELECT starttime from schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
     values:[`${reservation_order.date}`]
   };
-  connection.query(select_query)
+  connection.query(select_query1)
   　.then(res=>{
     console.log('res.rows starttime:',res.rows);
     })
     .catch(e=>console.log(e.stack));
 
-  const select_query = {
+  const select_query2 = {
     text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
     values:[`${reservation_order.date}`]
   };
-  connection.query(select_query)
+  connection.query(select_query2)
     .then(res=>{
       if(res.rows.length){
         console.log('res.rows:',res.rows);

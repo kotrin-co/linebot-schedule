@@ -365,6 +365,7 @@ const pushDateSelector = (id) => {
 const checkReservableTimes = () => {
   const oneHour = 3600000;
   const timeStamps = [];
+  const filteredArray = [];
   for(let i=0;i<12;i++){
     let baseTime = new Date(`${reservation_order.date} ${9+i}:00`);
     timeStamps.push(baseTime.getTime());
@@ -384,7 +385,7 @@ const checkReservableTimes = () => {
         console.log('reservedArray:',reservedArray);
         // const filteredArray = [];
         for(let i=0;i<12;i++){
-          const filteredArray = reservedArray.filter(array=>{
+          filteredArray = reservedArray.filter(array=>{
             if((array[0]-timeStamps[i]>=0 && array[0]-timeStamps[i]<=oneHour) || 
                 array[1]-timeStamps[i]>=0 && array[1]-timeStamps[i]<=oneHour){
               return true;
@@ -392,8 +393,8 @@ const checkReservableTimes = () => {
               return false;
             }
           });
-          console.log('filteredArray:',filteredArray);
         }
+        console.log('filteredArray:',filteredArray);
       }
     })
     .catch(e=>console.error(e.stack));

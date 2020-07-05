@@ -588,8 +588,6 @@ const pushTimeSelector = (id) => {
   );
 }
 
-const checkReservableTimes = (id,pro,time) 
-
 const judgeReservation = (id,pro,time) => {
   const iTime = parseInt(time);
   const startTime = new Date(`${reservation_order.date} ${iTime}:00`);

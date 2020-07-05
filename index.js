@@ -617,6 +617,7 @@ const judgeReservation = (id,pro,time) => {
             }
           }
         }else{
+          console.log('ここが実行');
           if(reserved_sTimes[0] - startPoint>treatmentTime){
             proposalTimes.push(startPoint);
           }

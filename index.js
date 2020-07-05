@@ -591,13 +591,13 @@ const judgeReservation = (id,pro,time) => {
         });
         console.log('reservedTimes',reserved_sTimes,reserved_eTimes);
 
-        if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length] === 0){
+        if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){
           for(let i=0;i<reserved_sTimes.length-1;i++){
             if(reserved_sTimes[i+1]-reserved_eTimes[i]>treatmentTime){
               proposalTimes.push(reserved_eTimes[i]);
             }
           }
-        }else if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length] !== 0){
+        }else if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length-1] !== 0){
           for(let i=0;i<reserved_sTimes.length-1;i++){
             if(reserved_sTimes[i+1]-reserved_eTimes[i]>treatmentTime){
               proposalTimes.push(reserved_eTimes[i]);
@@ -605,9 +605,9 @@ const judgeReservation = (id,pro,time) => {
           }
           // 後々、ここはendpointでなく、次の時間帯のstartsTimesと比較しなくてはだめ
           if(endPoint - reserved_eTimes[reserved_eTimes.length]>treatmentTime){
-            proposalTimes.push(reserved_eTimes[reserved_eTimes.length]);
+            proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
           }
-        }else if(reserved_sTimes[0] !== 0 && reserved_eTimes[reserved_eTimes.length] === 0){
+        }else if(reserved_sTimes[0] !== 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){
           if(reserved_sTimes[0] - startPoint>treatmentTime){
             proposalTimes.push(startPoint);
           }
@@ -621,7 +621,7 @@ const judgeReservation = (id,pro,time) => {
           console.log('endpoint:',endPoint);
           console.log('treatmentTime:',treatmentTime);
           console.log('eTimes:',reserved_eTimes);
-          console.log('sub:',endPoint - reserved_eTimes[reserved_eTimes.length]);
+          console.log('sub:',endPoint - reserved_eTimes[reserved_eTimes.length-1]);
           if(reserved_sTimes[0] - startPoint>treatmentTime){
             console.log(reserved_sTimes[0] - startPoint>treatmentTime);
             proposalTimes.push(startPoint);
@@ -632,7 +632,7 @@ const judgeReservation = (id,pro,time) => {
               proposalTimes.push(reserved_eTimes[i-1]);
             }
           }
-          if(endPoint - reserved_eTimes[reserved_eTimes.length]>treatmentTime){
+          if(endPoint - reserved_eTimes[reserved_eTimes.length-1]>treatmentTime){
             proposalTimes.push(reserved_eTimes[reserved_eTimes.length]);
           }
         }

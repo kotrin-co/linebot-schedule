@@ -573,7 +573,7 @@ const judgeReservation = (id,pro,time) => {
         console.log('res.rows:',res.rows);
         let reserved_sTimes = [];
         let reserved_eTimes = [];
-        let proposalTime = 0;
+        let proposalTimes = [];
         res.rows.forEach(param=>{
           if(parseInt(param.starttime)<startPoint && parseInt(param.endtime)>startPoint){
             reserved_sTimes.push(0);
@@ -588,52 +588,63 @@ const judgeReservation = (id,pro,time) => {
           }
         });
         console.log('reservedTimes',reserved_sTimes,reserved_eTimes);
-        for(let i=0;i<reserved_sTimes.length;i++){
-          if(reserved_sTimes[0] === 0){
-            proposalTime = reserved_sTimes[i+1] - reserved_eTimes[i]>treatmentTime
-            ? reserved_eTimes[i]
-            : 0;
-          }else if(reserved_eTimes[reserved_eTimes.length] === 0){
-            if(i===0){
-              proposalTime = reserved_sTimes[i] - startPoint > treatmentTime
-              ? startPoint
-              : 0;
-            }else{
-              proposalTime = reserved_sTimes[i] - reserved_eTimes[i-1] > treatmentTime
-              ? reserved_eTimes[i-1]
-              : 0;
-            }
-          }else{
-            if(i===0){
-              proposalTime = reserved_sTimes[i] - startPoint > treatmentTime
-              ? startPoint
-              : 0;
-            }else{
-              proposalTime = reserved_sTimes[i] - reserved_eTimes[i-1] > treatmentTime
-              ? reserved_eTimes[i-1]
-              : 0;
+
+        if(reserved_sTimes === 0 && reserved_eTimes === 0){
+          for(let i=0;i<reserved_sTimes.length-1;i++){
+            if(reserved_sTimes[i+1]-reserved_eTimes[i]>treatmentTime){
+              proposalTimes.push(reserved_eTimes[i]);
             }
           }
+        }else if(reserved_sTimes === 0 && reserved_eTimes>0){
+          for(let i=0;i<reserved_sTimes.length-1;i++){
+            if(reserved_sTimes[i+1]-reserved_eTimes[i]>treatmentTime){
+              proposalTimes.push(reserved_eTimes[i]);
+            }
+          }
+          // 後々、ここはendpointでなく、次の時間帯のstartsTimesと比較しなくてはだめ
+          if(endPoint - reserved_eTimes[reserved_eTimes.length]>treatmentTime){
+            proposalTimes.push(reserved_eTimes[reserved_eTimes.length]);
+          }
+        }else if(reserved_sTimes>0 && reserved_eTimes === 0){
+          if(reserved_sTimes[0] - startPoint>treatmentTime){
+            proposalTimes.push(startPoint);
+          }
+          for(let i=1;i<reserved_sTimes.length;i++){
+            if(reserved_sTimes[i] - reserved_eTimes[i-1]>treatmentTime){
+              proposalTimes.push(reserved_eTimes[i-1]);
+            }
+          }
+        }else{
+          if(reserved_sTimes[0] - startPoint>treatmentTime){
+            proposalTimes.push(startPoint);
+          }
+          for(let i=1;i<reserved_sTimes.length;i++){
+            if(reserved_sTimes[i] - reserved_eTimes[i-1]>treatmentTime){
+              proposalTimes.push(reserved_eTimes[i-1]);
+            }
+          }
+          if(endPoint - reserved_eTimes[reserved_eTimes.length]>treatmentTime){
+            proposalTimes.push(reserved_eTimes[reserved_eTimes.length]);
+          }
         }
-        console.log('proposal time:',proposalTime);
-        if(proposalTime === 0){
-          // 後でendpoint超えた最初のstarttimeも考慮に入れる必要あり。
-          proposalTime = endPoint - reserved_eTimes[reserved_eTimes.length];
-        }
-        if(proposalTime !== 0){
+
+        console.log('proposal time:',proposalTimes);
+
+        // proposalTimesからの時間選択パート
+        if(proposalTimes.length){
           const insert_query = {
-          text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-          values:[id,pro.displayName,reservation_order.date,proposalTime,proposalTime+treatmentTime,MENU[reservation_order.menu]]
+            text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+            values:[id,pro.displayName,reservation_order.date,proposalTimes[0],proposalTimes[0]+treatmentTime,MENU[reservation_order.menu]]
           };
           connection.query(insert_query)
             .then(res=>{
-              const reservedTime = get_Date(proposalTime,1);
+              const reservedTime = get_Date(proposalTimes[0],1);
               client.pushMessage(id,{
                 "type":"text",
                 "text":`${reservedTime}に予約しました。ご予約ありがとうございます。`
               });
             })
-            .catch(e=>console.log(e.stack));
+            .catch(e=>console.error(e.stack));
         }else{
           client.pushMessage(id,{
             "type":"text",
@@ -659,123 +670,3 @@ const judgeReservation = (id,pro,time) => {
     })
     .catch(e=>console.log(e.stack));
 }
-
-// const confirmOptions = (id,pro) => {
-//   const select_query = {
-//     text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
-//     values:[`${reservation_order.date}`]
-//   };
-//   connection.query(select_query)
-//     .then(res=>{
-//       if(res.rows){
-//         let reserved_time = '';
-//         res.rows.forEach(param=>{
-//           reserved_time += `${get_Date(parseInt(param.starttime),1)} - ${get_Date(parseInt(param.endtime),1)}, `
-//         });
-//         client.pushMessage(id,{
-//           "type":"text",
-//           "text":reserved_time
-//         });
-//       }
-//     })
-//     .catch(e=>console.log(e.stack));
-// }
-
-// const makeOptions = (id,pro) => {
-//   const openTime = new Date(`${reservation_order.date} 09:00`);
-//   const closeTime = new Date(`${reservation_order.date} 20:00`);
-//   const requestTime = new Date(`${reservation_order.date} ${reservation_order.time}`);
-//   const startPoint = openTime.getTime();
-//   const endPoint = closeTime.getTime();
-//   const requestPoint = requestTime.getTime();
-//   const requestEndPoint = requestPoint+TIMES_OF_MENU[reservation_order.menu]*1000;
-//   console.log('startpoint:',startPoint);
-//   console.log('endpoint:',endPoint);
-//   console.log('requestpoint:',requestPoint);
-//   const select_query = {
-//     text:'SELECT * FROM schedules WHERE scheduledate = $1',
-//     values:[`${reservation_order.date}`]
-//   };
-//   const insert_query = {
-//   text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-//   values:[id,pro.displayName,reservation_order.date,requestPoint,requestEndPoint,MENU[reservation_order.menu]]
-//   };
-//   connection.query(select_query)
-//     .then(res=>{
-//       console.log('res.rows:',res.rows);
-//       if(res.rows){
-        // let check = 0;
-        // if(requestPoint<param.endtime && requestPoint>param.starttime){
-        //   check = 1;
-        //   const l1 = requestEndPoint - param.starttime;
-        //   const l2 = param.endtime - requestPoint;
-        // }
-//         const check = res.rows.some(param=>{
-//           return ((requestPoint<param.endtime && requestPoint>param.starttime) || (param.starttime>requestPoint && param.endtime<requestEndPoint) || (param.starttime<requestEndPoint && param.endtime>requestEndPoint) || (param.starttime<requestPoint && param.endtime>requestEndPoint));
-//         });
-//         if(check){
-//           client.pushMessage(id,{
-//             "type":"text",
-//             "text":"希望時間に予約重複がありました。再度試してみてください。"
-//           });
-//         }else{
-//           connection.query(insert_query)
-//             .then(res=>{
-//               console.log('res insert:',res)
-//               client.pushMessage(id,{
-//                 "type":"text",
-//                 "text":"予約しました。ご予約ありがとうございます。"
-//               });
-//             })
-//             .catch(e=>console.error(e.stack));
-//         }
-//       }
-//     })
-//     .catch(e=>{console.error(e.stack)});
-// }
-
-// const judgeReservation = (id,pro) => {
-//   const startTime = reservation_order.time;
-//   const date = new Date(`${reservation_order.date} ${reservation_order.time}`);
-//   const startTimestamp = date.getTime();
-//   const endTimestamp = startTimestamp + TIMES_OF_MENU[reservation_order.menu]*1000
-//   const endTimeArray = get_Date(endTimestamp);
-//   const endTime = `${endTimeArray[3]}:${endTimeArray[4]}`;
-//   console.log(`startTime:`,startTime);
-//   console.log('endTime:',endTime);
-
-//   const select_query = {
-//     text:'SELECT * FROM schedules WHERE scheduledate = $1',
-//     values:[`${reservation_order.date}`]
-//   };
-//   const insert_query = {
-//     text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-//     values:[id,pro.displayName,reservation_order.date,startTimestamp,endTimestamp,MENU[reservation_order.menu]]
-//   }
-//   connection.query(select_query)
-//     .then(res=>{
-//       console.log('res.rows:',res.rows);
-//       if(res.rows){
-//         const check = res.rows.some(param => {
-//           return ((startTimestamp<param.starttime && endTimestamp>param.starttime) || (startTimestamp<param.endtime && endTimestamp>param.endtime));
-//         });
-//         if(check){
-//           client.pushMessage(id,{
-//             "type":"text",
-//             "text":"予約の重複がありましたので、予約できません。もう一度リクエストお願いします。"
-//           });
-//         }else{
-//           connection.query(insert_query)
-//             .then(res=>{
-//               console.log('res:',res);
-//               client.pushMessage(id,{
-//                 "type":"text",
-//                 "text":"予約が完了しました。"
-//               });
-//             })
-//             .catch(e=>console.error(e.stack));
-//         }
-//       }
-//     })
-//     .catch(e=>console.error(e.stack));
-// }

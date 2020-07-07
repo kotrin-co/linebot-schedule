@@ -396,15 +396,14 @@ const checkReservableTimes = (treatTime) => {
           arrangedArray.push(filteredArray);
         }
         console.log('arrangedArray:',arrangedArray);
-        const offsetArray = [];
         arrangedArray.forEach((array,index)=>{
-          offsetArray[index] = array.map(element=>{
-            element.map(value=>{
-              return value - new Date(`${reservation_order.date} ${9+index}:00`).getTime()
-            });
-          });
-          console.log('offsetArray:',offsetArray);
-        });
+          reservableArray[index] = [];
+          if(index === 0){
+            if(array[0][0] - timeStamps[0] >= treatTime){
+              reservableArray[index].push(timeStamps[0]);
+            }
+          }
+        })
       }
     })
     .catch(e=>console.error(e.stack));

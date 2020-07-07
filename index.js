@@ -396,16 +396,14 @@ const checkReservableTimes = (treatTime) => {
           arrangedArray.push(filteredArray);
         }
         console.log('arrangedArray:',arrangedArray);
-        // const offsetArray = [];
+
         const offsetArray = arrangedArray.map((array,i)=>{
-          offsetArray[i] = array.map((element,j)=>{
-            offsetArray[i][j]=element.map(value=>{
+          return array.map(element=>{
+            return element.map(value=>{
               console.log('value sub:',value - new Date(`${reservation_order.date} ${9+i}:00`).getTime());
               return value - new Date(`${reservation_order.date} ${9+index}:00`).getTime()
             });
-            console.log('offsetArray:',offsetArray[i][j]);
           });
-          console.log('offsetArray:',offsetArray[i]);
         });
         console.log('offsetArray:',offsetArray);
       }

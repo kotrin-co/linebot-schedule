@@ -401,7 +401,7 @@ const checkReservableTimes = (treatTime) => {
           return array.map(element=>{
             return element.map(value=>{
               console.log('value sub:',value - new Date(`${reservation_order.date} ${9+i}:00`).getTime());
-              return value - new Date(`${reservation_order.date} ${9+index}:00`).getTime()
+              return value - new Date(`${reservation_order.date} ${9+i}:00`).getTime()
             });
           });
         });

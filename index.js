@@ -386,7 +386,7 @@ const checkReservableTimes = (treatTime) => {
         console.log('reservedArray:',reservedArray);
         for(let i=0;i<12;i++){
           const filteredArray = reservedArray.filter(array=>{
-            if((array[0]-timeStamps[i]>=0 && array[0]-timeStamps[i]<=oneHour) || 
+            if((array[0]-timeStamps[i]>0 && array[0]-timeStamps[i]<oneHour) || 
                 array[1]-timeStamps[i]>=0 && array[1]-timeStamps[i]<=oneHour){
               return true;
             }else{
@@ -406,6 +406,21 @@ const checkReservableTimes = (treatTime) => {
           });
         });
         console.log('offsetArray:',offsetArray);
+
+        const reservableArray = [];
+        offsetArray.forEach((array,i)=>{
+          array.forEach((element,j)=>{
+            if(j=0){
+              let k = 0;
+              let x = element[0];
+              while(x>=treatTime){
+                reservableArray.push(k*treatTime);
+                x -= treatTime;
+                k++;
+              }
+            }
+          })
+        })
       }
     })
     .catch(e=>console.error(e.stack));

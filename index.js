@@ -400,11 +400,13 @@ const checkReservableTimes = (treatTime) => {
         arrangedArray.forEach((array,index)=>{
           offsetArray[index] = array.map(element=>{
             element.map(value=>{
+              console.log('value sub:',value - new Date(`${reservation_order.date} ${9+index}:00`).getTime());
               return value - new Date(`${reservation_order.date} ${9+index}:00`).getTime()
             });
           });
-          console.log('offsetArray:',offsetArray);
+          console.log('offsetArray:',offsetArray[index]);
         });
+        console.log('offsetArray:',offsetArray);
       }
     })
     .catch(e=>console.error(e.stack));

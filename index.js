@@ -383,7 +383,9 @@ const checkReservableTimes = (treatTime) => {
         const reservedArray = res.rows.map(object=>{
           return [parseInt(object.starttime),parseInt(object.endtime)];
         });
-        console.log('reservedArray:',reservedArray);
+        reservedArray.forEach(array=>{
+          console.log('予約日時：',`${new Date(array[0])} - ${new Date(array[1])}`);
+        });
         for(let i=0;i<12;i++){
           const filteredArray = reservedArray.filter(array=>{
             if((array[0]-timeStamps[i]-treatTime>=0 && array[0]-timeStamps[i]-treatTime<=oneHour) || 
@@ -447,6 +449,7 @@ const checkReservableTimes = (treatTime) => {
             while(z>=treatTime){
               reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + m*treatTime);
               z -= treatTime;
+              m++;
             }
           }  
         }

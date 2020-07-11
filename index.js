@@ -894,4 +894,3 @@ const confirmReservation = (id,pro,time,i) => {
   //     }
   //   })
   //   .catch(e=>console.log(e.stack));
-}

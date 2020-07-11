@@ -467,12 +467,12 @@ const checkReservableTimes = (treatTime) => {
             reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + c);
             c+=treatTime;
           }
-          reservableArray.forEach(array=>{
-            array.forEach(value=>{
-              console.log('予約可能日時：',new Date(value));
-            });
-          });
         }
+        reservableArray.forEach(array=>{
+          array.forEach(value=>{
+            console.log('予約可能日時：',new Date(value));
+          });
+        });
       }
     })
     .catch(e=>console.error(e.stack));

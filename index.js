@@ -679,11 +679,11 @@ const pushTimeSelector = (id) => {
   );
 }
 
-const confirmReservation = (id,pro,time,i) => {
+const confirmReservation = async (id,pro,time,i) => {
   const reservableTimes = reservation_order.reservable[time];
   if(reservableTimes[i]){
     console.log('reservableTimes[i]:',reservableTimes[i]);
-    const time = get_Date(reservableTimes[i],1);
+    const time = await get_Date(reservableTimes[i],1);
     client.pushMessage(id,{
       "type":"flex",
       "altText":"question",

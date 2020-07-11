@@ -295,11 +295,23 @@ const handlePostbackEvent = async (ev) => {
     const result = ev.postback.data.split('-');
     console.log('result:',result);
     if(result[1] === 'yes'){
-      const time = get_Date(reservation_order.reservable[parseInt(result[2])][parseInt(result[3])],1)
-      client.pushMessage(id,{
-        "type":"text",
-        "text":`${time}で決定です。`
-      });
+      const s_time = reservation_order.reservable[parseInt(result[2])][parseInt(result[3])];
+      const e_time = s_time + TIMES_OF_MENU[reservation_order.menu]*1000;
+      console.log('s_time:',get_Date(s_time,1));
+      console.log('e_time:',get_Date(e_time,1));
+      const insert_query = {
+          text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+          values:[id,pro.displayName,reservation_order.date,s_time,e_time,MENU[reservation_order.menu]]
+        };
+        connection.query(insert_query)
+          .then(res=>{
+            const reservedTime = get_Date(s_time,1);
+            client.pushMessage(id,{
+              "type":"text",
+              "text":`${reservation_order.date}  ${reservedTime}に予約しました。ご予約ありがとうございます。`
+            });
+          })
+          .catch(e=>console.error(e.stack));
     }else{
       confirmReservation(id,parseInt(result[2]),parseInt(result[3])+1);
     }

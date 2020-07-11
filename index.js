@@ -285,7 +285,7 @@ const handlePostbackEvent = async (ev) => {
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
 
-    checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
+    checkReservableTimes(id,TIMES_OF_MENU[reservation_order.menu]*1000);
     
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = ev.postback.data.slice(4,6);
@@ -362,7 +362,7 @@ const pushDateSelector = (id) => {
   );
 }
 
-const checkReservableTimes = (treatTime) => {
+const checkReservableTimes = (id,treatTime) => {
   const oneHour = 3600000;
   const timeStamps = [];
   const arrangedArray = [];

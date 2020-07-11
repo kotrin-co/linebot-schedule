@@ -286,46 +286,6 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.date = ev.postback.params.date;
 
     checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
-
-    setTimeout(()=>{
-      console.log('reservation_order.reservable:',reservation_order.reservable);
-        const colorArray = [];
-        for(let i=0;i<reservation_order.reservable.length;i++){
-          if(reservation_order.reservable[i].length){
-            colorArray.push('#00AA00');
-          }else{
-            colorArray.push('#FF0000');
-          }
-        }
-        console.log('colorArray:',colorArray);
-        pushTimeSelector(id,colorArray);
-    },5000);
-
-    // let promise = new Promise((resolve,reject)=>{
-    //   const reservableArray = checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
-    //   if(reservableArray.length){
-    //     resolve(reservableArray);
-    //   }
-    // });
-    // promise.then((array)=>{
-    //   return new Promise((resolve,reject)=>{
-    //     console.log('reservableTimes:',array);
-    //     const colorArray = [];
-    //     for(let i=0;i<reservableTimes.length;i++){
-    //       if(reservableTimes[i].length){
-    //         colorArray.push('#00AA00');
-    //       }else{
-    //         colorArray.push('#FF0000');
-    //       }
-    //     }
-    //     console.log('colorArray:',colorArray);
-    //     resolve(colorArray);
-    //   })
-    // })
-    // .then((array)=>{
-    //   pushTimeSelector(id,array);
-    // })
-    // .catch(e=>console.log(e.stack));
     
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = ev.postback.data.slice(4,6);
@@ -503,11 +463,23 @@ const checkReservableTimes = (treatTime) => {
       }
       reservation_order.reservable = reservableArray;
       console.log('reservation_order.reservable:',reservation_order.reservable);
+      pushTimeSelector(id);
     })
     .catch(e=>console.error(e.stack));
 }
 
-const pushTimeSelector = (id,color) => {
+const pushTimeSelector = (id) => {
+  console.log('reservation_order.reservable:',reservation_order.reservable);
+  const color = [];
+  for(let i=0;i<reservation_order.reservable.length;i++){
+    if(reservation_order.reservable[i].length){
+      color.push('#00AA00');
+    }else{
+      color.push('#FF0000');
+    }
+  }
+  console.log('colorArray:',color);
+
   client.pushMessage(id,{
     "type":"flex",
     "altText":"date_selector",

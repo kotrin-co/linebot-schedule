@@ -284,18 +284,18 @@ const handlePostbackEvent = async (ev) => {
     resetReservationOrder(id,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
-    await checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
-    console.log('reservation_order.reservable:',reservation_order.reservable);
+    const reservableTimes = await checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
+    console.log('reservableTimes:',reservableTimes);
     const colorArray = [];
-    for(let i=0;i<reservation_order.reservable.length;i++){
-      if(reservation_order.reservable[i].length){
+    for(let i=0;i<reservableTimes.length;i++){
+      if(reservableTimes[i].length){
         colorArray.push('#00AA00');
       }else{
         colorArray.push('#FF0000');
       }
     }
     console.log('colorArray:',colorArray);
-    reservation_order.reservable.forEach(array=>{
+    reservableTimes.forEach(array=>{
       array.forEach(value=>{
         console.log('予約可能日時：',new Date(value));
       });
@@ -477,8 +477,7 @@ const checkReservableTimes = (treatTime) => {
           }
         }
       }
-      reservation_order.reservable = reservableArray;
-      console.log('reservation_order.reservable:',reservation_order.reservable);
+      return reservableArray;
     })
     .catch(e=>console.error(e.stack));
 }

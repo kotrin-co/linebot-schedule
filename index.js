@@ -491,9 +491,6 @@ const checkReservableTimes = (treatTime) => {
             }
           }  
         }
-        reservation_order.reservable = reservableArray;
-        console.log('reservation_order.reservable:',reservation_order.reservable);
-
       }else{
         for(let i=0;i<11;i++){
           reservableArray[i] = [];
@@ -504,7 +501,8 @@ const checkReservableTimes = (treatTime) => {
           }
         }
       }
-      return reservableArray;
+      reservation_order.reservable = reservableArray;
+      console.log('reservation_order.reservable:',reservation_order.reservable);
     })
     .catch(e=>console.error(e.stack));
 }

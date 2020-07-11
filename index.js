@@ -288,9 +288,9 @@ const handlePostbackEvent = async (ev) => {
     checkReservableTimes(id,TIMES_OF_MENU[reservation_order.menu]*1000);
     
   }else if(ev.postback.data.slice(0,4) === 'time'){
-    time = ev.postback.data.slice(4,6);
+    time = parseInt(ev.postback.data.slice(4));
     console.log('postback time proceeding! time:',time);
-    judgeReservation(id,pro,time);
+    confirmReservation(id,pro,time,0);
   }
 }
 
@@ -523,7 +523,7 @@ const pushTimeSelector = (id) => {
                 "action": {
                   "type": "postback",
                   "label": "9時〜",
-                  "data": "time09"
+                  "data": "time0"
                 },
                 "style": "primary",
                 "color": `${color[0]}`,
@@ -534,7 +534,7 @@ const pushTimeSelector = (id) => {
                 "action": {
                   "type": "postback",
                   "label": "10時〜",
-                  "data": "time10"
+                  "data": "time1"
                 },
                 "style": "primary",
                 "color": `${color[1]}`,
@@ -545,7 +545,7 @@ const pushTimeSelector = (id) => {
                 "action": {
                   "type": "postback",
                   "label": "11時〜",
-                  "data": "time11"
+                  "data": "time2"
                 },
                 "margin": "md",
                 "style": "primary",
@@ -562,7 +562,7 @@ const pushTimeSelector = (id) => {
                 "action": {
                   "type": "postback",
                   "label": "12時〜",
-                  "data": "time12"
+                  "data": "time3"
                 },
                 "margin": "md",
                 "style": "primary",
@@ -573,7 +573,7 @@ const pushTimeSelector = (id) => {
                 "action": {
                   "type": "postback",
                   "label": "13時〜",
-                  "data": "time13"
+                  "data": "time4"
                 },
                 "margin": "md",
                 "style": "primary",
@@ -584,7 +584,7 @@ const pushTimeSelector = (id) => {
                 "action": {
                   "type": "postback",
                   "label": "14時〜",
-                  "data": "time14"
+                  "data": "time5"
                 },
                 "margin": "md",
                 "style": "primary",
@@ -602,7 +602,7 @@ const pushTimeSelector = (id) => {
                 "action": {
                   "type": "postback",
                   "label": "15時〜",
-                  "data": "time15"
+                  "data": "time6"
                 },
                 "margin": "md",
                 "style": "primary",
@@ -613,7 +613,7 @@ const pushTimeSelector = (id) => {
                 "action": {
                   "type": "postback",
                   "label": "16時〜",
-                  "data": "time16"
+                  "data": "time7"
                 },
                 "margin": "md",
                 "style": "primary",
@@ -624,7 +624,7 @@ const pushTimeSelector = (id) => {
                 "action": {
                   "type": "postback",
                   "label": "17時〜",
-                  "data": "time17"
+                  "data": "time8"
                 },
                 "margin": "md",
                 "style": "primary",
@@ -642,7 +642,7 @@ const pushTimeSelector = (id) => {
                 "action": {
                   "type": "postback",
                   "label": "18時〜",
-                  "data": "time18"
+                  "data": "time9"
                 },
                 "margin": "md",
                 "style": "primary",
@@ -653,7 +653,7 @@ const pushTimeSelector = (id) => {
                 "action": {
                   "type": "postback",
                   "label": "19時〜",
-                  "data": "time19"
+                  "data": "time10"
                 },
                 "margin": "md",
                 "style": "primary",
@@ -679,165 +679,218 @@ const pushTimeSelector = (id) => {
   );
 }
 
-const judgeReservation = (id,pro,time) => {
-  const iTime = parseInt(time);
-  const startTime = new Date(`${reservation_order.date} ${iTime}:00`);
-  const startPoint = startTime.getTime();
-  const endTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
-  const endPoint = endTime.getTime();
-  const nextTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
-  const nextPoint = nextTime.getTime();
-  const nearestPoint = 0;
-  const treatmentTime = TIMES_OF_MENU[reservation_order.menu]*1000;
-  console.log('startPoint:',startPoint);
-  console.log('endPoint:',endPoint);
+const confirmReservation = (id,pro,time,i) => {
+  const reservableTimes = reservation_order.reservable[time];
+  if(reservationTimes[i]){
+    client.pushMessage(id,{
+      "type":"flex",
+      "altText":"question",
+      "contents":
+      {
+        "type": "bubble",
+        "header": {
+          "type": "box",
+          "layout": "vertical",
+          "contents": [
+            {
+              "type": "text",
+              "text": `${get_Date(reservableTimes[i],1)}〜でいかがでしょうか。`
+            }
+          ]
+        },
+        "body": {
+          "type": "box",
+          "layout": "horizontal",
+          "contents": [
+            {
+              "type": "button",
+              "action": {
+                "type": "postback",
+                "label": "はい",
+                "data": "yes"
+              },
+              "style": "primary",
+              "margin": "lg"
+            },
+            {
+              "type": "button",
+              "action": {
+                "type": "postback",
+                "label": "いいえ",
+                "data": "no"
+              },
+              "style": "secondary",
+              "margin": "lg"
+            }
+          ]
+        }
+      }
+    })
+  }else{
+    client.pushMessage(id,{
+      "type":"text",
+      "text":"この時間帯には予約可能な時間はありません。別の時間帯を選択してください。"
+    });
+  }
+}
+  // const iTime = parseInt(time);
+  // const startTime = new Date(`${reservation_order.date} ${iTime}:00`);
+  // const startPoint = startTime.getTime();
+  // const endTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
+  // const endPoint = endTime.getTime();
+  // const nextTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
+  // const nextPoint = nextTime.getTime();
+  // const nearestPoint = 0;
+  // const treatmentTime = TIMES_OF_MENU[reservation_order.menu]*1000;
+  // console.log('startPoint:',startPoint);
+  // console.log('endPoint:',endPoint);
   
-  // iTimeより１つ次の時間帯の最初のstarttimeを抜き出す処理
-  const select_query1 = {
-    text:'SELECT starttime from schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
-    values:[`${reservation_order.date}`]
-  };
-  connection.query(select_query1)
-  　.then(res=>{
-      if(res.rows.length){
-        console.log('res.rows starttime:',res.rows);
-        const sTimeArray = res.rows.map(param=>parseInt(param.starttime));
-        console.log('sTimeArray:',sTimeArray);
-        const dFromNextPoint = sTimeArray.filter(param=>(param-nextPoint)>0);
-        console.log('dFromNextPoint:',dFromNextPoint);
-        nearestPoint = dFromNextPoint[0];
-        console.log('nearestPoint:',nearestPoint);
-      }
-    })
-    .catch(e=>console.log(e.stack));
+  // // iTimeより１つ次の時間帯の最初のstarttimeを抜き出す処理
+  // const select_query1 = {
+  //   text:'SELECT starttime from schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
+  //   values:[`${reservation_order.date}`]
+  // };
+  // connection.query(select_query1)
+  // 　.then(res=>{
+  //     if(res.rows.length){
+  //       console.log('res.rows starttime:',res.rows);
+  //       const sTimeArray = res.rows.map(param=>parseInt(param.starttime));
+  //       console.log('sTimeArray:',sTimeArray);
+  //       const dFromNextPoint = sTimeArray.filter(param=>(param-nextPoint)>0);
+  //       console.log('dFromNextPoint:',dFromNextPoint);
+  //       nearestPoint = dFromNextPoint[0];
+  //       console.log('nearestPoint:',nearestPoint);
+  //     }
+  //   })
+  //   .catch(e=>console.log(e.stack));
 
-  const select_query2 = {
-    text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
-    values:[`${reservation_order.date}`]
-  };
-  connection.query(select_query2)
-    .then(res=>{
-      if(res.rows.length){
-        console.log('res.rows:',res.rows);
-        const reserved_sTimes = [];
-        const reserved_eTimes = [];
-        const proposalTimes = [];
-        res.rows.forEach(param=>{
-          const sTime = parseInt(param.starttime);
-          const eTime = parseInt(param.endtime);
-          if(sTime<startPoint && eTime>startPoint){
-            reserved_sTimes.push(0);
-            reserved_eTimes.push(eTime);
-          }else if(sTime>=startPoint && sTime<=endPoint){
-            reserved_sTimes.push(sTime);
-            if(eTime>=startPoint && eTime<=endPoint){
-              reserved_eTimes.push(eTime);
-            }else{
-              reserved_eTimes.push(0);
-            }
-          }
-        });
-        console.log('reservedTimes',reserved_sTimes,reserved_eTimes);
+  // const select_query2 = {
+  //   text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
+  //   values:[`${reservation_order.date}`]
+  // };
+  // connection.query(select_query2)
+  //   .then(res=>{
+  //     if(res.rows.length){
+  //       console.log('res.rows:',res.rows);
+  //       const reserved_sTimes = [];
+  //       const reserved_eTimes = [];
+  //       const proposalTimes = [];
+  //       res.rows.forEach(param=>{
+  //         const sTime = parseInt(param.starttime);
+  //         const eTime = parseInt(param.endtime);
+  //         if(sTime<startPoint && eTime>startPoint){
+  //           reserved_sTimes.push(0);
+  //           reserved_eTimes.push(eTime);
+  //         }else if(sTime>=startPoint && sTime<=endPoint){
+  //           reserved_sTimes.push(sTime);
+  //           if(eTime>=startPoint && eTime<=endPoint){
+  //             reserved_eTimes.push(eTime);
+  //           }else{
+  //             reserved_eTimes.push(0);
+  //           }
+  //         }
+  //       });
+  //       console.log('reservedTimes',reserved_sTimes,reserved_eTimes);
 
-        if(reserved_sTimes.length && reserved_eTimes.length){
-          if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){
-            for(let i=0;i<reserved_sTimes.length-1;i++){
-              if(reserved_sTimes[i+1]-reserved_eTimes[i]>=treatmentTime){
-                proposalTimes.push(reserved_eTimes[i]);
-              }
-            }
-          }else if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length-1] !== 0){
-            for(let i=0;i<reserved_sTimes.length-1;i++){  
-              if(reserved_sTimes[i+1]-reserved_eTimes[i]>=treatmentTime){
-                proposalTimes.push(reserved_eTimes[i]);
-              }
-            }
-            if(nearestPoint !== 0){
-              if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
-                proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
-              }
-            }else{
-              proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
-            }
-          }else if(reserved_sTimes[0] !== 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){
-            if(reserved_sTimes[0] - startPoint>=treatmentTime){
-              proposalTimes.push(startPoint);
-            }
-            for(let i=1;i<reserved_sTimes.length;i++){
-              if(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime){
-                proposalTimes.push(reserved_eTimes[i-1]);
-              }
-            }
-          }else{
-            console.log('ここが実行');
-            console.log('endpoint:',endPoint);
-            console.log('treatmentTime:',treatmentTime);
-            console.log('eTimes:',reserved_eTimes);
-            console.log('sub:',endPoint - reserved_eTimes[reserved_eTimes.length-1]);
-            if(reserved_sTimes[0] - startPoint>=treatmentTime){
-              proposalTimes.push(startPoint);
-            }
-            for(let i=1;i<reserved_sTimes.length;i++){
-              if(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime){
-                console.log(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime)
-                proposalTimes.push(reserved_eTimes[i-1]);
-              }
-            }
-            if(nearestPoint !==0){
-              if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
-                proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
-              }
-            }else{
-              proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
-            }  
-          }
-        }else{
-          let i = 0;
-          while(startPoint+treatmentTime*i<endPoint){
-            proposalTimes.push(startPoint+treatmentTime*i);
-            i++;
-          }
-        }
+  //       if(reserved_sTimes.length && reserved_eTimes.length){
+  //         if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){
+  //           for(let i=0;i<reserved_sTimes.length-1;i++){
+  //             if(reserved_sTimes[i+1]-reserved_eTimes[i]>=treatmentTime){
+  //               proposalTimes.push(reserved_eTimes[i]);
+  //             }
+  //           }
+  //         }else if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length-1] !== 0){
+  //           for(let i=0;i<reserved_sTimes.length-1;i++){  
+  //             if(reserved_sTimes[i+1]-reserved_eTimes[i]>=treatmentTime){
+  //               proposalTimes.push(reserved_eTimes[i]);
+  //             }
+  //           }
+  //           if(nearestPoint !== 0){
+  //             if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
+  //               proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
+  //             }
+  //           }else{
+  //             proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
+  //           }
+  //         }else if(reserved_sTimes[0] !== 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){
+  //           if(reserved_sTimes[0] - startPoint>=treatmentTime){
+  //             proposalTimes.push(startPoint);
+  //           }
+  //           for(let i=1;i<reserved_sTimes.length;i++){
+  //             if(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime){
+  //               proposalTimes.push(reserved_eTimes[i-1]);
+  //             }
+  //           }
+  //         }else{
+  //           console.log('ここが実行');
+  //           console.log('endpoint:',endPoint);
+  //           console.log('treatmentTime:',treatmentTime);
+  //           console.log('eTimes:',reserved_eTimes);
+  //           console.log('sub:',endPoint - reserved_eTimes[reserved_eTimes.length-1]);
+  //           if(reserved_sTimes[0] - startPoint>=treatmentTime){
+  //             proposalTimes.push(startPoint);
+  //           }
+  //           for(let i=1;i<reserved_sTimes.length;i++){
+  //             if(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime){
+  //               console.log(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime)
+  //               proposalTimes.push(reserved_eTimes[i-1]);
+  //             }
+  //           }
+  //           if(nearestPoint !==0){
+  //             if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
+  //               proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
+  //             }
+  //           }else{
+  //             proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
+  //           }  
+  //         }
+  //       }else{
+  //         let i = 0;
+  //         while(startPoint+treatmentTime*i<endPoint){
+  //           proposalTimes.push(startPoint+treatmentTime*i);
+  //           i++;
+  //         }
+  //       }
 
-        console.log('proposal time:',proposalTimes);
+  //       console.log('proposal time:',proposalTimes);
 
-        // proposalTimesからの時間選択パート
-        if(proposalTimes.length){
-          const insert_query = {
-            text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-            values:[id,pro.displayName,reservation_order.date,proposalTimes[0],proposalTimes[0]+treatmentTime,MENU[reservation_order.menu]]
-          };
-          connection.query(insert_query)
-            .then(res=>{
-              const reservedTime = get_Date(proposalTimes[0],1);
-              client.pushMessage(id,{
-                "type":"text",
-                "text":`${reservedTime}に予約しました。ご予約ありがとうございます。`
-              });
-            })
-            .catch(e=>console.error(e.stack));
-        }else{
-          client.pushMessage(id,{
-            "type":"text",
-            "text":"この時間帯には空いている時間がありませんでした。別の時間帯を選択してください。"
-          });
-        }
-      }else{
-        console.log('res.rows.length判定がfalse');
-        const reservedTime = get_Date(startPoint,1);
-        const insert_query = {
-          text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-          values:[id,pro.displayName,reservation_order.date,startPoint,startPoint+treatmentTime,MENU[reservation_order.menu]]
-        };
-        connection.query(insert_query)
-          .then(res=>{
-            client.pushMessage(id,{
-              "type":"text",
-              "text":`${reservedTime}に予約しました。ご予約ありがとうございます。`
-            });
-          })
-          .catch(e=>console.error(e.stack));
-      }
-    })
-    .catch(e=>console.log(e.stack));
+  //       // proposalTimesからの時間選択パート
+  //       if(proposalTimes.length){
+  //         const insert_query = {
+  //           text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+  //           values:[id,pro.displayName,reservation_order.date,proposalTimes[0],proposalTimes[0]+treatmentTime,MENU[reservation_order.menu]]
+  //         };
+  //         connection.query(insert_query)
+  //           .then(res=>{
+  //             const reservedTime = get_Date(proposalTimes[0],1);
+  //             client.pushMessage(id,{
+  //               "type":"text",
+  //               "text":`${reservedTime}に予約しました。ご予約ありがとうございます。`
+  //             });
+  //           })
+  //           .catch(e=>console.error(e.stack));
+  //       }else{
+  //         client.pushMessage(id,{
+  //           "type":"text",
+  //           "text":"この時間帯には空いている時間がありませんでした。別の時間帯を選択してください。"
+  //         });
+  //       }
+  //     }else{
+  //       console.log('res.rows.length判定がfalse');
+  //       const reservedTime = get_Date(startPoint,1);
+  //       const insert_query = {
+  //         text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+  //         values:[id,pro.displayName,reservation_order.date,startPoint,startPoint+treatmentTime,MENU[reservation_order.menu]]
+  //       };
+  //       connection.query(insert_query)
+  //         .then(res=>{
+  //           client.pushMessage(id,{
+  //             "type":"text",
+  //             "text":`${reservedTime}に予約しました。ご予約ありがとうございます。`
+  //           });
+  //         })
+  //         .catch(e=>console.error(e.stack));
+  //     }
+  //   })
+  //   .catch(e=>console.log(e.stack));
 }

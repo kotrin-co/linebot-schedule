@@ -251,6 +251,7 @@ const handleMessageEvent = async (ev) => {
 const handlePostbackEvent = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
   const id = ev.source.userId;
+  const reservableArray = [];
   console.log('postback event:',ev);
   
   if(ev.postback.data === 'cut'){
@@ -285,8 +286,21 @@ const handlePostbackEvent = async (ev) => {
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
     console.log('reservation_order:',reservation_order);
-    checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
-    pushTimeSelector(id);
+    reservableArray = checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
+    const colorArray = [];
+    for(let i=0;i<reservableArray.length;i++){
+      if(reservableArray[i].length){
+        colorArray.push('#00AA00');
+      }else{
+        colorArray.push('#FF0000');
+      }
+    }
+    reservableArray.forEach(array=>{
+      array.forEach(value=>{
+        console.log('予約可能日時：',new Date(value));
+      });
+    });
+    pushTimeSelector(id,colorArray);
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = ev.postback.data.slice(4,6);
     console.log('postback time proceeding! time:',time);
@@ -386,7 +400,7 @@ const checkReservableTimes = (treatTime) => {
         reservedArray.forEach(array=>{
           console.log('予約日時：',`${new Date(array[0])} - ${new Date(array[1])}`);
         });
-        for(let i=0;i<12;i++){
+        for(let i=0;i<11;i++){
           const filteredArray = reservedArray.filter(array=>{
             if((array[0]-timeStamps[i]-treatTime>=0 && array[0]-timeStamps[i]-treatTime<=oneHour) || 
                 array[1]-timeStamps[i]>0 && array[1]-timeStamps[i]<oneHour){
@@ -408,8 +422,6 @@ const checkReservableTimes = (treatTime) => {
           });
         });
         console.log('offsetArray:',offsetArray);
-
-        // const reservableArray = [];
 
         for(let i=0;i<offsetArray.length;i++){
           reservableArray[i] = [];
@@ -454,11 +466,7 @@ const checkReservableTimes = (treatTime) => {
           }  
         }
         console.log('reservableArray:',reservableArray);
-        reservableArray.forEach(array=>{
-          array.forEach(value=>{
-            console.log('予約可能日時：',new Date(value));
-          });
-        });
+
       }else{
         for(let i=0;i<11;i++){
           reservableArray[i] = [];
@@ -468,17 +476,13 @@ const checkReservableTimes = (treatTime) => {
             c+=treatTime;
           }
         }
-        reservableArray.forEach(array=>{
-          array.forEach(value=>{
-            console.log('予約可能日時：',new Date(value));
-          });
-        });
       }
+      return reservableArray;
     })
     .catch(e=>console.error(e.stack));
 }
 
-const pushTimeSelector = (id) => {
+const pushTimeSelector = (id,color) => {
   client.pushMessage(id,{
     "type":"flex",
     "altText":"date_selector",
@@ -525,6 +529,7 @@ const pushTimeSelector = (id) => {
                   "data": "time09"
                 },
                 "style": "primary",
+                "color": `${color[0]}`,
                 "margin": "md"
               },
               {
@@ -535,6 +540,7 @@ const pushTimeSelector = (id) => {
                   "data": "time10"
                 },
                 "style": "primary",
+                "color": `${color[1]}`,
                 "margin": "md"
               },
               {
@@ -545,7 +551,8 @@ const pushTimeSelector = (id) => {
                   "data": "time11"
                 },
                 "margin": "md",
-                "style": "primary"
+                "style": "primary",
+                "color": `${color[2]}`
               }
             ]
           },
@@ -561,7 +568,8 @@ const pushTimeSelector = (id) => {
                   "data": "time12"
                 },
                 "margin": "md",
-                "style": "primary"
+                "style": "primary",
+                "color": `${color[3]}`
               },
               {
                 "type": "button",
@@ -571,7 +579,8 @@ const pushTimeSelector = (id) => {
                   "data": "time13"
                 },
                 "margin": "md",
-                "style": "primary"
+                "style": "primary",
+                "color": `${color[4]}`
               },
               {
                 "type": "button",
@@ -581,7 +590,8 @@ const pushTimeSelector = (id) => {
                   "data": "time14"
                 },
                 "margin": "md",
-                "style": "primary"
+                "style": "primary",
+                "color": `${color[5]}`
               }
             ],
             "margin": "md"
@@ -598,7 +608,8 @@ const pushTimeSelector = (id) => {
                   "data": "time15"
                 },
                 "margin": "md",
-                "style": "primary"
+                "style": "primary",
+                "color": `${color[6]}`
               },
               {
                 "type": "button",
@@ -608,7 +619,8 @@ const pushTimeSelector = (id) => {
                   "data": "time16"
                 },
                 "margin": "md",
-                "style": "primary"
+                "style": "primary",
+                "color": `${color[7]}`
               },
               {
                 "type": "button",
@@ -618,7 +630,8 @@ const pushTimeSelector = (id) => {
                   "data": "time17"
                 },
                 "margin": "md",
-                "style": "primary"
+                "style": "primary",
+                "color": `${color[8]}`
               }
             ],
             "margin": "md"
@@ -635,7 +648,8 @@ const pushTimeSelector = (id) => {
                   "data": "time18"
                 },
                 "margin": "md",
-                "style": "primary"
+                "style": "primary",
+                "color": `${color[9]}`
               },
               {
                 "type": "button",
@@ -645,7 +659,8 @@ const pushTimeSelector = (id) => {
                   "data": "time19"
                 },
                 "margin": "md",
-                "style": "primary"
+                "style": "primary",
+                "color": `${color[10]}`
               },
               {
                 "type": "button",

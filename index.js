@@ -682,6 +682,8 @@ const pushTimeSelector = (id) => {
 const confirmReservation = (id,pro,time,i) => {
   const reservableTimes = reservation_order.reservable[time];
   if(reservableTimes[i]){
+    console.log('reservableTimes[i]:',reservableTimes[i]);
+    const time = get_Date(reservableTimes[i],1);
     client.pushMessage(id,{
       "type":"flex",
       "altText":"question",
@@ -694,7 +696,7 @@ const confirmReservation = (id,pro,time,i) => {
           "contents": [
             {
               "type": "text",
-              "text": `${get_Date(reservableTimes[i],1)}〜でいかがでしょうか。`
+              "text": `${time}〜でいかがでしょうか。`
             }
           ]
         },

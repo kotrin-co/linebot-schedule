@@ -287,8 +287,8 @@ const handlePostbackEvent = async (ev) => {
     console.log('reservation_order:',reservation_order);
     reservation_order.reservable = checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
     const colorArray = [];
-    for(let i=0;i<reservableArray.length;i++){
-      if(reservableArray[i].length){
+    for(let i=0;i<reservation_order.reservable.length;i++){
+      if(reservation_order.reservable[i].length){
         colorArray.push('#00AA00');
       }else{
         colorArray.push('#FF0000');

@@ -284,23 +284,29 @@ const handlePostbackEvent = async (ev) => {
     resetReservationOrder(id,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
-    const reservableTimes = await checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
-    console.log('reservableTimes:',reservableTimes);
-    const colorArray = [];
-    for(let i=0;i<reservableTimes.length;i++){
-      if(reservableTimes[i].length){
-        colorArray.push('#00AA00');
-      }else{
-        colorArray.push('#FF0000');
+    const reservableTimes = new Promise((resolve,reject)=>{
+      resoleve(checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000));
+    })
+    .then((array)=>{
+      console.log('reservableTimes:',array);
+      const colorArray = [];
+      for(let i=0;i<reservableTimes.length;i++){
+        if(reservableTimes[i].length){
+          colorArray.push('#00AA00');
+        }else{
+          colorArray.push('#FF0000');
+        }
       }
-    }
-    console.log('colorArray:',colorArray);
-    reservableTimes.forEach(array=>{
-      array.forEach(value=>{
-        console.log('予約可能日時：',new Date(value));
+      console.log('colorArray:',colorArray);
+      array.forEach(array=>{
+        array.forEach(value=>{
+          console.log('予約可能日時：',new Date(value));
+        });
       });
-    });
-    pushTimeSelector(id,colorArray);
+      pushTimeSelector(id,colorArray);
+    })
+    .catch(e=>{console.error(e)});  
+    
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = ev.postback.data.slice(4,6);
     console.log('postback time proceeding! time:',time);

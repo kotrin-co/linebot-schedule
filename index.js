@@ -408,23 +408,43 @@ const checkReservableTimes = (treatTime) => {
         console.log('offsetArray:',offsetArray);
 
         const reservableArray = [];
-        offsetArray.forEach((array,i)=>{
-          array.forEach((element,j)=>{
-            if(j === 0){
-              let k = 0;
-              let x = element[0];
-              while(x>=treatTime){
-                reservableArray.push(k*treatTime);
-                x -= treatTime;
-                k++;
+
+        for(let i=0;i<offsetArray.length;i++){
+          reservableArray[i] = [];
+          if(offsetArray[i].length){
+            for(let j=0;j<offsetArray[i].length;j++){
+              if(j===0 && offsetArray[i][j][0]>=treatTime){
+                let x = offsetArray[i][j][0];
+                let k = 0;
+                while(x>=treatTime){
+                  reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime()+k*treatTime);
+                  x -= treatTime;
+                  k++;
+                }
+              }else if(offsetArray[i][j+1].length){
+                let y = offsetArray[i][j+1][0] - offsetArray[i][j][0]
+                let l = 0;
+                while(y>=treatTime){
+                  reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + offsetArray[i][j][1] + l*treatTime);
+                  y -= treatTime;
+                  l++;
+                }
               }
-            }else if(j === array.length-1){
-              let l = 0;
-              let y = element[1];
- 
             }
-          })
-        })
+          }else{
+            let z = oneHour;
+            let m = 0;
+            while(z>=treatTime){
+              reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + m*treatTime);
+              z -= treatTime;
+            }
+          }  
+        }
+        reservableArray.forEach(array=>{
+          array.forEach(value=>{
+            console.log('予約可能日時：',new Date(value));
+          });
+        });
       }
     })
     .catch(e=>console.error(e.stack));

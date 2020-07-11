@@ -679,7 +679,7 @@ const pushTimeSelector = (id) => {
   );
 }
 
-const confirmReservation = async (id,pro,time,i) => {
+const confirmReservation = (id,pro,time,i) => {
   const reservableTimes = reservation_order.reservable[time];
   if(reservableTimes[i]){
     console.log('reservableTimes[i]:',reservableTimes[i]);
@@ -696,7 +696,7 @@ const confirmReservation = async (id,pro,time,i) => {
           "contents": [
             {
               "type": "text",
-              "text": "９時でいかがでしょうか。"
+              "text": `${proposalTime}時〜でいかがでしょうか。`
             }
           ]
         },

@@ -696,7 +696,7 @@ const confirmReservation = async (id,pro,time,i) => {
           "contents": [
             {
               "type": "text",
-              "text": `${proposalTime}〜でいかがでしょうか。`
+              "text": "９時でいかがでしょうか。"
             }
           ]
         },

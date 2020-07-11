@@ -284,7 +284,7 @@ const handlePostbackEvent = async (ev) => {
     resetReservationOrder(id,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
-    checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
+    await checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
     console.log('reservation_order.reservable:',reservation_order.reservable);
     const colorArray = [];
     for(let i=0;i<reservation_order.reservable.length;i++){

@@ -683,7 +683,7 @@ const confirmReservation = async (id,pro,time,i) => {
   const reservableTimes = reservation_order.reservable[time];
   if(reservableTimes[i]){
     console.log('reservableTimes[i]:',reservableTimes[i]);
-    const time = await get_Date(reservableTimes[i],1);
+    const proposalTime = get_Date(reservableTimes[i],1);
     client.pushMessage(id,{
       "type":"flex",
       "altText":"question",
@@ -696,7 +696,7 @@ const confirmReservation = async (id,pro,time,i) => {
           "contents": [
             {
               "type": "text",
-              "text": `${time}〜でいかがでしょうか。`
+              "text": `${proposalTime}〜でいかがでしょうか。`
             }
           ]
         },

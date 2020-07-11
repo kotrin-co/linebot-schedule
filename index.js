@@ -482,7 +482,7 @@ const pushTimeSelector = (id) => {
 
   client.pushMessage(id,{
     "type":"flex",
-    "altText":"date_selector",
+    "altText":"time_selector",
     "contents":
     {
       "type": "bubble",
@@ -685,7 +685,7 @@ const confirmReservation = (id,pro,time,i) => {
     client.pushMessage(id,{
       "type":"flex",
       "altText":"question",
-      "contents":
+      "contents":[
       {
         "type": "bubble",
         "header": {
@@ -725,6 +725,7 @@ const confirmReservation = (id,pro,time,i) => {
           ]
         }
       }
+    ]
     })
   }else{
     client.pushMessage(id,{

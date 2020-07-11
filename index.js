@@ -687,50 +687,55 @@ const confirmReservation = (id,time,i) => {
     console.log('proposalTime:',proposalTime);
 
     client.pushMessage(id,{
-      "type":"flex",
-      "altText":"question",
-      "contents":[
-      {
-        "type": "bubble",
-        "header": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            {
-              "type": "text",
-              "text": `${proposalTime}時〜でいかがでしょうか。`
-            }
-          ]
-        },
-        "body": {
-          "type": "box",
-          "layout": "horizontal",
-          "contents": [
-            {
-              "type": "button",
-              "action": {
-                "type": "postback",
-                "label": "はい",
-                "data": "yes"
-              },
-              "style": "primary",
-              "margin": "lg"
-            },
-            {
-              "type": "button",
-              "action": {
-                "type": "postback",
-                "label": "いいえ",
-                "data": "no"
-              },
-              "style": "secondary",
-              "margin": "lg"
-            }
-          ]
-        }
-      }
-    ]
-    })
+      "type":"text",
+      "text":`${proposalTime}〜でいかがでしょうか。`
+    });
+
+    // client.pushMessage(id,{
+    //   "type":"flex",
+    //   "altText":"question",
+    //   "contents":[
+    //   {
+    //     "type": "bubble",
+    //     "header": {
+    //       "type": "box",
+    //       "layout": "vertical",
+    //       "contents": [
+    //         {
+    //           "type": "text",
+    //           "text": `${proposalTime}時〜でいかがでしょうか。`
+    //         }
+    //       ]
+    //     },
+    //     "body": {
+    //       "type": "box",
+    //       "layout": "horizontal",
+    //       "contents": [
+    //         {
+    //           "type": "button",
+    //           "action": {
+    //             "type": "postback",
+    //             "label": "はい",
+    //             "data": "yes"
+    //           },
+    //           "style": "primary",
+    //           "margin": "lg"
+    //         },
+    //         {
+    //           "type": "button",
+    //           "action": {
+    //             "type": "postback",
+    //             "label": "いいえ",
+    //             "data": "no"
+    //           },
+    //           "style": "secondary",
+    //           "margin": "lg"
+    //         }
+    //       ]
+    //     }
+    //   }
+    // ]
+    // })
   }else{
     client.pushMessage(id,{
       "type":"text",

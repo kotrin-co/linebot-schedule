@@ -409,7 +409,7 @@ const checkReservableTimes = (treatTime) => {
         });
         console.log('offsetArray:',offsetArray);
 
-        const reservableArray = [];
+        // const reservableArray = [];
 
         for(let i=0;i<offsetArray.length;i++){
           reservableArray[i] = [];
@@ -453,11 +453,25 @@ const checkReservableTimes = (treatTime) => {
             }
           }  
         }
+        console.log('reservableArray:',reservableArray);
         reservableArray.forEach(array=>{
           array.forEach(value=>{
             console.log('予約可能日時：',new Date(value));
           });
         });
+      }else{
+        for(let i=0;i<11;i++){
+          let c = 0;
+          while(c<oneHour){
+            reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + c);
+            c+=treatTime;
+          }
+          reservableArray.forEach(array=>{
+            array.forEach(value=>{
+              console.log('予約可能日時：',new Date(value));
+            });
+          });
+        }
       }
     })
     .catch(e=>console.error(e.stack));

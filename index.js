@@ -421,8 +421,18 @@ const checkReservableTimes = (treatTime) => {
                   x -= treatTime;
                   k++;
                 }
-              }else if(offsetArray[i][j+1].length){
-                let y = offsetArray[i][j+1][0] - offsetArray[i][j][0]
+              }else if(j===offsetArray[i].length-1){
+                if(offsetArray[i][j][1]<oneHour){
+                  let a = oneHour - offsetArray[i][j][1];
+                  let b = 0;
+                  while(a>=treatTime){
+                    reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
+                    a -= treatTime;
+                    b++;
+                  }
+                }
+              }else{
+                let y = offsetArray[i][j+1][0] - offsetArray[i][j][1];
                 let l = 0;
                 while(y>=treatTime){
                   reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + offsetArray[i][j][1] + l*treatTime);

@@ -291,6 +291,18 @@ const handlePostbackEvent = async (ev) => {
     time = parseInt(ev.postback.data.slice(4));
     console.log('postback time proceeding! time:',time);
     confirmReservation(id,time,0);
+  }else if(ev.postback.data.slice(0,6) === 'answer'){
+    const result = ev.postback.data.split('-');
+    console.log('result:',result);
+    if(result[1] === 'yes'){
+      const time = get_Date(reservation_order.reservable[parseInt(result[2])][parseInt(result[3])],1)
+      client.pushMessage(id,{
+        "type":"text",
+        "text":`${time}で決定です。`
+      });
+    }else{
+      confirmReservation(id,parseInt(result[2]),parseInt(result[3])+1);
+    }
   }
 }
 
@@ -711,7 +723,7 @@ const confirmReservation = (id,time,i) => {
               "action": {
                 "type": "postback",
                 "label": "はい",
-                "data": "yes"
+                "data": `answer-yes-${time}-${i}`
               },
               "style": "primary",
               "margin": "lg"
@@ -721,7 +733,7 @@ const confirmReservation = (id,time,i) => {
               "action": {
                 "type": "postback",
                 "label": "いいえ",
-                "data": "no"
+                "data": `answer-no-${time}-${i}`
               },
               "style": "secondary",
               "margin": "lg"

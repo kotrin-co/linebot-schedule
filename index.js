@@ -290,7 +290,7 @@ const handlePostbackEvent = async (ev) => {
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = parseInt(ev.postback.data.slice(4));
     console.log('postback time proceeding! time:',time);
-    confirmReservation(id,pro,time,0);
+    confirmReservation(id,time,0);
   }
 }
 
@@ -679,11 +679,13 @@ const pushTimeSelector = (id) => {
   );
 }
 
-const confirmReservation = (id,pro,time,i) => {
+const confirmReservation = (id,time,i) => {
   const reservableTimes = reservation_order.reservable[time];
   if(reservableTimes[i]){
     console.log('reservableTimes[i]:',reservableTimes[i]);
     const proposalTime = get_Date(reservableTimes[i],1);
+    console.log('proposalTime:',proposalTime);
+
     client.pushMessage(id,{
       "type":"flex",
       "altText":"question",

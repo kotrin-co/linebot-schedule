@@ -59,7 +59,7 @@ connection.query(create_stable)
 const reservation_order = {
   menu:null,
   date:null,
-  time:null
+  reservable:null
 };
 
 const MENU = ['cut','cut&shampoo','color'];
@@ -251,7 +251,6 @@ const handleMessageEvent = async (ev) => {
 const handlePostbackEvent = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
   const id = ev.source.userId;
-  const reservableArray = [];
   console.log('postback event:',ev);
   
   if(ev.postback.data === 'cut'){
@@ -286,7 +285,7 @@ const handlePostbackEvent = async (ev) => {
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
     console.log('reservation_order:',reservation_order);
-    reservableArray = checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
+    reservation_order.reservable = checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
     const colorArray = [];
     for(let i=0;i<reservableArray.length;i++){
       if(reservableArray[i].length){
@@ -295,7 +294,8 @@ const handlePostbackEvent = async (ev) => {
         colorArray.push('#FF0000');
       }
     }
-    reservableArray.forEach(array=>{
+    console.log('colorArray:',colorArray);
+    reservation_order.reservable.forEach(array=>{
       array.forEach(value=>{
         console.log('予約可能日時：',new Date(value));
       });
@@ -311,7 +311,7 @@ const handlePostbackEvent = async (ev) => {
 const resetReservationOrder = (id,num) => {
   reservation_order.menu = null;
   reservation_order.date = null;
-  reservation_order.time = null;
+  reservation_order.reservable = null;
   if(num === 1){
     client.pushMessage(id,{
       "type":"text",

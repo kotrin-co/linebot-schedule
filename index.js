@@ -285,7 +285,7 @@ const handlePostbackEvent = async (ev) => {
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
 
-    const reservableTimes = checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
+    checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
 
     setTimeout(()=>{
       console.log('reservableTimes:',reservableTimes);
@@ -491,7 +491,8 @@ const checkReservableTimes = (treatTime) => {
             }
           }  
         }
-        console.log('reservableArray:',reservableArray);
+        reservation_order.reservable = reservableArray;
+        console.log('reservation_order.reservable:',reservation_order.reservable);
 
       }else{
         for(let i=0;i<11;i++){

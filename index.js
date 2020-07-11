@@ -681,7 +681,7 @@ const pushTimeSelector = (id) => {
 
 const confirmReservation = (id,pro,time,i) => {
   const reservableTimes = reservation_order.reservable[time];
-  if(reservationTimes[i]){
+  if(reservableTimes[i]){
     client.pushMessage(id,{
       "type":"flex",
       "altText":"question",

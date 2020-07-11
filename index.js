@@ -285,7 +285,7 @@ const handlePostbackEvent = async (ev) => {
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
     const reservableTimes = new Promise((resolve,reject)=>{
-      resoleve(checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000));
+      resolve(checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000));
     })
     .then((array)=>{
       console.log('reservableTimes:',array);

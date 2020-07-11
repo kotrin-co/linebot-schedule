@@ -461,6 +461,7 @@ const checkReservableTimes = (treatTime) => {
         });
       }else{
         for(let i=0;i<11;i++){
+          reservableArray[i] = [];
           let c = 0;
           while(c<oneHour){
             reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + c);

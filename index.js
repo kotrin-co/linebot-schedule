@@ -284,15 +284,11 @@ const handlePostbackEvent = async (ev) => {
     resetReservationOrder(id,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
-    let promise = new Promise((resolve,reject)=>{
-      const reservableArray = checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
-      if(reservableArray.length){
-        resolve(reservableArray);
-      }
-    });
-    promise.then((array)=>{
-      return new Promise((resolve,reject)=>{
-        console.log('reservableTimes:',array);
+
+    const reservableTimes = checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
+
+    setTimeout(()=>{
+      console.log('reservableTimes:',reservableTimes);
         const colorArray = [];
         for(let i=0;i<reservableTimes.length;i++){
           if(reservableTimes[i].length){
@@ -302,13 +298,34 @@ const handlePostbackEvent = async (ev) => {
           }
         }
         console.log('colorArray:',colorArray);
-        resolve(colorArray);
-      })
-    })
-    .then((array)=>{
-      pushTimeSelector(id,array);
-    })
-    .catch(e=>console.log(e.stack));
+        pushTimeSelector(id,colorArray);
+    },5000);
+
+    // let promise = new Promise((resolve,reject)=>{
+    //   const reservableArray = checkReservableTimes(TIMES_OF_MENU[reservation_order.menu]*1000);
+    //   if(reservableArray.length){
+    //     resolve(reservableArray);
+    //   }
+    // });
+    // promise.then((array)=>{
+    //   return new Promise((resolve,reject)=>{
+    //     console.log('reservableTimes:',array);
+    //     const colorArray = [];
+    //     for(let i=0;i<reservableTimes.length;i++){
+    //       if(reservableTimes[i].length){
+    //         colorArray.push('#00AA00');
+    //       }else{
+    //         colorArray.push('#FF0000');
+    //       }
+    //     }
+    //     console.log('colorArray:',colorArray);
+    //     resolve(colorArray);
+    //   })
+    // })
+    // .then((array)=>{
+    //   pushTimeSelector(id,array);
+    // })
+    // .catch(e=>console.log(e.stack));
     
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = ev.postback.data.slice(4,6);

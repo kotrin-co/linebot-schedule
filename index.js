@@ -6,16 +6,16 @@ const PORT = process.env.PORT || 5000
 const { Client } = require('pg');
 
 const config = {
-  channelAccessToken: '3xoDGJ8KgOVxVsyS4/XJwYqXOemYOX2b3mDioaOgnMv2jc2vkZcuGBnSzrehcK+sYXWEXgwraDP4DDvm6uiez8PChvb77gEAAtndU93wGwLN+LnsqVlLnQQN8ybt6wIquvnU/xFiobFIY5IOFLjclQdB04t89/1O/w1cDnyilFU=',
-  channelSecret: '8df5f91ca99d59fdf5be9877edb547a6'
+  channelAccessToken: process.env.ACCESS_TOKEN,
+  channelSecret: process.env.CHANNEL_SECRET
 };
 const client = new line.Client(config);
 
 const connection = new Client({
-  user:'mbxilcnkpaokbm',
-  host:'ec2-34-224-229-81.compute-1.amazonaws.com',
-  database:'d813abm4ls6no1',
-  password:'dca0256369b1d647f910687e6505daec3fe664173240370730eefe5ebad1a36d',
+  user:process.env.PG_USER,
+  host:process.env.PG_HOST,
+  database:process.env.PG_DATABASE,
+  password:process.env.PG_PASSWORD,
   port:5432
 });
 connection.connect();

@@ -198,7 +198,7 @@ const handleMessageEvent = async (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "カット ¥1,500",
+                  "label": "MENU A  ¥1500",
                   "data": "cut"
                 },
                 "style": "primary",
@@ -208,7 +208,7 @@ const handleMessageEvent = async (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "カット＆シャンプー　¥2,000",
+                  "label": "MENU B  ¥2000",
                   "data": "cutandshampoo"
                 },
                 "style": "primary",
@@ -219,7 +219,7 @@ const handleMessageEvent = async (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "カラー　¥3,000",
+                  "label": "MENU C  ¥2000",
                   "data": "color"
                 },
                 "position": "relative",
@@ -256,7 +256,8 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.menu = 0;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
+        "text":"ユーザーさん、次のご予約は○○○ですね"
+        // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
       });
       setTimeout(()=>{
         pushDateSelector(id);

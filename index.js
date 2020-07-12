@@ -256,7 +256,7 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.menu = 0;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":"ユーザーさん、次のご予約は○○○ですね"
+        "text":"ユーザーさん、次のご予約はMENU Aですね。ご希望の日にちを選択してください。"
         // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
       });
       setTimeout(()=>{
@@ -266,7 +266,8 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.menu = 1;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。ご希望の日にちを選択してください。`
+        "text":"ユーザーさん、次のご予約はMENU Bですね。ご希望の日にちを選択してください。"
+        // "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。ご希望の日にちを選択してください。`
       });
       setTimeout(()=>{
         pushDateSelector(id);
@@ -275,7 +276,8 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.menu = 2;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":`${pro.displayName}さん、次のご予約はカラーリングですね。ご希望の日にちを選択してください。`
+        "text":"ユーザーさん、次のご予約はMENU Cですね。ご希望の日にちを選択してください。"
+        // "text":`${pro.displayName}さん、次のご予約はカラーリングですね。ご希望の日にちを選択してください。`
       });
       setTimeout(()=>{
         pushDateSelector(id);

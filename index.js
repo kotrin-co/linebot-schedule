@@ -219,7 +219,7 @@ const handleMessageEvent = async (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "MENU C  ¥2000",
+                  "label": "MENU C  ¥4000",
                   "data": "color"
                 },
                 "position": "relative",

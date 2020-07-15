@@ -149,116 +149,114 @@ const handleMessageEvent = async (ev) => {
   }
 
   if(text === '予約'){
-    const userCheck = checkUserExistence(ev);
-    console.log('usercheck:',userCheck);
-    const id = ev.source.userId;
-    if(userCheck){
-      resetReservationOrder(ev.source.userId,0);
-      client.pushMessage(id,{
-        "type":"flex",
-        "altText":"FlexMessage",
-        "contents":
-          {
-            "type": "bubble",
-            "header": {
-              "type": "box",
-              "layout": "vertical",
-              "contents": [
-                {
-                  "type": "text",
-                  "text": "メニューを選択してください。",
-                  "contents": [],
-                  "position": "relative",
-                  "wrap": false,
-                  "gravity": "center",
-                  "decoration": "none",
-                  "style": "normal",
-                  "weight": "regular",
-                  "size": "md"
-                }
-              ]
-            },
-            "body": {
-              "type": "box",
-              "layout": "vertical",
-              "contents": [
-                {
-                  "type": "button",
-                  "action": {
-                    "type": "postback",
-                    "label": "カット  ¥1500",
-                    "data": "cut"
-                  },
-                  "style": "primary",
-                  "position": "relative"
+    checkUserExistence(ev)
+      .then(existence=>{
+        console.log('existence:',existence);
+        if(existence){
+          resetReservationOrder(ev.source.userId,0);
+          client.pushMessage(id,{
+            "type":"flex",
+            "altText":"FlexMessage",
+            "contents":
+              {
+                "type": "bubble",
+                "header": {
+                  "type": "box",
+                  "layout": "vertical",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": "メニューを選択してください。",
+                      "contents": [],
+                      "position": "relative",
+                      "wrap": false,
+                      "gravity": "center",
+                      "decoration": "none",
+                      "style": "normal",
+                      "weight": "regular",
+                      "size": "md"
+                    }
+                  ]
                 },
-                {
-                  "type": "button",
-                  "action": {
-                    "type": "postback",
-                    "label": "カット＆シャンプー  ¥2000",
-                    "data": "cutandshampoo"
-                  },
-                  "style": "primary",
-                  "margin": "md",
-                  "position": "relative"
+                "body": {
+                  "type": "box",
+                  "layout": "vertical",
+                  "contents": [
+                    {
+                      "type": "button",
+                      "action": {
+                        "type": "postback",
+                        "label": "カット  ¥1500",
+                        "data": "cut"
+                      },
+                      "style": "primary",
+                      "position": "relative"
+                    },
+                    {
+                      "type": "button",
+                      "action": {
+                        "type": "postback",
+                        "label": "カット＆シャンプー  ¥2000",
+                        "data": "cutandshampoo"
+                      },
+                      "style": "primary",
+                      "margin": "md",
+                      "position": "relative"
+                    },
+                    {
+                      "type": "button",
+                      "action": {
+                        "type": "postback",
+                        "label": "カラーリング  ¥4000",
+                        "data": "color"
+                      },
+                      "position": "relative",
+                      "margin": "md",
+                      "style": "primary"
+                    }
+                  ]
                 },
-                {
-                  "type": "button",
-                  "action": {
-                    "type": "postback",
-                    "label": "カラーリング  ¥4000",
-                    "data": "color"
+                "styles": {
+                  "header": {
+                    "separator": true,
+                    "separatorColor": "#000000"
                   },
-                  "position": "relative",
-                  "margin": "md",
-                  "style": "primary"
+                  "footer": {
+                    "separator": true
+                  }
                 }
-              ]
-            },
-            "styles": {
-              "header": {
-                "separator": true,
-                "separatorColor": "#000000"
-              },
-              "footer": {
-                "separator": true
               }
-            }
-          }
-        })
-    }else{
-      client.pushMessage(id,{
-        "type":"text",
-        "text":"ユーザー登録のない方は予約できません。"
-      });
-    }
-  }else{
-    client.pushMessage(id,{
-      "type":"text",
-      "text":"来店予約の方は”予約”をメッセージとして送ってね。"
-    });
+            })
+        }else{
+          client.pushMessage(id,{
+            "type":"text",
+            "text":"ユーザー登録のない方は予約できません。"
+          });
+        }
+      })
+      .catch(e=>console.log(e.stack));
   }
 }
 
 
 const checkUserExistence = (ev) => {
-  const id = ev.source.userId;
-  let check = false;
-  const user_check = {
-    text:`SELECT * FROM users WHERE line_uid = $1;`,
-    values:[`${id}`]
-  }
-  connection.query(user_check)
-    .then(res=>{
-      console.log('res:',res.rows);
-      if(res.rows.length){
-        console.log('存在するユーザーです。');
-        check = true;
-      }
-      return check;
-    })
-    .catch(e=>console.log(e.stack));
+  return new Promise((resolve,reject)=>{
+    let check = false;
+    const user_check = {
+      text:`SELECT * FROM users WHERE line_uid = $1;`,
+      values:[`${id}`]
+    }
+    connection.query(user_check)
+      .then(res=>{
+        console.log('res:',res.rows);
+        if(res.rows.length){
+          console.log('存在するユーザーです。');
+          check = true;
+        }
+        resolve(check);
+      })
+      .catch(e=>console.log(e.stack));
+  });
 }
 
 const pickupReservedOrder = (ev) => {

@@ -138,16 +138,19 @@ const handleMessageEvent = async (ev) => {
   //「予約確認」のメッセージが送られて来た場合に、現在予約している日時をリプライする
 
   if(text === '予約確認'){
-    const userCheck = checkUserExistence(ev);
-    if(userCheck){
-      pickupReservedOrder(ev);
-    }else{
-      return client.replyMessage(ev.replyToken,{
-        "type":"text",
-        "text":"ユーザー登録のない方は予約できません。"
-      });
-    }
-  }
+    checkUserExistence(ev)
+      .then(existence=>{
+        console.log('existence:',existence);
+        if(existence){
+          pickupReservedOrder(ev);
+        }else{
+          client.pushMessage(id,{
+            "type":"text",
+            "text":"ユーザー登録のない方は予約できません。"
+          });
+        }
+      })
+      .catch(e=>console.log(e.stack));
 
   if(text === '予約'){
     checkUserExistence(ev)

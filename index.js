@@ -139,8 +139,12 @@ const handleMessageEvent = async (ev) => {
   if(text === '予約確認'){
     const userCheck = checkUserExistence(ev);
     if(userCheck){
-      const reserved = pickupReservedOrder(ev);
-
+      pickupReservedOrder(ev);
+    }else{
+      return client.replyMessage(ev.replyToken,{
+        "type":"text",
+        "text":"ユーザー登録のない方は予約できません。"
+      });
     }
   }
 
@@ -222,15 +226,15 @@ const handleMessageEvent = async (ev) => {
           }
         })
     }else{
-      return client.replyMessage(ev.replyToken,{
+      client.replyMessage(ev.source.userId,{
         "type":"text",
-        "text":"来店予約の方は”予約”をメッセージとして送ってね"
+        "text":"来店予約の方は”予約”をメッセージとして送ってね。"
       });
     }
   }else{
-    client.pushMessage(ev.source.userId,{
+    return client.replyMessage(ev.replyToken,{
       "type":"text",
-      "text":"ユーザー登録のない方の予約はできません。"
+      "text":"ユーザー登録のない方は予約できません。"
     });
   }
 }

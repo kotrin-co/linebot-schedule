@@ -151,7 +151,8 @@ const handleMessageEvent = async (ev) => {
         }
       })
       .catch(e=>console.log(e.stack));
-
+    }
+    
   if(text === '予約'){
     checkUserExistence(ev)
       .then(existence=>{
@@ -265,6 +266,7 @@ const checkUserExistence = (ev) => {
 }
 
 const pickupReservedOrder = (ev) => {
+  console.log('pickupReservedOrder!!');
   const id = ev.source.userId;
   const now = ev.timestamp+32400000;
   const pickup_query = {

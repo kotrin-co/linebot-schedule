@@ -150,9 +150,10 @@ const handleMessageEvent = async (ev) => {
 
   if(text === '予約'){
     const userCheck = checkUserExistence(ev);
+    const id = ev.source.userId;
     if(userCheck){
       resetReservationOrder(ev.source.userId,0);
-      client.replyMessage(ev.replyToken,{
+      client.pushMessage(id,{
         "type":"flex",
         "altText":"FlexMessage",
         "contents":
@@ -226,13 +227,13 @@ const handleMessageEvent = async (ev) => {
           }
         })
     }else{
-      client.replyMessage(ev.source.userId,{
+      client.pushMessage(id,{
         "type":"text",
         "text":"来店予約の方は”予約”をメッセージとして送ってね。"
       });
     }
   }else{
-    return client.replyMessage(ev.replyToken,{
+    return client.pushMessage(id,{
       "type":"text",
       "text":"ユーザー登録のない方は予約できません。"
     });

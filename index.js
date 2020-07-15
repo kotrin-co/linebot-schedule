@@ -131,6 +131,7 @@ const get_Date = (timestamp,mode) => {
 
 const handleMessageEvent = async (ev) => {
   console.log('handleMessageEvent!!',ev);
+  const id = ev.source.userId;
 
   const text = (ev.message.type === 'text') ? ev.message.text : '';
 
@@ -153,7 +154,7 @@ const handleMessageEvent = async (ev) => {
       .then(existence=>{
         console.log('existence:',existence);
         if(existence){
-          resetReservationOrder(ev.source.userId,0);
+          resetReservationOrder(id,0);
           client.pushMessage(id,{
             "type":"flex",
             "altText":"FlexMessage",

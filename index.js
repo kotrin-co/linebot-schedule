@@ -241,6 +241,7 @@ const handleMessageEvent = async (ev) => {
 
 const checkUserExistence = (ev) => {
   return new Promise((resolve,reject)=>{
+    const id = ev.source.userId;
     let check = false;
     const user_check = {
       text:`SELECT * FROM users WHERE line_uid = $1;`,

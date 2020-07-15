@@ -150,6 +150,7 @@ const handleMessageEvent = async (ev) => {
 
   if(text === '予約'){
     const userCheck = checkUserExistence(ev);
+    console.log('usercheck:',userCheck);
     const id = ev.source.userId;
     if(userCheck){
       resetReservationOrder(ev.source.userId,0);
@@ -243,19 +244,19 @@ const handleMessageEvent = async (ev) => {
 
 const checkUserExistence = (ev) => {
   const id = ev.source.userId;
+  let check = false;
   const user_check = {
     text:`SELECT * FROM users WHERE line_uid = $1;`,
     values:[`${id}`]
   }
   connection.query(user_check)
     .then(res=>{
-      console.log('res:',res.rows[0]);
-      if(res.rows[0]){
+      console.log('res:',res.rows);
+      if(res.rows.length){
         console.log('存在するユーザーです。');
-        return true;
-      }else{
-        return false;
+        check = true;
       }
+      return check;
     })
     .catch(e=>console.log(e.stack));
 }
@@ -264,7 +265,7 @@ const pickupReservedOrder = (ev) => {
   const id = ev.source.userId;
   const now = ev.timestamp+32400000;
   const pickup_query = {
-    text:`SELECT starttime FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC`,
+    text:`SELECT * FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC`,
     values:[`${id}`]
   };
   connection.query(pickup_query)

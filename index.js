@@ -281,9 +281,11 @@ const pickupReservedOrder = (ev) => {
       });
       let reservedDate = '';
       console.log('reservedArray:',reservedArray);
-      reservedArray.forEach(value=>{
-        reservedDate += `${get_Date(parseInt(value),2)}, `;
-      });
+      if(reservedArray.length){
+        reservedArray.forEach(object=>{
+          reservedDate += `${get_Date(parseInt(object.starttime),2)}, `;
+        });
+      }
 
       client.pushMessage(id,{
         "type":"text",

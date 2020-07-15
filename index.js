@@ -229,13 +229,13 @@ const handleMessageEvent = async (ev) => {
     }else{
       client.pushMessage(id,{
         "type":"text",
-        "text":"来店予約の方は”予約”をメッセージとして送ってね。"
+        "text":"ユーザー登録のない方は予約できません。"
       });
     }
   }else{
-    return client.pushMessage(id,{
+    client.pushMessage(id,{
       "type":"text",
-      "text":"ユーザー登録のない方は予約できません。"
+      "text":"来店予約の方は”予約”をメッセージとして送ってね。"
     });
   }
 }
@@ -244,7 +244,8 @@ const handleMessageEvent = async (ev) => {
 const checkUserExistence = (ev) => {
   const id = ev.source.userId;
   const user_check = {
-    text:`SELECT * FROM users WHERE line_uid='${id}';`
+    text:`SELECT * FROM users WHERE line_uid = $1;`,
+    values:[`${id}`]
   }
   connection.query(user_check)
     .then(res=>{
@@ -263,7 +264,8 @@ const pickupReservedOrder = (ev) => {
   const id = ev.source.userId;
   const now = ev.timestamp+32400000;
   const pickup_query = {
-    text:`SELECT starttime FROM schedules WHERE line_uid =${id} ORDER BY starttime ASC`
+    text:`SELECT starttime FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC`,
+    values:[`${id}`]
   };
   connection.query(pickup_query)
     .then(res=>{

@@ -152,7 +152,7 @@ const handleMessageEvent = async (ev) => {
       })
       .catch(e=>console.log(e.stack));
     }
-    
+
   if(text === '予約'){
     checkUserExistence(ev)
       .then(existence=>{
@@ -269,6 +269,7 @@ const pickupReservedOrder = (ev) => {
   console.log('pickupReservedOrder!!');
   const id = ev.source.userId;
   const now = ev.timestamp+32400000;
+  console.log('now:',now);
   const pickup_query = {
     text:`SELECT * FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC`,
     values:[`${id}`]
@@ -279,7 +280,7 @@ const pickupReservedOrder = (ev) => {
         return parseInt(object.starttime) >= now;
       });
       let reservedDate = '';
-
+      console.log('reservedArray:',reservedArray);
       reservedArray.forEach(value=>{
         reservedDate += `${get_Date(parseInt(value),2)}, `;
       });

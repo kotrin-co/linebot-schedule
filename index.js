@@ -37,23 +37,6 @@ connection.query(create_stable)
     console.log('table schedules created successfully!!');
   })
   .catch(e=>console.error(e.stack));
-// const drop_table = {
-//   text:'DROP TABLE IF EXISTS quizzes;'
-// }
-// connection.query(drop_table)
-//   .then(()=>{
-//     console.log('table dropped successfully!');
-//   })
-//   .catch(e=>console.error(e.stack));
-
-// const create_table = {
-//   text:'CREATE TABLE IF NOT EXISTS quizzes (id SERIAL NOT NULL, question VARCHAR(255) NOT NULL, correct_answer VARCHAR(100) NOT NULL, incorrect_answer1 VARCHAR(100), incorrect_answer2 VARCHAR(100), incorrect_answer3 VARCHAR(100));'
-// }
-// connection.query(create_table)
-//   .then(()=>{
-//     console.log('table created successfully!');
-//   })
-//   .catch(e=>console.error(e.stack));
 
 const reservation_order = {
   menu:null,
@@ -70,14 +53,6 @@ app
   .set('view engine', 'ejs')
   .get('/', (req, res) => res.render('pages/index'))
   .post('/hook',line.middleware(config),(req,res)=> lineBot(req,res))
-  // {
-  //   res.sendStatus(200);
-  //   Promise
-  //     .all(req.body.events.map(handleEvent))
-  //     .then((result)=>{
-  //       console.log('event proceed');
-  //     });
-  // })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
 const lineBot = (req,res) => {
@@ -111,33 +86,27 @@ const greeting_follow = async (ev) => {
   console.log('profile:',pro);
   const timeStamp = get_Date(ev.timestamp+32400000,0);
 
-  const user_check = {
-    text:`SELECT * FROM users WHERE line_uid='${ev.source.userId}';`
+  const userCheck = checkUserExistence(ev);
+
+  if(userCheck){
+    console.log('すでに存在するユーザーです。');
+    return;
+  }else{
+    const table_insert = {
+      text:'INSERT INTO users (line_uid,display_name,timestamp) VALUES($1,$2,$3)',
+      values:[ev.source.userId,pro.displayName,timeStamp]
+    };
+    connection.query(table_insert)
+      .then(()=>{
+        console.log('insert successfully!!@@')
+      })
+      .catch(e=>console.error(e.stack));
+  
+    return client.replyMessage(ev.replyToken,{
+      "type":"text",
+      "text":`${pro.displayName}さん、フォローありがとうございます！`
+    });
   }
-  connection.query(user_check)
-    .then(res=>{
-      console.log('res:',res.rows[0]);
-      if(res.rows[0]){
-        console.log('すでに存在するユーザーです。');
-        return;
-      }else{
-        const table_insert = {
-          text:'INSERT INTO users (line_uid,display_name,timestamp) VALUES($1,$2,$3)',
-          values:[ev.source.userId,pro.displayName,timeStamp]
-        };
-        connection.query(table_insert)
-          .then(()=>{
-            console.log('insert successfully!!@@')
-          })
-          .catch(e=>console.error(e.stack));
-      
-        return client.replyMessage(ev.replyToken,{
-          "type":"text",
-          "text":`${pro.displayName}さん、フォローありがとうございます！`
-        });
-      }
-    })
-    .catch(e=>console.error(e.stack));
 }
 
 const get_Date = (timestamp,mode) => {
@@ -150,11 +119,12 @@ const get_Date = (timestamp,mode) => {
   const i = ("0" + date.getMinutes()).slice(-2);
   const s = ("0" + date.getSeconds()).slice(-2);
   console.log(`タイムスタンプ変換${timestamp}　→　${y}/${m}/${d} ${h}:${i}:${s}`);
-  // return [y,m,d,h,i,s];
   if(mode === 0){
     return `${y}/${m}/${d} ${h}:${i}:${s}`;
   }else if(mode === 1){
     return `${h}:${i}`;
+  }else if(mode === 2){
+    return `${m}/${d} ${h}:${i}`;
   }
   
 }
@@ -164,88 +134,150 @@ const handleMessageEvent = async (ev) => {
 
   const text = (ev.message.type === 'text') ? ev.message.text : '';
 
+  //「予約確認」のメッセージが送られて来た場合に、現在予約している日時をリプライする
+
+  if(text === '予約確認'){
+    const userCheck = checkUserExistence(ev);
+    if(userCheck){
+      const reserved = pickupReservedOrder(ev);
+
+    }
+  }
+
   if(text === '予約'){
-    resetReservationOrder(ev.source.userId,0);
-    client.replyMessage(ev.replyToken,{
-      "type":"flex",
-      "altText":"FlexMessage",
-      "contents":
-        {
-          "type": "bubble",
-          "header": {
-            "type": "box",
-            "layout": "vertical",
-            "contents": [
-              {
-                "type": "text",
-                "text": "メニューを選択してください。",
-                "contents": [],
-                "position": "relative",
-                "wrap": false,
-                "gravity": "center",
-                "decoration": "none",
-                "style": "normal",
-                "weight": "regular",
-                "size": "md"
-              }
-            ]
-          },
-          "body": {
-            "type": "box",
-            "layout": "vertical",
-            "contents": [
-              {
-                "type": "button",
-                "action": {
-                  "type": "postback",
-                  "label": "MENU A  ¥1500",
-                  "data": "cut"
-                },
-                "style": "primary",
-                "position": "relative"
-              },
-              {
-                "type": "button",
-                "action": {
-                  "type": "postback",
-                  "label": "MENU B  ¥2000",
-                  "data": "cutandshampoo"
-                },
-                "style": "primary",
-                "margin": "md",
-                "position": "relative"
-              },
-              {
-                "type": "button",
-                "action": {
-                  "type": "postback",
-                  "label": "MENU C  ¥4000",
-                  "data": "color"
-                },
-                "position": "relative",
-                "margin": "md",
-                "style": "primary"
-              }
-            ]
-          },
-          "styles": {
+    const userCheck = checkUserExistence(ev);
+    if(userCheck){
+      resetReservationOrder(ev.source.userId,0);
+      client.replyMessage(ev.replyToken,{
+        "type":"flex",
+        "altText":"FlexMessage",
+        "contents":
+          {
+            "type": "bubble",
             "header": {
-              "separator": true,
-              "separatorColor": "#000000"
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "メニューを選択してください。",
+                  "contents": [],
+                  "position": "relative",
+                  "wrap": false,
+                  "gravity": "center",
+                  "decoration": "none",
+                  "style": "normal",
+                  "weight": "regular",
+                  "size": "md"
+                }
+              ]
             },
-            "footer": {
-              "separator": true
+            "body": {
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "button",
+                  "action": {
+                    "type": "postback",
+                    "label": "カット  ¥1500",
+                    "data": "cut"
+                  },
+                  "style": "primary",
+                  "position": "relative"
+                },
+                {
+                  "type": "button",
+                  "action": {
+                    "type": "postback",
+                    "label": "カット＆シャンプー  ¥2000",
+                    "data": "cutandshampoo"
+                  },
+                  "style": "primary",
+                  "margin": "md",
+                  "position": "relative"
+                },
+                {
+                  "type": "button",
+                  "action": {
+                    "type": "postback",
+                    "label": "カラーリング  ¥4000",
+                    "data": "color"
+                  },
+                  "position": "relative",
+                  "margin": "md",
+                  "style": "primary"
+                }
+              ]
+            },
+            "styles": {
+              "header": {
+                "separator": true,
+                "separatorColor": "#000000"
+              },
+              "footer": {
+                "separator": true
+              }
             }
           }
-        }
-      })
-      }else{
-        return client.replyMessage(ev.replyToken,{
-          "type":"text",
-          "text":"来店予約の方は”予約”をメッセージとして送ってね"
-        });
-      }
+        })
+    }else{
+      return client.replyMessage(ev.replyToken,{
+        "type":"text",
+        "text":"来店予約の方は”予約”をメッセージとして送ってね"
+      });
+    }
+  }else{
+    client.pushMessage(ev.source.userId,{
+      "type":"text",
+      "text":"ユーザー登録のない方の予約はできません。"
+    });
   }
+}
+
+
+const checkUserExistence = (ev) => {
+  const id = ev.source.userId;
+  const user_check = {
+    text:`SELECT * FROM users WHERE line_uid='${id}';`
+  }
+  connection.query(user_check)
+    .then(res=>{
+      console.log('res:',res.rows[0]);
+      if(res.rows[0]){
+        console.log('存在するユーザーです。');
+        return true;
+      }else{
+        return false;
+      }
+    })
+    .catch(e=>console.log(e.stack));
+}
+
+const pickupReservedOrder = (ev) => {
+  const id = ev.source.userId;
+  const now = ev.timestamp+32400000;
+  const pickup_query = {
+    text:`SELECT starttime FROM schedules WHERE line_uid =${id} ORDER BY starttime ASC`
+  };
+  connection.query(pickup_query)
+    .then(res=>{
+      const reservedArray = res.rows.filter(object=>{
+        return parseInt(object.starttime) >= now;
+      });
+      let reservedDate = '';
+
+      reservedArray.forEach(value=>{
+        reservedDate += `${get_Date(parseInt(value),2)}, `;
+      });
+
+      client.pushMessage(id,{
+        "type":"text",
+        "text":`次回予約日は${reservedDate}です。`
+      });
+    })
+    .catch(e=>console.log(e.stack));
+}
 
 const handlePostbackEvent = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
@@ -256,8 +288,7 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.menu = 0;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":"ユーザーさん、次のご予約はMENU Aですね。ご希望の日にちを選択してください。"
-        // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
+        "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
       });
       setTimeout(()=>{
         pushDateSelector(id);
@@ -266,8 +297,7 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.menu = 1;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":"ユーザーさん、次のご予約はMENU Bですね。ご希望の日にちを選択してください。"
-        // "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。ご希望の日にちを選択してください。`
+        "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。ご希望の日にちを選択してください。`
       });
       setTimeout(()=>{
         pushDateSelector(id);
@@ -276,8 +306,7 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.menu = 2;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":"ユーザーさん、次のご予約はMENU Cですね。ご希望の日にちを選択してください。"
-        // "text":`${pro.displayName}さん、次のご予約はカラーリングですね。ご希望の日にちを選択してください。`
+        "text":`${pro.displayName}さん、次のご予約はカラーリングですね。ご希望の日にちを選択してください。`
       });
       setTimeout(()=>{
         pushDateSelector(id);
@@ -765,163 +794,3 @@ const confirmReservation = (id,time,i) => {
     });
   }
 }
-  // const iTime = parseInt(time);
-  // const startTime = new Date(`${reservation_order.date} ${iTime}:00`);
-  // const startPoint = startTime.getTime();
-  // const endTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
-  // const endPoint = endTime.getTime();
-  // const nextTime = new Date(`${reservation_order.date} ${iTime+1}:00`);
-  // const nextPoint = nextTime.getTime();
-  // const nearestPoint = 0;
-  // const treatmentTime = TIMES_OF_MENU[reservation_order.menu]*1000;
-  // console.log('startPoint:',startPoint);
-  // console.log('endPoint:',endPoint);
-  
-  // // iTimeより１つ次の時間帯の最初のstarttimeを抜き出す処理
-  // const select_query1 = {
-  //   text:'SELECT starttime from schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
-  //   values:[`${reservation_order.date}`]
-  // };
-  // connection.query(select_query1)
-  // 　.then(res=>{
-  //     if(res.rows.length){
-  //       console.log('res.rows starttime:',res.rows);
-  //       const sTimeArray = res.rows.map(param=>parseInt(param.starttime));
-  //       console.log('sTimeArray:',sTimeArray);
-  //       const dFromNextPoint = sTimeArray.filter(param=>(param-nextPoint)>0);
-  //       console.log('dFromNextPoint:',dFromNextPoint);
-  //       nearestPoint = dFromNextPoint[0];
-  //       console.log('nearestPoint:',nearestPoint);
-  //     }
-  //   })
-  //   .catch(e=>console.log(e.stack));
-
-  // const select_query2 = {
-  //   text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
-  //   values:[`${reservation_order.date}`]
-  // };
-  // connection.query(select_query2)
-  //   .then(res=>{
-  //     if(res.rows.length){
-  //       console.log('res.rows:',res.rows);
-  //       const reserved_sTimes = [];
-  //       const reserved_eTimes = [];
-  //       const proposalTimes = [];
-  //       res.rows.forEach(param=>{
-  //         const sTime = parseInt(param.starttime);
-  //         const eTime = parseInt(param.endtime);
-  //         if(sTime<startPoint && eTime>startPoint){
-  //           reserved_sTimes.push(0);
-  //           reserved_eTimes.push(eTime);
-  //         }else if(sTime>=startPoint && sTime<=endPoint){
-  //           reserved_sTimes.push(sTime);
-  //           if(eTime>=startPoint && eTime<=endPoint){
-  //             reserved_eTimes.push(eTime);
-  //           }else{
-  //             reserved_eTimes.push(0);
-  //           }
-  //         }
-  //       });
-  //       console.log('reservedTimes',reserved_sTimes,reserved_eTimes);
-
-  //       if(reserved_sTimes.length && reserved_eTimes.length){
-  //         if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){
-  //           for(let i=0;i<reserved_sTimes.length-1;i++){
-  //             if(reserved_sTimes[i+1]-reserved_eTimes[i]>=treatmentTime){
-  //               proposalTimes.push(reserved_eTimes[i]);
-  //             }
-  //           }
-  //         }else if(reserved_sTimes[0] === 0 && reserved_eTimes[reserved_eTimes.length-1] !== 0){
-  //           for(let i=0;i<reserved_sTimes.length-1;i++){  
-  //             if(reserved_sTimes[i+1]-reserved_eTimes[i]>=treatmentTime){
-  //               proposalTimes.push(reserved_eTimes[i]);
-  //             }
-  //           }
-  //           if(nearestPoint !== 0){
-  //             if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
-  //               proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
-  //             }
-  //           }else{
-  //             proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
-  //           }
-  //         }else if(reserved_sTimes[0] !== 0 && reserved_eTimes[reserved_eTimes.length-1] === 0){
-  //           if(reserved_sTimes[0] - startPoint>=treatmentTime){
-  //             proposalTimes.push(startPoint);
-  //           }
-  //           for(let i=1;i<reserved_sTimes.length;i++){
-  //             if(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime){
-  //               proposalTimes.push(reserved_eTimes[i-1]);
-  //             }
-  //           }
-  //         }else{
-  //           console.log('ここが実行');
-  //           console.log('endpoint:',endPoint);
-  //           console.log('treatmentTime:',treatmentTime);
-  //           console.log('eTimes:',reserved_eTimes);
-  //           console.log('sub:',endPoint - reserved_eTimes[reserved_eTimes.length-1]);
-  //           if(reserved_sTimes[0] - startPoint>=treatmentTime){
-  //             proposalTimes.push(startPoint);
-  //           }
-  //           for(let i=1;i<reserved_sTimes.length;i++){
-  //             if(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime){
-  //               console.log(reserved_sTimes[i] - reserved_eTimes[i-1]>=treatmentTime)
-  //               proposalTimes.push(reserved_eTimes[i-1]);
-  //             }
-  //           }
-  //           if(nearestPoint !==0){
-  //             if(nearestPoint - reserved_eTimes[reserved_eTimes.length-1]>=treatmentTime){
-  //               proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
-  //             }
-  //           }else{
-  //             proposalTimes.push(reserved_eTimes[reserved_eTimes.length-1]);
-  //           }  
-  //         }
-  //       }else{
-  //         let i = 0;
-  //         while(startPoint+treatmentTime*i<endPoint){
-  //           proposalTimes.push(startPoint+treatmentTime*i);
-  //           i++;
-  //         }
-  //       }
-
-  //       console.log('proposal time:',proposalTimes);
-
-  //       // proposalTimesからの時間選択パート
-  //       if(proposalTimes.length){
-  //         const insert_query = {
-  //           text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-  //           values:[id,pro.displayName,reservation_order.date,proposalTimes[0],proposalTimes[0]+treatmentTime,MENU[reservation_order.menu]]
-  //         };
-  //         connection.query(insert_query)
-  //           .then(res=>{
-  //             const reservedTime = get_Date(proposalTimes[0],1);
-  //             client.pushMessage(id,{
-  //               "type":"text",
-  //               "text":`${reservedTime}に予約しました。ご予約ありがとうございます。`
-  //             });
-  //           })
-  //           .catch(e=>console.error(e.stack));
-  //       }else{
-  //         client.pushMessage(id,{
-  //           "type":"text",
-  //           "text":"この時間帯には空いている時間がありませんでした。別の時間帯を選択してください。"
-  //         });
-  //       }
-  //     }else{
-  //       console.log('res.rows.length判定がfalse');
-  //       const reservedTime = get_Date(startPoint,1);
-  //       const insert_query = {
-  //         text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-  //         values:[id,pro.displayName,reservation_order.date,startPoint,startPoint+treatmentTime,MENU[reservation_order.menu]]
-  //       };
-  //       connection.query(insert_query)
-  //         .then(res=>{
-  //           client.pushMessage(id,{
-  //             "type":"text",
-  //             "text":`${reservedTime}に予約しました。ご予約ありがとうございます。`
-  //           });
-  //         })
-  //         .catch(e=>console.error(e.stack));
-  //     }
-  //   })
-  //   .catch(e=>console.log(e.stack));

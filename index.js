@@ -136,7 +136,7 @@ const handleMessageEvent = async (ev) => {
   const text = (ev.message.type === 'text') ? ev.message.text : '';
 
   //「予約確認」のメッセージが送られて来た場合に、現在予約している日時をリプライする
-
+  // ただしそのユーザが登録されていることをチェックした上でとする
   if(text === '予約確認'){
     checkUserExistence(ev)
       .then(existence=>{
@@ -172,86 +172,98 @@ const handleMessageEvent = async (ev) => {
     }
 
   if(text === '予約'){
-    checkReservation(ev)
     // 現時点より先に予約が入っていたら予約できないようにする。
     checkUserExistence(ev)
       .then(existence=>{
         console.log('existence:',existence);
         if(existence){
-          resetReservationOrder(id,0);
-          client.pushMessage(id,{
-            "type":"flex",
-            "altText":"FlexMessage",
-            "contents":
-              {
-                "type": "bubble",
-                "header": {
-                  "type": "box",
-                  "layout": "vertical",
-                  "contents": [
+          pickupReservedOrder(ev)
+            .then(reservedArray=>{
+              if(reservedArray.length){
+                client.pushMessage(id,{
+                  "type":"text",
+                  "text":"予約は２つ以上入れることはできません。"
+                });
+              }else{
+                resetReservationOrder(id,0);
+                client.pushMessage(id,{
+                  "type":"flex",
+                  "altText":"FlexMessage",
+                  "contents":
                     {
-                      "type": "text",
-                      "text": "メニューを選択してください。",
-                      "contents": [],
-                      "position": "relative",
-                      "wrap": false,
-                      "gravity": "center",
-                      "decoration": "none",
-                      "style": "normal",
-                      "weight": "regular",
-                      "size": "md"
+                      "type": "bubble",
+                      "header": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                          {
+                            "type": "text",
+                            "text": "メニューを選択してください。",
+                            "contents": [],
+                            "position": "relative",
+                            "wrap": false,
+                            "gravity": "center",
+                            "decoration": "none",
+                            "style": "normal",
+                            "weight": "regular",
+                            "size": "md"
+                          }
+                        ]
+                      },
+                      "body": {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                          {
+                            "type": "button",
+                            "action": {
+                              "type": "postback",
+                              "label": "カット  ¥1500",
+                              "data": "cut"
+                            },
+                            "style": "primary",
+                            "position": "relative"
+                          },
+                          {
+                            "type": "button",
+                            "action": {
+                              "type": "postback",
+                              "label": "カット＆シャンプー  ¥2000",
+                              "data": "cutandshampoo"
+                            },
+                            "style": "primary",
+                            "margin": "md",
+                            "position": "relative"
+                          },
+                          {
+                            "type": "button",
+                            "action": {
+                              "type": "postback",
+                              "label": "カラーリング  ¥4000",
+                              "data": "color"
+                            },
+                            "position": "relative",
+                            "margin": "md",
+                            "style": "primary"
+                          }
+                        ]
+                      },
+                      "styles": {
+                        "header": {
+                          "separator": true,
+                          "separatorColor": "#000000"
+                        },
+                        "footer": {
+                          "separator": true
+                        }
+                      }
                     }
-                  ]
-                },
-                "body": {
-                  "type": "box",
-                  "layout": "vertical",
-                  "contents": [
-                    {
-                      "type": "button",
-                      "action": {
-                        "type": "postback",
-                        "label": "カット  ¥1500",
-                        "data": "cut"
-                      },
-                      "style": "primary",
-                      "position": "relative"
-                    },
-                    {
-                      "type": "button",
-                      "action": {
-                        "type": "postback",
-                        "label": "カット＆シャンプー  ¥2000",
-                        "data": "cutandshampoo"
-                      },
-                      "style": "primary",
-                      "margin": "md",
-                      "position": "relative"
-                    },
-                    {
-                      "type": "button",
-                      "action": {
-                        "type": "postback",
-                        "label": "カラーリング  ¥4000",
-                        "data": "color"
-                      },
-                      "position": "relative",
-                      "margin": "md",
-                      "style": "primary"
-                    }
-                  ]
-                },
-                "styles": {
-                  "header": {
-                    "separator": true,
-                    "separatorColor": "#000000"
-                  },
-                  "footer": {
-                    "separator": true
-                  }
-                }
+                  })
               }
             })
+            .catch(e=>console.log(e.stack));
+
+          
         }else{
           client.pushMessage(id,{
             "type":"text",

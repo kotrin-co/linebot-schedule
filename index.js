@@ -41,7 +41,8 @@ connection.query(create_stable)
 const reservation_order = {
   menu:null,
   date:null,
-  reservable:null
+  reservable:null,
+  reserved:null
 };
 
 const MENU = ['cut','cut&shampoo','color'];
@@ -132,8 +133,88 @@ const get_Date = (timestamp,mode) => {
 const handleMessageEvent = async (ev) => {
   console.log('handleMessageEvent!!',ev);
   const id = ev.source.userId;
-
   const text = (ev.message.type === 'text') ? ev.message.text : '';
+
+  // 「予約削除」のメッセージが送られて来た場合に、現在予約している日時をリプライし、
+  // 予約削除の確認メッセージを出し、「はい」が選ばれた際に削除する。
+  if(text === '予約削除'){
+    checkUserExistence(ev)
+      .then(existence=>{
+        if(existence){
+          pickupReservedOrder(ev)
+            .then(reservedArray=>{
+              if(reservedArray.length){
+                let reservedDate='';
+                reservedArray.forEach(object=>{
+                  reservation_order.reserved = object;
+                  reservedDate += `${get_Date(parseInt(object.starttime),2)}`;
+                });
+                client.pushMessage(id,{
+                  "type":"text",
+                  "text":`次回予約日は${reservedDate}です。`
+                });
+                client.pushMessage(id,{
+                  "type":"flex",
+                  "altText":"date_selector",
+                  "contents":
+                  {
+                    "type": "bubble",
+                    "header": {
+                      "type": "box",
+                      "layout": "vertical",
+                      "contents": [
+                        {
+                          "type": "text",
+                          "text": "この予約を削除しますか？"
+                        }
+                      ]
+                    },
+                    "body": {
+                      "type": "box",
+                      "layout": "horizontal",
+                      "contents": [
+                        {
+                          "type": "button",
+                          "action": {
+                            "type": "postback",
+                            "label": "はい",
+                            "data": `delete-yes`
+                          },
+                          "style": "primary",
+                          "margin": "lg"
+                        },
+                        {
+                          "type": "button",
+                          "action": {
+                            "type": "postback",
+                            "label": "いいえ",
+                            "data": `delete-no`
+                          },
+                          "style": "secondary",
+                          "margin": "lg"
+                        }
+                      ]
+                    }
+                  }
+                });
+              }else{
+                client.pushMessage(id,{
+                  "type":"text",
+                  "text":`次回の予約は入っておりません。`
+                });
+              }
+            })
+            .catch(e=>console.log(e.stack));
+        }else{
+          client.pushMessage(id,{
+            "type":"text",
+            "text":"ユーザー登録のない方は予約操作できません。"
+          });
+        }
+      })
+      .catch(e=>console.log(e.stack));
+  }
+
 
   //「予約確認」のメッセージが送られて来た場合に、現在予約している日時をリプライする
   // ただしそのユーザが登録されていることをチェックした上でとする
@@ -147,7 +228,7 @@ const handleMessageEvent = async (ev) => {
               if(reservedArray.length){
                 let reservedDate='';
                 reservedArray.forEach(object=>{
-                  reservedDate += `${get_Date(parseInt(object.starttime),2)},`;
+                  reservedDate += `${get_Date(parseInt(object.starttime),2)}`;
                 });
                 client.pushMessage(id,{
                   "type":"text",
@@ -218,7 +299,7 @@ const handleMessageEvent = async (ev) => {
                             "type": "button",
                             "action": {
                               "type": "postback",
-                              "label": "カット  ¥1500",
+                              "label": "MENU A  ¥1500",
                               "data": "cut"
                             },
                             "style": "primary",
@@ -228,7 +309,7 @@ const handleMessageEvent = async (ev) => {
                             "type": "button",
                             "action": {
                               "type": "postback",
-                              "label": "カット＆シャンプー  ¥2000",
+                              "label": "MENU B  ¥2000",
                               "data": "cutandshampoo"
                             },
                             "style": "primary",
@@ -239,7 +320,7 @@ const handleMessageEvent = async (ev) => {
                             "type": "button",
                             "action": {
                               "type": "postback",
-                              "label": "カラーリング  ¥4000",
+                              "label": "MENU C  ¥4000",
                               "data": "color"
                             },
                             "position": "relative",
@@ -315,35 +396,6 @@ const pickupReservedOrder = (ev) => {
   });
 }
 
-// const pickupReservedOrder = (ev) => {
-//   console.log('pickupReservedOrder!!');
-//   const id = ev.source.userId;
-//   const now = ev.timestamp+32400000;
-//   console.log('now:',now);
-//   const pickup_query = {
-//     text:`SELECT * FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC`,
-//     values:[`${id}`]
-//   };
-//   connection.query(pickup_query)
-//     .then(res=>{
-//       const reservedArray = res.rows.filter(object=>{
-//         return parseInt(object.starttime) >= now;
-//       });
-//       let reservedDate = '';
-//       console.log('reservedArray:',reservedArray);
-//       if(reservedArray.length){
-//         reservedArray.forEach(object=>{
-//           reservedDate += `${get_Date(parseInt(object.starttime),2)}, `;
-//         });
-//       }
-
-//       client.pushMessage(id,{
-//         "type":"text",
-//         "text":`次回予約日は${reservedDate}です。`
-//       });
-//     })
-//     .catch(e=>console.log(e.stack));
-// }
 
 const handlePostbackEvent = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
@@ -388,6 +440,7 @@ const handlePostbackEvent = async (ev) => {
     time = parseInt(ev.postback.data.slice(4));
     console.log('postback time proceeding! time:',time);
     confirmReservation(id,time,0);
+
   }else if(ev.postback.data.slice(0,6) === 'answer'){
     const result = ev.postback.data.split('-');
     console.log('result:',result);
@@ -407,10 +460,36 @@ const handlePostbackEvent = async (ev) => {
               "type":"text",
               "text":`${reservation_order.date}  ${reservedTime}に予約しました。ご予約ありがとうございます。`
             });
+            resetReservationOrder(id,0);
           })
           .catch(e=>console.error(e.stack));
     }else{
       confirmReservation(id,parseInt(result[2]),parseInt(result[3])+1);
+    }
+  }else if(ev.postback.data.slice(0,6) === 'delete'){
+    console.log('reservation_order.reserved:',reservation_order.reserved);
+    const result = ev.postback.data.split('-');
+    if(result[1] === 'yes'){
+      const target = reservation_order.reserved.starttime;
+      const delete_query = {
+        text:'DELETE FROM schedules WHERE starttime = $1;',
+        values:[`${target}`]
+      };
+      connection.query(delete_query)
+        .then(res=>{
+          console.log('delete res.rows:',res.rows);
+          client.pushMessage(id,{
+            "type":"text",
+            "text":"予約削除を受け付けました。再度予約してください。"
+          });
+        })
+        .catch(e=>console.log(e.stack));
+    }else{
+      client.pushMessage(id,{
+        "type":"text",
+        "text":"削除を取りやめした。"
+      });
+      resetReservationOrder(id,0);
     }
   }
 }
@@ -419,6 +498,7 @@ const resetReservationOrder = (id,num) => {
   reservation_order.menu = null;
   reservation_order.date = null;
   reservation_order.reservable = null;
+  reservation_order.reserved = null;
   if(num === 1){
     client.pushMessage(id,{
       "type":"text",

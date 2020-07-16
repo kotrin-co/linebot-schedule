@@ -142,7 +142,25 @@ const handleMessageEvent = async (ev) => {
       .then(existence=>{
         console.log('existence:',existence);
         if(existence){
-          pickupReservedOrder(ev);
+          pickupReservedOrder(ev)
+            .then(reservedArray=>{
+              if(reservedArray.length){
+                let reservedDate='';
+                reservedArray.forEach(object=>{
+                  reservedDate += `${get_Date(parseInt(object.starttime),2)},`;
+                });
+                client.pushMessage(id,{
+                  "type":"text",
+                  "text":`次回予約日は${reservedDate}です。`
+                });
+              }else{
+                client.pushMessage(id,{
+                  "type":"text",
+                  "text":`次回の予約は入っておりません。`
+                });
+              }
+            })
+            .catch(e=>console.log(e.stack));
         }else{
           client.pushMessage(id,{
             "type":"text",
@@ -154,6 +172,8 @@ const handleMessageEvent = async (ev) => {
     }
 
   if(text === '予約'){
+    checkReservation(ev)
+    // 現時点より先に予約が入っていたら予約できないようにする。
     checkUserExistence(ev)
       .then(existence=>{
         console.log('existence:',existence);
@@ -243,7 +263,6 @@ const handleMessageEvent = async (ev) => {
   }
 }
 
-
 const checkUserExistence = (ev) => {
   return new Promise((resolve,reject)=>{
     const id = ev.source.userId;
@@ -266,34 +285,53 @@ const checkUserExistence = (ev) => {
 }
 
 const pickupReservedOrder = (ev) => {
-  console.log('pickupReservedOrder!!');
-  const id = ev.source.userId;
-  const now = ev.timestamp+32400000;
-  console.log('now:',now);
-  const pickup_query = {
-    text:`SELECT * FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC`,
-    values:[`${id}`]
-  };
-  connection.query(pickup_query)
-    .then(res=>{
-      const reservedArray = res.rows.filter(object=>{
-        return parseInt(object.starttime) >= now;
-      });
-      let reservedDate = '';
-      console.log('reservedArray:',reservedArray);
-      if(reservedArray.length){
-        reservedArray.forEach(object=>{
-          reservedDate += `${get_Date(parseInt(object.starttime),2)}, `;
+  return new Promise((resolve,reject)=>{
+    const id = ev.source.userId;
+    const now = ev.timestamp+32400000;
+    const pickup_query = {
+      text:'SELECT * FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC',
+      values:[`${id}`]
+    };
+    connection.query(pickup_query)
+      .then(res=>{
+        const reservedArray = res.rows.filter(object=>{
+          return parseInt(object.starttime) >= now;
         });
-      }
-
-      client.pushMessage(id,{
-        "type":"text",
-        "text":`次回予約日は${reservedDate}です。`
-      });
-    })
-    .catch(e=>console.log(e.stack));
+        resolve(reservedArray);
+      })
+      .catch(e=>console.log(e.stack));
+  });
 }
+
+// const pickupReservedOrder = (ev) => {
+//   console.log('pickupReservedOrder!!');
+//   const id = ev.source.userId;
+//   const now = ev.timestamp+32400000;
+//   console.log('now:',now);
+//   const pickup_query = {
+//     text:`SELECT * FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC`,
+//     values:[`${id}`]
+//   };
+//   connection.query(pickup_query)
+//     .then(res=>{
+//       const reservedArray = res.rows.filter(object=>{
+//         return parseInt(object.starttime) >= now;
+//       });
+//       let reservedDate = '';
+//       console.log('reservedArray:',reservedArray);
+//       if(reservedArray.length){
+//         reservedArray.forEach(object=>{
+//           reservedDate += `${get_Date(parseInt(object.starttime),2)}, `;
+//         });
+//       }
+
+//       client.pushMessage(id,{
+//         "type":"text",
+//         "text":`次回予約日は${reservedDate}です。`
+//       });
+//     })
+//     .catch(e=>console.log(e.stack));
+// }
 
 const handlePostbackEvent = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);

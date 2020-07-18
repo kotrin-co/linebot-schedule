@@ -137,7 +137,7 @@ const handleMessageEvent = async (ev) => {
 
   // 「予約削除」のメッセージが送られて来た場合に、現在予約している日時をリプライし、
   // 予約削除の確認メッセージを出し、「はい」が選ばれた際に削除する。
-  if(text === '予約削除'){
+  if(text === '予約キャンセル'){
     checkUserExistence(ev)
       .then(existence=>{
         if(existence){

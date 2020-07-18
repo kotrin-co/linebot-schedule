@@ -158,6 +158,7 @@ const handleMessageEvent = async (ev) => {
                     "type": "template",
                     "template": {
                         "type": "confirm",
+                        "text": "この予約をキャンセルしますか？",
                         "actions": [
                             {
                                 "type": "postback",
@@ -169,8 +170,7 @@ const handleMessageEvent = async (ev) => {
                                 "label": "いいえ",
                                 "text": "delete-no"
                             }
-                        ],
-                        "text": "この予約をキャンセルしますか？"
+                        ]
                     }
                   });
                 },1500);

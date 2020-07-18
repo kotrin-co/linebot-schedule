@@ -411,10 +411,18 @@ const handlePostbackEvent = async (ev) => {
     resetReservationOrder(id,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
-    console.log('reservation_order.date:',reservation_order.date);
-    console.log('date timestamp:',new Date(reservation_order.date));
-    checkReservableTimes(id,TIMES_OF_MENU[reservation_order.menu]*1000);
-    
+    const now = new Date().getTime();
+    const targetDate = new Date(reservation_order.date).getTime();
+    console.log('now:',now);
+    console.log('targetDate:',targetDate);
+    if(targetDate>now){
+      checkReservableTimes(id,TIMES_OF_MENU[reservation_order.menu]*1000);
+    }else{
+      client.pushMessage(id,{
+        "type":"text",
+        "text":"過去の日にちは指定できません。"
+      });
+    }
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = parseInt(ev.postback.data.slice(4));
     console.log('postback time proceeding! time:',time);

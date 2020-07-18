@@ -155,25 +155,24 @@ const handleMessageEvent = async (ev) => {
                 });
                 setTimeout(()=>{
                   client.pushMessage(id,{
-
-                        "type": "template",
-                        "altText": "予約キャンセル",
-                        "template": {
-                            "type": "confirm",
-                            "text": "この予約をキャンセルしますか？",
-                            "actions": [
-                                {
-                                    "type": "postback",
-                                    "label": "はい",
-                                    "data": "delete-yes"
-                                },
-                                {
-                                    "type": "postback",
-                                    "label": "いいえ",
-                                    "data": "delete-no"
-                                }
-                            ]
-                        }
+                    "type": "template",
+                    "altText": "予約キャンセル",
+                    "template": {
+                        "type": "confirm",
+                        "text": "この予約をキャンセルしますか？",
+                        "actions": [
+                            {
+                                "type": "postback",
+                                "label": "はい",
+                                "data": "delete-yes"
+                            },
+                            {
+                                "type": "postback",
+                                "label": "いいえ",
+                                "data": "delete-no"
+                            }
+                        ]
+                    }
                   });
                 },1500);
               }else{
@@ -459,14 +458,14 @@ const handlePostbackEvent = async (ev) => {
           console.log('delete res.rows:',res.rows);
           client.pushMessage(id,{
             "type":"text",
-            "text":"予約削除を受け付けました。再度予約してください。"
+            "text":"予約キャンセルを受け付けました。再度予約してください。"
           });
         })
         .catch(e=>console.log(e.stack));
     }else{
       client.pushMessage(id,{
         "type":"text",
-        "text":"削除を取りやめした。"
+        "text":"キャンセルを取りやめした。"
       });
       resetReservationOrder(id,0);
     }

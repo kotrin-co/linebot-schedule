@@ -448,9 +448,22 @@ const handlePostbackEvent = async (ev) => {
             const reservedTime = get_Date(s_time,1);
             client.pushMessage(id,{
               "type":"text",
-              "text":`${reservation_order.date}  ${reservedTime}に予約しました。ご予約ありがとうございます。`
+              "text":`${reservation_order.date}  ${reservedTime}に予約しました。`
             });
             resetReservationOrder(id,0);
+            setTimeout(()=>{
+              client.pushMessage(id,{
+                "type":"text",
+                "text":"ご予約ありがとうございます。ご来店を心よりお待ちしております。"
+              });
+            },500);
+            setTimeout(()=>{
+              client.pushMessage(id,{
+                "type":"sticker",
+                "packageId":"11539",
+                "stickerId":"52114115"
+              });
+            },750);
           })
           .catch(e=>console.error(e.stack));
     }else{

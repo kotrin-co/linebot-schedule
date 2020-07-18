@@ -155,10 +155,7 @@ const handleMessageEvent = async (ev) => {
                 });
                 setTimeout(()=>{
                   client.pushMessage(id,{
-                    "type":"flex",
-                    "altText":"date_selector",
-                    "contents":
-                      {
+
                         "type": "template",
                         "altText": "予約キャンセル",
                         "template": {
@@ -177,7 +174,6 @@ const handleMessageEvent = async (ev) => {
                                 }
                             ]
                         }
-                    }
                   });
                 },1500);
               }else{

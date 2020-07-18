@@ -411,7 +411,8 @@ const handlePostbackEvent = async (ev) => {
     resetReservationOrder(id,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
-
+    console.log('reservation_order.date:',reservation_order.date);
+    console.log('date timestamp:',new Date(reservation_order.date));
     checkReservableTimes(id,TIMES_OF_MENU[reservation_order.menu]*1000);
     
   }else if(ev.postback.data.slice(0,4) === 'time'){

@@ -156,6 +156,7 @@ const handleMessageEvent = async (ev) => {
                 setTimeout(()=>{
                   client.pushMessage(id,{
                     "type": "template",
+                    "altText":"確認テンプレート",
                     "template": {
                         "type": "confirm",
                         "text": "この予約をキャンセルしますか？",

@@ -158,44 +158,25 @@ const handleMessageEvent = async (ev) => {
                     "type":"flex",
                     "altText":"date_selector",
                     "contents":
-                    {
-                      "type": "bubble",
-                      "header": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                          {
-                            "type": "text",
-                            "text": "この予約を削除しますか？"
-                          }
-                        ]
-                      },
-                      "body": {
-                        "type": "box",
-                        "layout": "horizontal",
-                        "contents": [
-                          {
-                            "type": "button",
-                            "action": {
-                              "type": "postback",
-                              "label": "はい",
-                              "data": `delete-yes`
-                            },
-                            "style": "primary",
-                            "margin": "lg"
-                          },
-                          {
-                            "type": "button",
-                            "action": {
-                              "type": "postback",
-                              "label": "いいえ",
-                              "data": `delete-no`
-                            },
-                            "style": "secondary",
-                            "margin": "lg"
-                          }
-                        ]
-                      }
+                      {
+                        "type": "template",
+                        "altText": "予約キャンセル",
+                        "template": {
+                            "type": "confirm",
+                            "text": "この予約をキャンセルしますか？",
+                            "actions": [
+                                {
+                                    "type": "postback",
+                                    "label": "はい",
+                                    "text": "delete-yes"
+                                },
+                                {
+                                    "type": "postback",
+                                    "label": "いいえ",
+                                    "text": "delete-no"
+                                }
+                            ]
+                        }
                     }
                   });
                 },1500);

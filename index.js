@@ -165,12 +165,12 @@ const handleMessageEvent = async (ev) => {
                                 {
                                     "type": "postback",
                                     "label": "はい",
-                                    "text": "delete-yes"
+                                    "data": "delete-yes"
                                 },
                                 {
                                     "type": "postback",
                                     "label": "いいえ",
-                                    "text": "delete-no"
+                                    "data": "delete-no"
                                 }
                             ]
                         }

@@ -866,51 +866,24 @@ const confirmReservation = (id,time,i) => {
     console.log('proposalTime:',proposalTime);
 
     client.pushMessage(id,{
-      "type":"flex",
-      "altText":"date_selector",
-      "contents":
-      {
-        "type": "bubble",
-        "header": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            {
-              "type": "text",
-              "text": `${proposalTime}〜でいかがでしょうか。`
-            }
-          ]
-        },
-        "body": {
-          "type": "box",
-          "layout": "horizontal",
-          "contents": [
-            {
-              "type": "button",
-              "action": {
-                "type": "postback",
-                "label": "はい",
-                "data": `answer-yes-${time}-${i}`
+      "type": "template",
+      "template": {
+          "type": "confirm",
+          "text": `次回ご予約は ${proposalTime}〜 でいかがでしょうか。`,
+          "actions": [
+              {
+                  "type": "postback",
+                  "label": "はい",
+                  "data": `answer-yes-${time}-${i}`
               },
-              "style": "primary",
-              "margin": "lg"
-            },
-            {
-              "type": "button",
-              "action": {
-                "type": "postback",
-                "label": "いいえ",
-                "data": `answer-no-${time}-${i}`
-              },
-              "style": "secondary",
-              "margin": "lg"
-            }
+              {
+                  "type": "postback",
+                  "label": "いいえ",
+                  "data": `answer-no-${time}-${i}`
+              }
           ]
-        }
       }
-      }
-    );
-
+    });
   }else{
     client.pushMessage(id,{
       "type":"text",

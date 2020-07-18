@@ -867,6 +867,7 @@ const confirmReservation = (id,time,i) => {
 
     client.pushMessage(id,{
       "type": "template",
+      "altText":"予約確認",
       "template": {
           "type": "confirm",
           "text": `次回ご予約は ${proposalTime}〜 でいかがでしょうか。`,

@@ -483,8 +483,15 @@ const handlePostbackEvent = async (ev) => {
           console.log('delete res.rows:',res.rows);
           client.pushMessage(id,{
             "type":"text",
-            "text":"予約キャンセルを受け付けました。再度予約してください。"
+            "text":"予約キャンセルを受け付けました。"
           });
+          setTimeout(()=>{
+            client.pushMessage(id,{
+              "type":"sticker",
+              "packageId":"11538",
+              "stickerId":"51626522"
+            });
+          },750);
         })
         .catch(e=>console.log(e.stack));
     }else{

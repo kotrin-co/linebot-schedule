@@ -155,47 +155,22 @@ const handleMessageEvent = async (ev) => {
                 });
                 setTimeout(()=>{
                   client.pushMessage(id,{
-                    "type":"flex",
-                    "altText":"date_selector",
-                    "contents":
-                    {
-                      "type": "bubble",
-                      "header": {
-                        "type": "box",
-                        "layout": "vertical",
-                        "contents": [
-                          {
-                            "type": "text",
-                            "text": "この予約を削除しますか？"
-                          }
-                        ]
-                      },
-                      "body": {
-                        "type": "box",
-                        "layout": "horizontal",
-                        "contents": [
-                          {
-                            "type": "button",
-                            "action": {
-                              "type": "postback",
-                              "label": "はい",
-                              "data": `delete-yes`
+                    "type": "template",
+                    "template": {
+                        "type": "confirm",
+                        "actions": [
+                            {
+                                "type": "postback",
+                                "label": "はい",
+                                "data": "delete-yes"
                             },
-                            "style": "primary",
-                            "margin": "lg"
-                          },
-                          {
-                            "type": "button",
-                            "action": {
-                              "type": "postback",
-                              "label": "いいえ",
-                              "data": `delete-no`
-                            },
-                            "style": "secondary",
-                            "margin": "lg"
-                          }
-                        ]
-                      }
+                            {
+                                "type": "postback",
+                                "label": "いいえ",
+                                "text": "delete-no"
+                            }
+                        ],
+                        "text": "この予約をキャンセルしますか？"
                     }
                   });
                 },1500);

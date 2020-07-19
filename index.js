@@ -157,13 +157,13 @@ const handleMessageEvent = async (ev) => {
   if(text === '管理画面'){
     pickupAllReservations()
       .then(message=>{
-        console.log('adminData.reservations:',adminData.reservations);
         console.log('message:',message);
         console.log('adminData.users:',adminData.users);
         adminData.reservations.forEach(object=>{
           object.starttime = new Date(object.starttime);
           object.endtime = new Date(object.endtime);
         });
+        console.log('adminData.reservations:',adminData.reservations);
         client.pushMessage(id,{
           "type":"flex",
           "altText":"FlexMessage",

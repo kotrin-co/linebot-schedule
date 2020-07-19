@@ -10,8 +10,9 @@
 
 <h1>予約管理画面</h1>
 <% reservationsData.forEach((item)=>{ %>
-    <li><%= item.id %>:<%= item.name %>:<%= item.starttime %>:<%= item.endtime %></li>
+    <li><%= item.id %>:<%= item.name %>:<%= item.schedule.date %>:<%= item.starttime %>〜<%= item.endtime %></li>
 <% }); %>
 
+<script src='js/main.js'></script>
 </body>
 </html>

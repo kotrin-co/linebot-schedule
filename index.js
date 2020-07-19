@@ -492,9 +492,7 @@ const pickupAllReservations = () => {
               }
               adminData.reservations.push(reservation_elements);
             });
-            const reservation_elements = {
-              id:
-            }
+
             adminData.reservations = res.rows;
             resolve('selectクエリー成功！！');
           })

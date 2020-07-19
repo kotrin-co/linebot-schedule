@@ -159,9 +159,9 @@ const handleMessageEvent = async (ev) => {
       .then(message=>{
         console.log('message:',message);
         console.log('adminData.users:',adminData.users);
-        adminData.reservations.forEach(object=>{
-          object.starttime = new Date(object.starttime);
-          object.endtime = new Date(object.endtime);
+        adminData.reservations.map(object=>{
+          object.starttime = get_Date(parseInt(object.starttime),2);
+          object.endtime = get_Date(parseInt(object.endtime),2);
         });
         console.log('adminData.reservations:',adminData.reservations);
         client.pushMessage(id,{

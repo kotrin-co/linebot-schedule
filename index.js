@@ -58,15 +58,15 @@ app
   .use(express.static(path.join(__dirname, 'public')))
   // .use('/',router)
   .get('/',(req,res)=>{
-    res.render('views/pages/index');
+    res.render('pages/index');
   })
   .get('/users',(req,res)=>{
-    res.render('views/pages/users',{
+    res.render('pages/users',{
       usersData:adminData.users
     });
   })
   .get('/reservations',(req,res)=>{
-    res.render('views/pages/reservations',{
+    res.render('pages/reservations',{
       reservationsData:adminData.reservations
     });
   })

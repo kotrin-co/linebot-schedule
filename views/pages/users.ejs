@@ -9,6 +9,12 @@
   <% include ../partials/nav.ejs %>
 
 <h1>ユーザー管理画面</h1>
+    <% usersData.forEach((item)=>{ %>
+        <li><%= item.display_name %></li>
+    <% }); %>
+<ul>
+
+</ul>
 
 </body>
 </html>

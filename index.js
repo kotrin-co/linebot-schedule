@@ -4,7 +4,7 @@ const path = require('path')
 const line = require('@line/bot-sdk');
 const PORT = process.env.PORT || 5000
 const { Client } = require('pg');
-const router = require('./router/index');
+// const router = require('./router/index');
 
 const config = {
   channelAccessToken: process.env.ACCESS_TOKEN,
@@ -56,7 +56,20 @@ const TIMES_OF_MENU = [900,1200,1800];
 
 app
   .use(express.static(path.join(__dirname, 'public')))
-  .use('/',router)
+  // .use('/',router)
+  .get('/',(req,res)=>{
+    res.render('views/pages/index');
+  })
+  .get('/users',(req,res)=>{
+    res.render('views/pages/users',{
+      usersData:adminData.users
+    });
+  })
+  .get('/reservations',(req,res)=>{
+    res.render('views/pages/reservations',{
+      reservationsData:adminData.reservations
+    });
+  })
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .post('/hook',line.middleware(config),(req,res)=> lineBot(req,res))

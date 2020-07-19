@@ -9,6 +9,9 @@
   <% include ../partials/nav.ejs %>
 
 <h1>予約管理画面</h1>
+<% reservationsData.forEach((item)=>{ %>
+    <li><%= item.starttime %></li>
+<% }); %>
 
 </body>
 </html>

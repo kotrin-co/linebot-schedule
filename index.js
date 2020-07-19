@@ -480,6 +480,21 @@ const pickupAllReservations = () => {
         connection.query(pickup_reservations)
           .then(res=>{
             console.log('reservations:',res.rows);
+            res.rows.forEach(element=>{
+              const reservation_elements = {
+                id:element.id,
+                line_uid:element.line_uid,
+                name:element.name,
+                scheduledate:element.scheduledate.slice(0,10),
+                starttime:new Date(element.starttime),
+                endtime:new Date(element.endtime),
+                menu:element.menu
+              }
+              adminData.reservations.push(reservation_elements);
+            });
+            const reservation_elements = {
+              id:
+            }
             adminData.reservations = res.rows;
             resolve('selectクエリー成功！！');
           })

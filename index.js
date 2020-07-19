@@ -157,9 +157,9 @@ const handleMessageEvent = async (ev) => {
   if(text === '管理画面'){
     pickupAllReservation()
       .then(message=>{
+        console.log('adminData.reservations:',adminData.reservations);
         console.log('message:',message);
         console.log('adminData.users:',adminData.users);
-        console.log('adminData.reservations:',adminData.reservations);
       })
       .catch(e=>console.log(e.stack));
   }

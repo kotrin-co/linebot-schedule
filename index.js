@@ -160,6 +160,36 @@ const handleMessageEvent = async (ev) => {
         console.log('adminData.reservations:',adminData.reservations);
         console.log('message:',message);
         console.log('adminData.users:',adminData.users);
+        client.pushMessage(id,{
+          "type": "template",
+          "altText": "This is a buttons template",
+          "template": {
+              "type": "buttons",
+              "thumbnailImageUrl": "https://miraiz.chuden.co.jp/common/img/top/photo3.png",
+              "imageAspectRatio": "rectangle",
+              "imageSize": "cover",
+              "imageBackgroundColor": "#FFFFFF",
+              "title": "Menu",
+              "text": "Please select",
+              "defaultAction": {
+                  "type": "uri",
+                  "label": "View detail",
+                  "uri": "https://linebot-schedule.herokuapp.com/"
+              },
+              "actions": [
+                  {
+                    "type": "uri",
+                    "label": "管理画面へ",
+                    "data": "https://linebot-schedule.herokuapp.com/"
+                  },
+                  {
+                    "type": "postback",
+                    "label": "キャンセル",
+                    "data": "cancel"
+                  }
+              ]
+          }
+        });
       })
       .catch(e=>console.log(e.stack));
   }

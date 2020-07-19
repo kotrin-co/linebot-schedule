@@ -3,13 +3,13 @@ const router = express.Router();
 
 router 
     .get('/',(req,res)=>{
-        res.send('トップページ');
+        res.send('pages/index');
     })
     .get('/users',(req,res)=>{
-        res.send('ユーザー管理画面');
+        res.render('pages/users');
     })
-    .get('/reservation',(req,res)=>{
-        res.send('予約管理画面');
+    .get('/reservations',(req,res)=>{
+        res.send('pages/reservations');
     });
 
 module.exports = router;

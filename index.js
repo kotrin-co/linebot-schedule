@@ -161,35 +161,86 @@ const handleMessageEvent = async (ev) => {
         console.log('message:',message);
         console.log('adminData.users:',adminData.users);
         client.pushMessage(id,{
-          "type": "template",
-          "altText": "This is a buttons template",
-          "template": {
-              "type": "buttons",
-              "thumbnailImageUrl": "https://miraiz.chuden.co.jp/common/img/top/photo3.png",
-              "imageAspectRatio": "rectangle",
-              "imageSize": "cover",
-              "imageBackgroundColor": "#FFFFFF",
-              "title": "Menu",
-              "text": "Please select",
-              "defaultAction": {
-                  "type": "uri",
-                  "label": "デフォルト",
-                  "uri": "https://linebot-schedule.herokuapp.com/"
-              },
-              "actions": [
+          "type":"flex",
+          "altText":"FlexMessage",
+          "contents":
+            {
+              "type": "bubble",
+              "header": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
                   {
-                    "type": "uri",
-                    "label": "管理画面へ",
-                    "data": "https://linebot-schedule.herokuapp.com/"
+                    "type": "text",
+                    "text": "管理者画面へ移動しますか?",
+                    "color": "#ffffff"
+                  }
+                ]
+              },
+              "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "button",
+                    "action": {
+                      "type": "uri",
+                      "label": "管理者画面へ",
+                      "uri": "https://linebot-schedule.herokuapp.com/"
+                    },
+                    "style": "link"
                   },
                   {
-                    "type": "postback",
-                    "label": "キャンセル",
-                    "data": "cancel"
+                    "type": "button",
+                    "action": {
+                      "type": "postback",
+                      "label": "終了",
+                      "data": "cancel"
+                    },
+                    "margin": "lg"
                   }
-              ]
-          }
-        });
+                ]
+              },
+              "styles": {
+                "header": {
+                  "backgroundColor": "#0000ff",
+                  "separator": true,
+                  "separatorColor": "#ffffff"
+                }
+              }
+            }
+        }
+        //   {
+        //   "type": "template",
+        //   "altText": "This is a buttons template",
+        //   "template": {
+        //       "type": "buttons",
+        //       "thumbnailImageUrl": "https://miraiz.chuden.co.jp/common/img/top/photo3.png",
+        //       "imageAspectRatio": "rectangle",
+        //       "imageSize": "cover",
+        //       "imageBackgroundColor": "#FFFFFF",
+        //       "title": "Menu",
+        //       "text": "Please select",
+        //       "defaultAction": {
+        //           "type": "uri",
+        //           "label": "デフォルト",
+        //           "uri": "https://linebot-schedule.herokuapp.com/"
+        //       },
+        //       "actions": [
+        //           {
+        //             "type": "uri",
+        //             "label": "管理画面へ",
+        //             "data": "https://linebot-schedule.herokuapp.com/"
+        //           },
+        //           {
+        //             "type": "postback",
+        //             "label": "キャンセル",
+        //             "data": "cancel"
+        //           }
+        //       ]
+        //   }
+        // }
+        );
       })
       .catch(e=>console.log(e.stack));
   }

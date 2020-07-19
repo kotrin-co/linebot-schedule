@@ -46,6 +46,11 @@ const reservation_order = {
   reserved:null
 };
 
+const adminData = {
+  users:null,
+  reservations:null
+};
+
 const MENU = ['cut','cut&shampoo','color'];
 const TIMES_OF_MENU = [900,1200,1800];
 
@@ -135,6 +140,16 @@ const handleMessageEvent = async (ev) => {
   console.log('handleMessageEvent!!',ev);
   const id = ev.source.userId;
   const text = (ev.message.type === 'text') ? ev.message.text : '';
+
+  if(text === '管理画面'){
+    pickupAllReservation()
+      .then(message=>{
+        console.log('message:',message);
+        console.log('adminData.users:',adminData.users);
+        console.log('adminData.reservations:',adminData.reservations);
+      })
+      .catch(e=>console.log(e.stack));
+  }
 
   // 「予約削除」のメッセージが送られて来た場合に、現在予約している日時をリプライし、
   // 予約削除の確認メッセージを出し、「はい」が選ばれた際に削除する。
@@ -356,12 +371,36 @@ const checkUserExistence = (ev) => {
   });
 }
 
+const pickupAllReservation = () => {
+  return new Promise((resolve,reject)=>{
+    const pickup_users = {
+      text:'SELECT * FROM users ORDER BY id ASC;'
+    };
+    const pickup_reservations = {
+      text:'SELECT * FROM schedules ORDER BY starttime ASC;'
+    };
+    connection.query(pickup_users)
+      .then(res=>{
+        console.log('users:',res.rows);
+        adminData.users = res.rows;
+        connection.query(pickup_reservations)
+          .then(res=>{
+            console.log('reservations:',res.rows);
+            adminData.reservations = res.rows;
+            resolve('selectクエリー成功！！');
+          })
+          .catch(e=>console.log(e.stack));
+      })
+      .catch(e=>console.log(e.stack));
+  });
+}
+
 const pickupReservedOrder = (ev) => {
   return new Promise((resolve,reject)=>{
     const id = ev.source.userId;
     const now = ev.timestamp+32400000;
     const pickup_query = {
-      text:'SELECT * FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC',
+      text:'SELECT * FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC;',
       values:[`${id}`]
     };
     connection.query(pickup_query)

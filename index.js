@@ -485,7 +485,7 @@ const pickupAllReservations = () => {
                 id:element.id,
                 line_uid:element.line_uid,
                 name:element.name,
-                scheduledate:element.scheduledate.slice(0,10),
+                scheduledate:element.scheduledate,
                 starttime:new Date(element.starttime),
                 endtime:new Date(element.endtime),
                 menu:element.menu

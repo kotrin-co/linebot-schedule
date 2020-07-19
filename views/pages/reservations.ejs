@@ -10,7 +10,7 @@
 
 <h1>予約管理画面</h1>
 <% reservationsData.forEach((item)=>{ %>
-    <li><%= new Date(item.starttime) %></li>
+    <li><%= item.id,item.line_uid,item.name,item.scheduledate,item.starttime,item.endtime,item.menu %></li>
 <% }); %>
 
 </body>

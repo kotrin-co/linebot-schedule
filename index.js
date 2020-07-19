@@ -155,7 +155,7 @@ const handleMessageEvent = async (ev) => {
   const text = (ev.message.type === 'text') ? ev.message.text : '';
 
   if(text === '管理画面'){
-    pickupAllReservation()
+    pickupAllReservations()
       .then(message=>{
         console.log('adminData.reservations:',adminData.reservations);
         console.log('message:',message);
@@ -173,7 +173,7 @@ const handleMessageEvent = async (ev) => {
               "text": "Please select",
               "defaultAction": {
                   "type": "uri",
-                  "label": "View detail",
+                  "label": "デフォルト",
                   "uri": "https://linebot-schedule.herokuapp.com/"
               },
               "actions": [
@@ -414,7 +414,7 @@ const checkUserExistence = (ev) => {
   });
 }
 
-const pickupAllReservation = () => {
+const pickupAllReservations = () => {
   return new Promise((resolve,reject)=>{
     const pickup_users = {
       text:'SELECT * FROM users ORDER BY id ASC;'

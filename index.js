@@ -160,6 +160,10 @@ const handleMessageEvent = async (ev) => {
         console.log('adminData.reservations:',adminData.reservations);
         console.log('message:',message);
         console.log('adminData.users:',adminData.users);
+        adminData.reservations.forEach(object=>{
+          object.starttime = new Date(object.starttime);
+          object.endtime = new Date(object.endtime);
+        });
         client.pushMessage(id,{
           "type":"flex",
           "altText":"FlexMessage",
@@ -480,19 +484,6 @@ const pickupAllReservations = () => {
         connection.query(pickup_reservations)
           .then(res=>{
             console.log('reservations:',res.rows);
-            res.rows.forEach(element=>{
-              const reservation_elements = {
-                id:element.id,
-                line_uid:element.line_uid,
-                name:element.name,
-                scheduledate:element.scheduledate,
-                starttime:new Date(element.starttime),
-                endtime:new Date(element.endtime),
-                menu:element.menu
-              }
-              adminData.reservations.push(reservation_elements);
-            });
-
             adminData.reservations = res.rows;
             resolve('selectクエリー成功！！');
           })

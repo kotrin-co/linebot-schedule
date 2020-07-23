@@ -1,4 +1,4 @@
-// const adata = require('../../index');
+const reservations = require('../../index');
 
 const rButton = document.getElementById('rButton');
 const pButton = document.getElementById('pButton');
@@ -25,8 +25,8 @@ const getDateElements = (timestamp) => {
 const weeks = ['日','月','火','水','木','金','土'];
 
 const displayCalendar = () =>{
-    // console.log('adata:',adata);
-    // console.log('exportできたかな？？');
+    console.log('exportできたかな？？');
+    console.log('module exports:',reservations[0]);
     const base_ts = nowTime + oneWeek*index;
     const dateArray = getDateElements(base_ts);
     h2Element.textContent = `${dateArray[0]}年${dateArray[1]}月`;

@@ -1,3 +1,5 @@
+import adminData from '../../index';
+
 const rButton = document.getElementById('rButton');
 const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
@@ -23,7 +25,7 @@ const getDateElements = (timestamp) => {
 const weeks = ['日','月','火','水','木','金','土'];
 
 const displayCalendar = () =>{
-    // console.log('reservationsData:',reservationsData);
+    console.log('adminData:',adminData);
     const base_ts = nowTime + oneWeek*index;
     const dateArray = getDateElements(base_ts);
     h2Element.textContent = `${dateArray[0]}年${dateArray[1]}月`;

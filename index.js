@@ -46,7 +46,7 @@ const reservation_order = {
   reserved:null
 };
 
-const adminData = {
+export const adminData = {
   users:null,
   reservations:null
 };
@@ -214,36 +214,6 @@ const handleMessageEvent = async (ev) => {
               }
             }
         }
-        //   {
-        //   "type": "template",
-        //   "altText": "This is a buttons template",
-        //   "template": {
-        //       "type": "buttons",
-        //       "thumbnailImageUrl": "https://miraiz.chuden.co.jp/common/img/top/photo3.png",
-        //       "imageAspectRatio": "rectangle",
-        //       "imageSize": "cover",
-        //       "imageBackgroundColor": "#FFFFFF",
-        //       "title": "Menu",
-        //       "text": "Please select",
-        //       "defaultAction": {
-        //           "type": "uri",
-        //           "label": "デフォルト",
-        //           "uri": "https://linebot-schedule.herokuapp.com/"
-        //       },
-        //       "actions": [
-        //           {
-        //             "type": "uri",
-        //             "label": "管理画面へ",
-        //             "data": "https://linebot-schedule.herokuapp.com/"
-        //           },
-        //           {
-        //             "type": "postback",
-        //             "label": "キャンセル",
-        //             "data": "cancel"
-        //           }
-        //       ]
-        //   }
-        // }
         );
       })
       .catch(e=>console.log(e.stack));

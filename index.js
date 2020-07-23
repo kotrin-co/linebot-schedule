@@ -164,6 +164,7 @@ const handleMessageEvent = async (ev) => {
           object.endtime = get_Date(parseInt(object.endtime),2);
         });
         console.log('adminData.reservations:',adminData.reservations);
+        module.exports = adminData;
         client.pushMessage(id,{
           "type":"flex",
           "altText":"FlexMessage",
@@ -1032,5 +1033,3 @@ const confirmReservation = (id,time,i) => {
     });
   }
 }
-
-module.exports = adminData;

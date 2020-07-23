@@ -8,10 +8,49 @@
 
   <% include ../partials/nav.ejs %>
 
-<h1>予約管理画面</h1>
+<div id="calendar">
+    <div id="inlineArea">
+        <button id="rButton" class="inline-block changeButton"><</button>
+        <button id="pButton" class="inline-block changeButton">></button>
+    </div>
+    <table>
+        <tr>
+            <td>時間</td>
+            <td><font color="red">日</font></td>
+            <td>月</td>
+            <td>火</td>
+            <td>水</td>
+            <td>木</td>
+            <td>金</td>
+            <td><font color="blue">土</font></td>
+        </tr>
+        <tr id="time9">
+            <td>9:00〜</td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
+        </tr>
+        <tr id="time10">
+            <td>10:00〜</td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
+            <td>?</td>
+        </tr>
+    </table>
+</div>
+
+<!-- <h1>予約管理画面</h1>
 <% reservationsData.forEach((item)=>{ %>
     <li><%= item.id %>:<%= item.name %>:<%= item.scheduledate %>:<%= item.starttime %>〜<%= item.endtime %></li>
-<% }); %>
+<% }); %> -->
 
 <script src='js/main.js'></script>
 </body>

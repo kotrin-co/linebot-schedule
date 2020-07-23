@@ -13,12 +13,11 @@ const displayCalendar = () =>{
     for(let i=0;i<7;i++){
         const dayElement = document.getElementById(`d${i}`);
         dayElement.textContent = `${today+i}`;
-        const weekElement = document.getElementById.length(`w${i}`);
-        let w = dayOfTheWeek;
+        const weekElement = document.getElementById(`w${i}`);
         if(w+i<7){
-            weekElement.textContent = weeks[w+i];
+            weekElement.textContent = weeks[dayOfTheWeek+i];
         }else{
-            weekElement.textContent = weeks[w+i-7];
+            weekElement.textContent = weeks[dayOfTheWeek+i-7];
         }
     }
 }

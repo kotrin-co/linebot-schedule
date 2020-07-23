@@ -3,8 +3,8 @@ const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
 
-import { adminData } from ('../../index.js');
-console.log('adminData:',adminData);
+// import { adminData } from ('../../index.js');
+// console.log('adminData:',adminData);
 
 const thisYear = new Date().getFullYear();
 const thisMonth = new Date().getMonth()+1;

@@ -61,8 +61,8 @@ td{
   padding:5px 15px 5px 15px;
 }
 
-td[title]{
-  width:140px;
+[title="e"]{
+  width:130px;
   height:300px;
 }
 

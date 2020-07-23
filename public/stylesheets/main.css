@@ -25,3 +25,37 @@
     .jumbotron .lang-logo img {
       max-width: 100%; }
 
+body {
+  width:760px;
+  margin:0 auto;
+}
+
+h2 {
+  text-align:center;
+}
+
+#inlineArea{
+  text-align:center;
+}
+
+.changeButton {
+  margin:auto 40px auto 40px;
+}
+
+table {
+  text-align:center;
+  font-size:25px;
+  margin:auto;
+}
+
+td{
+  padding:10px 10px;
+}
+
+.inline-block{
+  display:inline-block;
+}
+
+[title="red"]{color:red;}
+
+[title="blue"]{color:blue;}

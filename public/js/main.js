@@ -16,8 +16,22 @@ const displayCalendar = () =>{
         const weekElement = document.getElementById(`w${i}`);
         if(dayOfTheWeek+i<7){
             weekElement.textContent = weeks[dayOfTheWeek+i];
+            if(dayOfTheWeek+i === 0){
+                dayElement.setAttribute('title','red');
+                weekElement.setAttribute('title','red');
+            }else if(dayOfTheWeek+i === 6){
+                dayElement.setAttribute('title','blue');
+                weekElement.setAttribute('title','blue');
+            }
         }else{
             weekElement.textContent = weeks[dayOfTheWeek+i-7];
+            if(dayOfTheWeek+i-7 === 0){
+                dayElement.setAttribute('title','red');
+                weekElement.setAttribute('title','red');
+            }else if(dayOfTheWeek+i-7 === 6){
+                dayElement.setAttribute('title','blue');
+                weekElement.setAttribute('title','blue');
+            }
         }
     }
 }

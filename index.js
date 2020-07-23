@@ -51,6 +51,8 @@ const adminData = {
   reservations:null
 };
 
+module.exports = adminData;
+
 const MENU = ['cut','cut&shampoo','color'];
 const TIMES_OF_MENU = [900,1200,1800];
 
@@ -1032,5 +1034,3 @@ const confirmReservation = (id,time,i) => {
     });
   }
 }
-
-module.exports = adminData.reservations;

@@ -1,9 +1,10 @@
-const reservations = require('../../index');
-
 const rButton = document.getElementById('rButton');
 const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
+
+const adminData = require('../../index.js');
+console.log('adminData:',adminData);
 
 const thisYear = new Date().getFullYear();
 const thisMonth = new Date().getMonth()+1;
@@ -25,8 +26,6 @@ const getDateElements = (timestamp) => {
 const weeks = ['日','月','火','水','木','金','土'];
 
 const displayCalendar = () =>{
-    console.log('exportできたかな？？');
-    console.log('module exports:',reservations[0]);
     const base_ts = nowTime + oneWeek*index;
     const dateArray = getDateElements(base_ts);
     h2Element.textContent = `${dateArray[0]}年${dateArray[1]}月`;

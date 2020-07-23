@@ -32,6 +32,7 @@ body {
 
 h2 {
   text-align:center;
+  margin:30px 0 30px 0;
 }
 
 #inlineArea{
@@ -39,7 +40,7 @@ h2 {
 }
 
 .changeButton {
-  margin:auto 40px auto 40px;
+  margin:30px 40px 30px 40px;
   height:50px;
   width:50px;
 }
@@ -61,6 +62,7 @@ td{
 
 .thisweekButton{
   padding:5px 15px 5px 15px;
+  margin:30px 0 30px 0;
   height:50px;
 }
 

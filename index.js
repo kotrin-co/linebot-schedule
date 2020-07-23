@@ -46,7 +46,7 @@ const reservation_order = {
   reserved:null
 };
 
-export const adminData = {
+const adminData = {
   users:null,
   reservations:null
 };
@@ -1032,3 +1032,5 @@ const confirmReservation = (id,time,i) => {
     });
   }
 }
+
+module.exports = adminData;

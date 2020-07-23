@@ -25,7 +25,7 @@ const weeks = ['日','月','火','水','木','金','土'];
 const displayCalendar = () =>{
     const base_ts = nowTime + oneWeek*index;
     const dateArray = getDateElements(base_ts);
-    h2Element.textContent = `${dateArray[0]}年${dateArray[1]}月`;
+    h2Element.textContent = `${dateArray[0]}年${dateArray[1]}月${reservationsData[0].name}`;
     for(let i=0;i<7;i++){
         const dayElement = document.getElementById(`d${i}`);
         const date = new Date(base_ts+oneDay*i).getDate();

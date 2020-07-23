@@ -26,7 +26,7 @@
       max-width: 100%; }
 
 body {
-  width:760px;
+  width:1024px;
   margin:0 auto;
 }
 
@@ -54,6 +54,15 @@ td{
 
 .inline-block{
   display:inline-block;
+}
+
+.thisweekButton{
+  padding:5px 15px 5px 15px;
+}
+
+td[title]{
+  width:140px;
+  height:300px;
 }
 
 [title="red"]{color:red;}

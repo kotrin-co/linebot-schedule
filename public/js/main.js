@@ -1,6 +1,7 @@
 const rButton = document.getElementById('rButton');
 const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
+const wButton = document.getElementById('thisWeekButton');
 
 const thisYear = new Date().getFullYear();
 const thisMonth = new Date().getMonth()+1;
@@ -61,5 +62,10 @@ pButton.addEventListener('click',(event)=>{
     index++;
     displayCalendar();
 });
+
+wButton.addEventListener('click',(event)=>{
+    index = 0;
+    displayCalendar();
+})
 
 displayCalendar();

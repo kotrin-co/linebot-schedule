@@ -3,7 +3,7 @@ const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
 
-const adminData = require('../../index.js');
+import { adminData } from ('../../index.js');
 console.log('adminData:',adminData);
 
 const thisYear = new Date().getFullYear();

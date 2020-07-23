@@ -160,12 +160,13 @@ const handleMessageEvent = async (ev) => {
     pickupAllReservations()
       .then(message=>{
         console.log('message:',message);
-        console.log('adminData.users:',adminData.users);
+        // console.log('adminData.users:',adminData.users);
         adminData.reservations.map(object=>{
           object.starttime = get_Date(parseInt(object.starttime),2);
           object.endtime = get_Date(parseInt(object.endtime),2);
         });
-        console.log('adminData.reservations:',adminData.reservations);
+        // console.log('adminData.reservations:',adminData.reservations);
+        module.exports = adminData;
         client.pushMessage(id,{
           "type":"flex",
           "altText":"FlexMessage",
@@ -430,7 +431,7 @@ const checkUserExistence = (ev) => {
     }
     connection.query(user_check)
       .then(res=>{
-        console.log('res:',res.rows);
+        // console.log('res:',res.rows);
         if(res.rows.length){
           console.log('存在するユーザーです。');
           check = true;
@@ -451,11 +452,11 @@ const pickupAllReservations = () => {
     };
     connection.query(pickup_users)
       .then(res=>{
-        console.log('users:',res.rows);
+        // console.log('users:',res.rows);
         adminData.users = res.rows;
         connection.query(pickup_reservations)
           .then(res=>{
-            console.log('reservations:',res.rows);
+            // console.log('reservations:',res.rows);
             adminData.reservations = res.rows;
             resolve('selectクエリー成功！！');
           })
@@ -526,8 +527,8 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.date = ev.postback.params.date;
     const now = new Date().getTime();
     const targetDate = new Date(reservation_order.date).getTime();
-    console.log('now:',now);
-    console.log('targetDate:',targetDate);
+    // console.log('now:',now);
+    // console.log('targetDate:',targetDate);
     if(targetDate>now){
       checkReservableTimes(id,TIMES_OF_MENU[reservation_order.menu]*1000);
     }else{
@@ -538,17 +539,17 @@ const handlePostbackEvent = async (ev) => {
     }
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = parseInt(ev.postback.data.slice(4));
-    console.log('postback time proceeding! time:',time);
+    // console.log('postback time proceeding! time:',time);
     confirmReservation(id,time,0);
 
   }else if(ev.postback.data.slice(0,6) === 'answer'){
     const result = ev.postback.data.split('-');
-    console.log('result:',result);
+    // console.log('result:',result);
     if(result[1] === 'yes'){
       const s_time = reservation_order.reservable[parseInt(result[2])][parseInt(result[3])];
       const e_time = s_time + TIMES_OF_MENU[reservation_order.menu]*1000;
-      console.log('s_time:',get_Date(s_time,1));
-      console.log('e_time:',get_Date(e_time,1));
+      // console.log('s_time:',get_Date(s_time,1));
+      // console.log('e_time:',get_Date(e_time,1));
       const insert_query = {
           text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
           values:[id,pro.displayName,reservation_order.date,s_time,e_time,MENU[reservation_order.menu]]
@@ -580,7 +581,7 @@ const handlePostbackEvent = async (ev) => {
       confirmReservation(id,parseInt(result[2]),parseInt(result[3])+1);
     }
   }else if(ev.postback.data.slice(0,6) === 'delete'){
-    console.log('reservation_order.reserved:',reservation_order.reserved);
+    // console.log('reservation_order.reserved:',reservation_order.reserved);
     const result = ev.postback.data.split('-');
     if(result[1] === 'yes'){
       const target = reservation_order.reserved.starttime;
@@ -590,7 +591,7 @@ const handlePostbackEvent = async (ev) => {
       };
       connection.query(delete_query)
         .then(res=>{
-          console.log('delete res.rows:',res.rows);
+          // console.log('delete res.rows:',res.rows);
           client.pushMessage(id,{
             "type":"text",
             "text":"予約キャンセルを受け付けました。"
@@ -625,7 +626,7 @@ const resetReservationOrder = (id,num) => {
       "text":"キャンセルしました"
     });
   }
-  console.log('reservation_order:',reservation_order);
+  // console.log('reservation_order:',reservation_order);
 }
 
 const pushDateSelector = (id) => {
@@ -692,7 +693,7 @@ const checkReservableTimes = (id,treatTime) => {
     let baseTime = new Date(`${reservation_order.date} ${9+i}:00`);
     timeStamps.push(baseTime.getTime());
   }
-  console.log('timeStamps:',timeStamps);
+  // console.log('timeStamps:',timeStamps);
 
   const select_query = {
     text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
@@ -705,7 +706,7 @@ const checkReservableTimes = (id,treatTime) => {
           return [parseInt(object.starttime),parseInt(object.endtime)];
         });
         reservedArray.forEach(array=>{
-          console.log('予約日時：',`${new Date(array[0])} - ${new Date(array[1])}`);
+          // console.log('予約日時：',`${new Date(array[0])} - ${new Date(array[1])}`);
         });
         for(let i=0;i<11;i++){
           const filteredArray = reservedArray.filter(array=>{
@@ -718,12 +719,12 @@ const checkReservableTimes = (id,treatTime) => {
           });
           arrangedArray.push(filteredArray);
         }
-        console.log('arrangedArray:',arrangedArray);
+        // console.log('arrangedArray:',arrangedArray);
 
         const offsetArray = arrangedArray.map((array,i)=>{
           return array.map(element=>{
             return element.map(value=>{
-              console.log('value sub:',value - new Date(`${reservation_order.date} ${9+i}:00`).getTime());
+              // console.log('value sub:',value - new Date(`${reservation_order.date} ${9+i}:00`).getTime());
               return value - new Date(`${reservation_order.date} ${9+i}:00`).getTime()
             });
           });

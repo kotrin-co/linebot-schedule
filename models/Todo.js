@@ -15,41 +15,56 @@ const adminData = {
     reservations:null
 };
 
-pickupAllReservations()
-    .then(message=>{
-        console.log('message:',message);
-        console.log('adminData:',adminData.reservations)
-        module.exports = {
-            findAll:()=>{
-                return adminData.reservations.slice();
-            }
-        };
+const pickup_users = {
+    text:'SELECT * FROM users ORDER BY id ASC;'
+};
+const pickup_reservations = {
+    text:'SELECT * FROM schedules ORDER BY starttime ASC;'
+};
+connection.query(pickup_users)
+    .then(res=>{
+        console.log('users:',res.rows);
+        adminData.users = res.rows;
+        connection.query(pickup_reservations)
+            .then(res=>{
+                console.log('reservations:',res.rows);
+                adminData.reservations = res.rows;
+                resolve('select_query 成功！！');
+            })
+            .catch(e=>console.log(e.stack));
     })
     .catch(e=>console.log(e.stack));
 
-const pickupAllReservations = () => {
-    return new Promise((resolve,reject)=>{
-        const pickup_users = {
-            text:'SELECT * FROM users ORDER BY id ASC;'
-        };
-        const pickup_reservations = {
-            text:'SELECT * FROM schedules ORDER BY starttime ASC;'
-        };
-        connection.query(pickup_users)
-            .then(res=>{
-                console.log('users:',res.rows);
-                adminData.users = res.rows;
-                connection.query(pickup_reservations)
-                    .then(res=>{
-                        console.log('reservations:',res.rows);
-                        adminData.reservations = res.rows;
-                        resolve('select_query 成功！！');
-                    })
-                    .catch(e=>console.log(e.stack));
-            })
-            .catch(e=>console.log(e.stack));
-    });
-}
+// pickupAllReservations()
+//     .then(message=>{
+//         console.log('message:',message);
+//         console.log('adminData:',adminData.reservations;
+//     })
+//     .catch(e=>console.log(e.stack));
+
+// const pickupAllReservations = () => {
+//     return new Promise((resolve,reject)=>{
+//         const pickup_users = {
+//             text:'SELECT * FROM users ORDER BY id ASC;'
+//         };
+//         const pickup_reservations = {
+//             text:'SELECT * FROM schedules ORDER BY starttime ASC;'
+//         };
+//         connection.query(pickup_users)
+//             .then(res=>{
+//                 console.log('users:',res.rows);
+//                 adminData.users = res.rows;
+//                 connection.query(pickup_reservations)
+//                     .then(res=>{
+//                         console.log('reservations:',res.rows);
+//                         adminData.reservations = res.rows;
+//                         resolve('select_query 成功！！');
+//                     })
+//                     .catch(e=>console.log(e.stack));
+//             })
+//             .catch(e=>console.log(e.stack));
+//     });
+// }
 
 // const todos = [];
 
@@ -74,3 +89,8 @@ const pickupAllReservations = () => {
 //     todos.push(todo);
 // }
 
+module.exports = {
+    findAll:()=>{
+        return adminData.reservations.slice();
+    }
+};

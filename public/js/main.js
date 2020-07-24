@@ -2,7 +2,7 @@ const rButton = document.getElementById('rButton');
 const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
-const reservations = null;
+let reservations = [];
 
 const API_URL = 'https://linebot-schedule.herokuapp.com/api/todos';
 
@@ -27,7 +27,9 @@ const fetchData = async () =>{
     try{
         const response = await fetch(API_URL);
         const data = await response.json();
-        displayCalendar(data);
+        console.log('data:',data);
+        reservations = data;
+        displayCalendar(reservations);
     }catch(error){
         alert(`読み込み失敗やで...${error.message}`);
     }

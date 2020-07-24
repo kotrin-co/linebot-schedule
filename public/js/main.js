@@ -3,6 +3,9 @@ const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
 
+// テスト用
+const tdElement = document.getElementById('d0-9');
+
 const API_URL = 'https://linebot-schedule.herokuapp.com/api/todos';
 
 // import { adminData } from ('../../index.js');
@@ -26,6 +29,7 @@ const fetchData = async () =>{
         const response = await fetch(API_URL);
         const data = await response.json();
         console.log('response.json:',data);
+        tdElement.textContent = data[0];
     }catch(error){
         alert(`読み込み失敗...${error.message}`);
     }

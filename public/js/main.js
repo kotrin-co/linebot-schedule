@@ -4,8 +4,6 @@ const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
 const reservations = null;
 
-const tdElement = document.getElementById('d0-10');
-
 const API_URL = 'https://linebot-schedule.herokuapp.com/api/todos';
 
 // import { adminData } from ('../../index.js');
@@ -28,13 +26,12 @@ const fetchData = async () =>{
     try{
         const response = await fetch(API_URL);
         const data = await response.json();
-        reservations = await data;
-        console.log('reservations:',reservations);
+        console.log('reservations:',data);
+        displayCalendar();
     }catch(error){
-        alert(`読み込み失敗...${error.message}`);
+        alert(`読み込み失敗やで...${error.message}`);
     }
 };
-
 
 const getDateElements = (timestamp) => {
     const y = new Date(timestamp).getFullYear();
@@ -97,5 +94,3 @@ wButton.addEventListener('click',(event)=>{
     index = 0;
     displayCalendar();
 })
-
-displayCalendar();

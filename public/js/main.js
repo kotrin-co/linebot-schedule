@@ -28,7 +28,7 @@ const fetchData = async () =>{
     try{
         const response = await fetch(API_URL);
         const data = await response.json();
-        reservations = data;
+        reservations = await data;
         console.log('reservations:',reservations);
     }catch(error){
         alert(`読み込み失敗...${error.message}`);

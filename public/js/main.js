@@ -99,15 +99,15 @@ const displayCalendar = (data) =>{
 
 rButton.addEventListener('click',(event)=>{
     index--;
-    displayCalendar();
+    displayCalendar(reservations);
 });
 
 pButton.addEventListener('click',(event)=>{
     index++;
-    displayCalendar();
+    displayCalendar(reservations);
 });
 
 wButton.addEventListener('click',(event)=>{
     index = 0;
-    displayCalendar();
+    displayCalendar(reservations);
 })

@@ -28,7 +28,7 @@ const fetchData = async () =>{
     try{
         const response = await fetch(API_URL);
         const reservations = await response.json();
-        console.log('response.json:',data);
+        console.log('response.json:',reservations);
         tdElement.textContent = getReservationDisplay(reservations[0].starttime,reservations[0].name,reservations[0].menu);
     }catch(error){
         alert(`読み込み失敗...${error.message}`);

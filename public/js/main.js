@@ -29,7 +29,7 @@ const fetchData = async () =>{
         const response = await fetch(API_URL);
         const data = await response.json();
         console.log('response.json:',data);
-        tdElement.textContent = data[0].starttime;
+        tdElement.textContent = getReservationDisplay(data[0].starttime,data[0].name,data[0].menu);
     }catch(error){
         alert(`読み込み失敗...${error.message}`);
     }
@@ -42,6 +42,12 @@ const getDateElements = (timestamp) => {
     const d = new Date(timestamp).getDate();
     const w = new Date(timestamp).getDay();
     return [y,m,d,w];
+}
+
+const getReservationDisplay = (timestamp,name,menu) => {
+    const h = new Date(timestamp).getHours();
+    const m = new Date(timestamp).getMinutes();
+    return `${h}:${m}〜 ${name}(${menu})`;
 }
 
 const weeks = ['日','月','火','水','木','金','土'];

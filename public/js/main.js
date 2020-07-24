@@ -2,7 +2,7 @@ const rButton = document.getElementById('rButton');
 const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
-const reservations = [];
+// const reservations = [];
 
 const tdElement = document.getElementById('d0-10');
 
@@ -27,7 +27,7 @@ window.addEventListener('load',(event)=>{
 const fetchData = async () =>{
     try{
         const response = await fetch(API_URL);
-        reservations = await response.json();
+        const reservations = await response.json();
         console.log('response.json:',data);
         tdElement.textContent = getReservationDisplay(reservations[0].starttime,reservations[0].name,reservations[0].menu);
     }catch(error){

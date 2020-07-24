@@ -23,12 +23,16 @@ const pickup_reservations = {
 };
 connection.query(pickup_users)
     .then(res=>{
-        console.log('users:',res.rows);
+        // console.log('users:',res.rows);
         adminData.users = res.rows;
         connection.query(pickup_reservations)
             .then(res=>{
-                console.log('reservations:',res.rows);
+                // console.log('reservations:',res.rows);
                 adminData.reservations = res.rows;
+                adminData.reservations.map(object=>{
+                    object.starttime = parseInt(object.starttime);
+                    object.endtime = parseInt(object.endtime);
+                });
             })
             .catch(e=>console.log(e.stack));
     })

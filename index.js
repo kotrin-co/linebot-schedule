@@ -5,6 +5,10 @@ const line = require('@line/bot-sdk');
 const PORT = process.env.PORT || 5000
 const { Client } = require('pg');
 
+// ここはAPIテスト
+const todosRouter = require('./routers/todos');
+// ここまでテスト
+
 const config = {
   channelAccessToken: process.env.ACCESS_TOKEN,
   channelSecret: process.env.CHANNEL_SECRET
@@ -45,14 +49,36 @@ const reservation_order = {
   reserved:null
 };
 
+const adminData = {
+  users:null,
+  reservations:null
+};
+
+module.exports = adminData;
+
 const MENU = ['cut','cut&shampoo','color'];
 const TIMES_OF_MENU = [900,1200,1800];
 
 app
   .use(express.static(path.join(__dirname, 'public')))
+  // ここはAPIテスト
+  .use('/api/todos',todosRouter)
+  // ここまでテスト
+  .get('/',(req,res)=>{
+    res.render('pages/index');
+  })
+  .get('/users',(req,res)=>{
+    res.render('pages/users',{
+      usersData:adminData.users
+    });
+  })
+  .get('/reservations',(req,res)=>{
+    res.render('pages/reservations',{
+      reservationsData:adminData.reservations
+    });
+  })
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
-  .get('/', (req, res) => res.render('pages/index'))
   .post('/hook',line.middleware(config),(req,res)=> lineBot(req,res))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
@@ -135,6 +161,71 @@ const handleMessageEvent = async (ev) => {
   const id = ev.source.userId;
   const text = (ev.message.type === 'text') ? ev.message.text : '';
 
+  if(text === '管理画面'){
+    pickupAllReservations()
+      .then(message=>{
+        console.log('message:',message);
+        // console.log('adminData.users:',adminData.users);
+        adminData.reservations.map(object=>{
+          object.starttime = get_Date(parseInt(object.starttime),2);
+          object.endtime = get_Date(parseInt(object.endtime),2);
+        });
+        // console.log('adminData.reservations:',adminData.reservations);
+        client.pushMessage(id,{
+          "type":"flex",
+          "altText":"FlexMessage",
+          "contents":
+            {
+              "type": "bubble",
+              "header": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "管理者画面へ移動しますか?",
+                    "color": "#ffffff"
+                  }
+                ]
+              },
+              "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "button",
+                    "action": {
+                      "type": "uri",
+                      "label": "管理者画面へ",
+                      "uri": "https://linebot-schedule.herokuapp.com/"
+                    },
+                    "style": "link"
+                  },
+                  {
+                    "type": "button",
+                    "action": {
+                      "type": "postback",
+                      "label": "終了",
+                      "data": "cancel"
+                    },
+                    "margin": "lg"
+                  }
+                ]
+              },
+              "styles": {
+                "header": {
+                  "backgroundColor": "#0000ff",
+                  "separator": true,
+                  "separatorColor": "#ffffff"
+                }
+              }
+            }
+        }
+        );
+      })
+      .catch(e=>console.log(e.stack));
+  }
+
   // 「予約削除」のメッセージが送られて来た場合に、現在予約している日時をリプライし、
   // 予約削除の確認メッセージを出し、「はい」が選ばれた際に削除する。
   if(text === '予約キャンセル'){
@@ -156,7 +247,7 @@ const handleMessageEvent = async (ev) => {
                 setTimeout(()=>{
                   client.pushMessage(id,{
                     "type": "template",
-                    "altText":"確認テンプレート",
+                    "altText": "予約キャンセル",
                     "template": {
                         "type": "confirm",
                         "text": "この予約をキャンセルしますか？",
@@ -169,7 +260,7 @@ const handleMessageEvent = async (ev) => {
                             {
                                 "type": "postback",
                                 "label": "いいえ",
-                                "text": "delete-no"
+                                "data": "delete-no"
                             }
                         ]
                     }
@@ -344,7 +435,7 @@ const checkUserExistence = (ev) => {
     }
     connection.query(user_check)
       .then(res=>{
-        console.log('res:',res.rows);
+        // console.log('res:',res.rows);
         if(res.rows.length){
           console.log('存在するユーザーです。');
           check = true;
@@ -355,12 +446,36 @@ const checkUserExistence = (ev) => {
   });
 }
 
+const pickupAllReservations = () => {
+  return new Promise((resolve,reject)=>{
+    const pickup_users = {
+      text:'SELECT * FROM users ORDER BY id ASC;'
+    };
+    const pickup_reservations = {
+      text:'SELECT * FROM schedules ORDER BY starttime ASC;'
+    };
+    connection.query(pickup_users)
+      .then(res=>{
+        // console.log('users:',res.rows);
+        adminData.users = res.rows;
+        connection.query(pickup_reservations)
+          .then(res=>{
+            // console.log('reservations:',res.rows);
+            adminData.reservations = res.rows;
+            resolve('selectクエリー成功！！');
+          })
+          .catch(e=>console.log(e.stack));
+      })
+      .catch(e=>console.log(e.stack));
+  });
+}
+
 const pickupReservedOrder = (ev) => {
   return new Promise((resolve,reject)=>{
     const id = ev.source.userId;
     const now = ev.timestamp+32400000;
     const pickup_query = {
-      text:'SELECT * FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC',
+      text:'SELECT * FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC;',
       values:[`${id}`]
     };
     connection.query(pickup_query)
@@ -384,7 +499,8 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.menu = 0;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
+        "text":"ユーザーさん、次のご予約はMENU Aですね。ご希望の日にちを選択してください。"
+        // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
       });
       setTimeout(()=>{
         pushDateSelector(id);
@@ -393,7 +509,8 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.menu = 1;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。ご希望の日にちを選択してください。`
+        "text":"ユーザーさん、次のご予約はMENU Bですね。ご希望の日にちを選択してください。"
+        // "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。ご希望の日にちを選択してください。`
       });
       setTimeout(()=>{
         pushDateSelector(id);
@@ -402,7 +519,8 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.menu = 2;
       client.replyMessage(ev.replyToken,{
         "type":"text",
-        "text":`${pro.displayName}さん、次のご予約はカラーリングですね。ご希望の日にちを選択してください。`
+        "text":"ユーザーさん、次のご予約はMENU Cですね。ご希望の日にちを選択してください。"
+        // "text":`${pro.displayName}さん、次のご予約はカラーリングですね。ご希望の日にちを選択してください。`
       });
       setTimeout(()=>{
         pushDateSelector(id);
@@ -411,22 +529,31 @@ const handlePostbackEvent = async (ev) => {
     resetReservationOrder(id,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
-
-    checkReservableTimes(id,TIMES_OF_MENU[reservation_order.menu]*1000);
-    
+    const now = new Date().getTime();
+    const targetDate = new Date(reservation_order.date).getTime();
+    // console.log('now:',now);
+    // console.log('targetDate:',targetDate);
+    if(targetDate>now){
+      checkReservableTimes(id,TIMES_OF_MENU[reservation_order.menu]*1000);
+    }else{
+      client.pushMessage(id,{
+        "type":"text",
+        "text":"過去の日にちは指定できません。"
+      });
+    }
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = parseInt(ev.postback.data.slice(4));
-    console.log('postback time proceeding! time:',time);
+    // console.log('postback time proceeding! time:',time);
     confirmReservation(id,time,0);
 
   }else if(ev.postback.data.slice(0,6) === 'answer'){
     const result = ev.postback.data.split('-');
-    console.log('result:',result);
+    // console.log('result:',result);
     if(result[1] === 'yes'){
       const s_time = reservation_order.reservable[parseInt(result[2])][parseInt(result[3])];
       const e_time = s_time + TIMES_OF_MENU[reservation_order.menu]*1000;
-      console.log('s_time:',get_Date(s_time,1));
-      console.log('e_time:',get_Date(e_time,1));
+      // console.log('s_time:',get_Date(s_time,1));
+      // console.log('e_time:',get_Date(e_time,1));
       const insert_query = {
           text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
           values:[id,pro.displayName,reservation_order.date,s_time,e_time,MENU[reservation_order.menu]]
@@ -436,16 +563,29 @@ const handlePostbackEvent = async (ev) => {
             const reservedTime = get_Date(s_time,1);
             client.pushMessage(id,{
               "type":"text",
-              "text":`${reservation_order.date}  ${reservedTime}に予約しました。ご予約ありがとうございます。`
+              "text":`${reservation_order.date}  ${reservedTime}に予約しました。`
             });
             resetReservationOrder(id,0);
+            setTimeout(()=>{
+              client.pushMessage(id,{
+                "type":"text",
+                "text":"ご予約ありがとうございます。ご来店を心よりお待ちしております。"
+              });
+            },500);
+            setTimeout(()=>{
+              client.pushMessage(id,{
+                "type":"sticker",
+                "packageId":"11539",
+                "stickerId":"52114115"
+              });
+            },750);
           })
           .catch(e=>console.error(e.stack));
     }else{
       confirmReservation(id,parseInt(result[2]),parseInt(result[3])+1);
     }
   }else if(ev.postback.data.slice(0,6) === 'delete'){
-    console.log('reservation_order.reserved:',reservation_order.reserved);
+    // console.log('reservation_order.reserved:',reservation_order.reserved);
     const result = ev.postback.data.split('-');
     if(result[1] === 'yes'){
       const target = reservation_order.reserved.starttime;
@@ -455,17 +595,24 @@ const handlePostbackEvent = async (ev) => {
       };
       connection.query(delete_query)
         .then(res=>{
-          console.log('delete res.rows:',res.rows);
+          // console.log('delete res.rows:',res.rows);
           client.pushMessage(id,{
             "type":"text",
-            "text":"予約削除を受け付けました。再度予約してください。"
+            "text":"予約キャンセルを受け付けました。"
           });
+          setTimeout(()=>{
+            client.pushMessage(id,{
+              "type":"sticker",
+              "packageId":"11538",
+              "stickerId":"51626522"
+            });
+          },750);
         })
         .catch(e=>console.log(e.stack));
     }else{
       client.pushMessage(id,{
         "type":"text",
-        "text":"削除を取りやめした。"
+        "text":"キャンセルを取りやめした。"
       });
       resetReservationOrder(id,0);
     }
@@ -483,7 +630,7 @@ const resetReservationOrder = (id,num) => {
       "text":"キャンセルしました"
     });
   }
-  console.log('reservation_order:',reservation_order);
+  // console.log('reservation_order:',reservation_order);
 }
 
 const pushDateSelector = (id) => {
@@ -550,7 +697,7 @@ const checkReservableTimes = (id,treatTime) => {
     let baseTime = new Date(`${reservation_order.date} ${9+i}:00`);
     timeStamps.push(baseTime.getTime());
   }
-  console.log('timeStamps:',timeStamps);
+  // console.log('timeStamps:',timeStamps);
 
   const select_query = {
     text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
@@ -563,7 +710,7 @@ const checkReservableTimes = (id,treatTime) => {
           return [parseInt(object.starttime),parseInt(object.endtime)];
         });
         reservedArray.forEach(array=>{
-          console.log('予約日時：',`${new Date(array[0])} - ${new Date(array[1])}`);
+          // console.log('予約日時：',`${new Date(array[0])} - ${new Date(array[1])}`);
         });
         for(let i=0;i<11;i++){
           const filteredArray = reservedArray.filter(array=>{
@@ -576,12 +723,12 @@ const checkReservableTimes = (id,treatTime) => {
           });
           arrangedArray.push(filteredArray);
         }
-        console.log('arrangedArray:',arrangedArray);
+        // console.log('arrangedArray:',arrangedArray);
 
         const offsetArray = arrangedArray.map((array,i)=>{
           return array.map(element=>{
             return element.map(value=>{
-              console.log('value sub:',value - new Date(`${reservation_order.date} ${9+i}:00`).getTime());
+              // console.log('value sub:',value - new Date(`${reservation_order.date} ${9+i}:00`).getTime());
               return value - new Date(`${reservation_order.date} ${9+i}:00`).getTime()
             });
           });
@@ -866,51 +1013,25 @@ const confirmReservation = (id,time,i) => {
     console.log('proposalTime:',proposalTime);
 
     client.pushMessage(id,{
-      "type":"flex",
-      "altText":"date_selector",
-      "contents":
-      {
-        "type": "bubble",
-        "header": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            {
-              "type": "text",
-              "text": `${proposalTime}〜でいかがでしょうか。`
-            }
-          ]
-        },
-        "body": {
-          "type": "box",
-          "layout": "horizontal",
-          "contents": [
-            {
-              "type": "button",
-              "action": {
-                "type": "postback",
-                "label": "はい",
-                "data": `answer-yes-${time}-${i}`
+      "type": "template",
+      "altText":"予約確認",
+      "template": {
+          "type": "confirm",
+          "text": `次回ご予約は ${proposalTime}〜 でいかがでしょうか。`,
+          "actions": [
+              {
+                  "type": "postback",
+                  "label": "はい",
+                  "data": `answer-yes-${time}-${i}`
               },
-              "style": "primary",
-              "margin": "lg"
-            },
-            {
-              "type": "button",
-              "action": {
-                "type": "postback",
-                "label": "いいえ",
-                "data": `answer-no-${time}-${i}`
-              },
-              "style": "secondary",
-              "margin": "lg"
-            }
+              {
+                  "type": "postback",
+                  "label": "いいえ",
+                  "data": `answer-no-${time}-${i}`
+              }
           ]
-        }
       }
-      }
-    );
-
+    });
   }else{
     client.pushMessage(id,{
       "type":"text",

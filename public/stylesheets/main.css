@@ -25,3 +25,52 @@
     .jumbotron .lang-logo img {
       max-width: 100%; }
 
+body {
+  width:1024px;
+  margin:0 auto;
+}
+
+h2 {
+  text-align:center;
+  margin:30px 0 30px 0;
+}
+
+#inlineArea{
+  text-align:center;
+}
+
+.changeButton {
+  margin:30px 40px 30px 40px;
+  height:50px;
+  width:50px;
+}
+
+table {
+  text-align:center;
+  font-size:25px;
+  margin:auto;
+}
+
+td{
+  padding:10px 10px;
+  border:solid 1px #aaa;
+}
+
+.inline-block{
+  display:inline-block;
+}
+
+.thisweekButton{
+  padding:5px 15px 5px 15px;
+  margin:30px 0 30px 0;
+  height:50px;
+}
+
+.e {
+  width:130px;
+  height:300px;
+}
+
+[title="red"]{color:red;}
+
+[title="blue"]{color:blue;}

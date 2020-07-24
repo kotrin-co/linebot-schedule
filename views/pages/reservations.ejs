@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% include ../partials/header.ejs %>
+</head>
+
+<body>
+
+  <% include ../partials/nav.ejs %>
+
+<div id="calendar">
+    <div id="inlineArea">
+        <button id="rButton" class="inline-block changeButton"><</button>
+        <h2 id="monthArea" class="inline-block"></h2>
+        <button id="pButton" class="inline-block changeButton">></button>
+        <button id="thisWeekButton" class="inline-block thisweekButton">今 週</button>
+    </div>
+    <table>
+        <tr id="week">
+            <td></td>
+            <td id="w0"></td>
+            <td id="w1"></td>
+            <td id="w2"></td>
+            <td id="w3"></td>
+            <td id="w4"></td>
+            <td id="w5"></td>
+            <td id="w6"></td>   
+        </tr>
+        <tr id="date">
+            <td></td>
+            <td id="d0"></td>
+            <td id="d1"></td>
+            <td id="d2"></td>
+            <td id="d3"></td>
+            <td id="d4"></td>
+            <td id="d5"></td>
+            <td id="d6"></td>   
+        </tr>
+        <tr id="time9">
+            <td>9:00〜</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+        </tr>
+        <tr id="time10">
+            <td>10:00〜</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+            <td class="e">?</td>
+        </tr>
+    </table>
+</div>
+
+<!-- <h1>予約管理画面</h1>
+<% reservationsData.forEach((item)=>{ %>
+    <li><%= item.id %>:<%= item.name %>:<%= item.scheduledate %>:<%= item.starttime %>〜<%= item.endtime %></li>
+<% }); %> -->
+
+<script src='js/main.js'></script>
+</body>
+</html>

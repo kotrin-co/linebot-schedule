@@ -24,34 +24,18 @@
         </tr>
         <tr id="date">
             <td></td>
-            <td id="d0"></td>
-            <td id="d1"></td>
-            <td id="d2"></td>
-            <td id="d3"></td>
-            <td id="d4"></td>
-            <td id="d5"></td>
-            <td id="d6"></td>   
+            <% for ( let i=0; i<7 ;i++ ){ %>
+                <td id="d<%= i %>"></td>
+            <% } %>
         </tr>
-        <tr id="time9">
-            <td>9:00〜</td>
-            <td id="d0-9" class="e">?</td>
-            <td class="e">?</td>
-            <td class="e">?</td>
-            <td class="e">?</td>
-            <td class="e">?</td>
-            <td class="e">?</td>
-            <td class="e">?</td>
-        </tr>
-        <tr id="time10">
-            <td>10:00〜</td>
-            <td class="e">?</td>
-            <td class="e">?</td>
-            <td class="e">?</td>
-            <td class="e">?</td>
-            <td class="e">?</td>
-            <td class="e">?</td>
-            <td class="e">?</td>
-        </tr>
+        <% for (let i=0; i<11; i++){ %>
+            <tr id="time<%= 9+i %>">
+                <td><%= 9+i %>:00</td>
+                <% for (let j=0; j<7; j++){ %>
+                <td id="d<%= i %>-<%= 9+j %>" class="e">ほげ</td>
+                <% } %>
+            </tr>
+        <% } %>
     </table>
 </div>
 

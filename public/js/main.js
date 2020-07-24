@@ -26,8 +26,7 @@ const fetchData = async () =>{
     try{
         const response = await fetch(API_URL);
         const data = await response.json();
-        console.log('reservations:',data);
-        displayCalendar();
+        displayCalendar(data);
     }catch(error){
         alert(`読み込み失敗やで...${error.message}`);
     }
@@ -49,7 +48,8 @@ const getReservationDisplay = (timestamp,name,menu) => {
 
 const weeks = ['日','月','火','水','木','金','土'];
 
-const displayCalendar = () =>{
+const displayCalendar = (data) =>{
+    console.log('displayの中＠＠＠：',data);
     const base_ts = nowTime + oneWeek*index;
     const dateArray = getDateElements(base_ts);
     h2Element.textContent = `${dateArray[0]}年${dateArray[1]}月`;

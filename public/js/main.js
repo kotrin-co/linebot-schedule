@@ -29,7 +29,7 @@ const fetchData = async () =>{
         const response = await fetch(API_URL);
         const data = await response.json();
         console.log('response.json:',data);
-        tdElement.textContent = data[0];
+        tdElement.textContent = data[0].starttime;
     }catch(error){
         alert(`読み込み失敗...${error.message}`);
     }

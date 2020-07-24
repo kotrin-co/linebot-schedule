@@ -19,6 +19,11 @@ pickupAllReservations()
     .then(message=>{
         console.log('message:',message);
         console.log('adminData:',adminData.reservations)
+        module.exports = {
+            findAll:()=>{
+                return adminData.reservations.slice();
+            }
+        };
     })
     .catch(e=>console.log(e.stack));
 
@@ -69,8 +74,3 @@ const pickupAllReservations = () => {
 //     todos.push(todo);
 // }
 
-module.exports = {
-    findAll:()=>{
-        return adminData.reservations.slice();
-    }
-};

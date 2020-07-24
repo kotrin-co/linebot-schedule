@@ -3,7 +3,6 @@ const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
 
-import axios from 'axios';
 const API_URL = 'https://linebot-schedule.herokuapp.com/api/todos';
 
 // import { adminData } from ('../../index.js');
@@ -18,6 +17,20 @@ const oneWeek = 604800000;
 const oneDay = 86400000;
 let index = 0;
 
+window.addEventListener('load',(event)=>{
+    fetchData();
+});
+
+const fetchData = async () =>{
+    try{
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        console.log('response.json:',data);
+    }catch(error){
+        alert(`読み込み失敗...${error.message}`);
+    }
+};
+
 
 const getDateElements = (timestamp) => {
     const y = new Date(timestamp).getFullYear();
@@ -29,10 +42,7 @@ const getDateElements = (timestamp) => {
 
 const weeks = ['日','月','火','水','木','金','土'];
 
-const displayCalendar = async () =>{
-    const response = await axios.get(API_URL);
-    console.log('responsedata:',response.data);
-    
+const displayCalendar = () =>{
     const base_ts = nowTime + oneWeek*index;
     const dateArray = getDateElements(base_ts);
     h2Element.textContent = `${dateArray[0]}年${dateArray[1]}月`;

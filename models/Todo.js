@@ -29,7 +29,6 @@ connection.query(pickup_users)
             .then(res=>{
                 console.log('reservations:',res.rows);
                 adminData.reservations = res.rows;
-                resolve('select_query 成功！！');
             })
             .catch(e=>console.log(e.stack));
     })

@@ -54,7 +54,6 @@ table {
 td{
   padding:10px 10px;
   border:solid 1px #aaa;
-  font-size:x-small;
 }
 
 .inline-block{
@@ -70,6 +69,7 @@ td{
 .e {
   width:130px;
   height:300px;
+  font-size:x-small;
 }
 
 [title="red"]{color:red;}

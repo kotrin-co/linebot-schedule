@@ -18,13 +18,9 @@
     <table>
         <tr id="week">
             <td></td>
-            <td id="w0"></td>
-            <td id="w1"></td>
-            <td id="w2"></td>
-            <td id="w3"></td>
-            <td id="w4"></td>
-            <td id="w5"></td>
-            <td id="w6"></td>   
+            <% for ( let i=0; i<7 ;i++ ){ %>
+            <td id="w<%= i %>"></td>
+            <% } %>
         </tr>
         <tr id="date">
             <td></td>

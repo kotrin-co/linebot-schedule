@@ -17,6 +17,7 @@ const nowTime = new Date(`${thisYear}-${thisMonth}-${today} 00:00`).getTime();
 const oneWeek = 604800000;
 const oneDay = 86400000;
 const oneHour = 3600000;
+const OPEN_TIME = 9;
 let index = 0;
 
 window.addEventListener('load',(event)=>{
@@ -52,7 +53,7 @@ const getReservationDisplay = (timestamp,name,menu) => {
 const weeks = ['日','月','火','水','木','金','土'];
 
 const displayCalendar = (data) =>{
-    const base_ts = nowTime + oneWeek*index;
+    const base_ts = nowTime + oneHour*OPEN_TIME + oneWeek*index;
     console.log('base_ts:',base_ts);
     const dateArray = getDateElements(base_ts);
     console.log('dateArray:',dateArray);
@@ -84,7 +85,7 @@ const displayCalendar = (data) =>{
         for(let j=0;j<11;j++){
             const tdElement = document.getElementById(`d${i}-${9+j}`);
             const filteredArray = data.filter(obj=>{
-                return ((obj.starttime >= base_ts+oneDay*i+oneHour*j) && (obj.starttime < base_ts+oneDay*i+oneHour*j+oneHour));
+                return ((obj.starttime - oneHour*9 >= base_ts+oneDay*i+oneHour*j) && (obj.starttime - oneHour*9 < base_ts+oneDay*i+oneHour*j+oneHour));
             });
             if(filteredArray.length){
                 let rsv = '';

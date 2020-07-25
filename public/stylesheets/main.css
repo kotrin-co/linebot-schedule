@@ -54,13 +54,20 @@ table {
 .reservation_table thead th {
   position: -webkit-sticky;
   position: sticky;
+  white-space:nowrap;
+}
+
+.reservation_table thead tr:nth-child(1) th {
   top:0;
-  z-index:1;
+}
+
+.reservation_table thead tr:nth-child(2) th {
+  top:1.5rem;
 }
 
 td{
   padding:10px 10px;
-  border:solid 1px #aaa;
+  border:solid 2px #aaa;
 }
 
 .inline-block{
@@ -75,7 +82,7 @@ td{
 
 .e {
   width:130px;
-  height:300px;
+  height:200px;
   font-size:small;
 }
 

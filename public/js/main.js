@@ -94,7 +94,7 @@ const displayCalendar = (data) =>{
                 });
                 tdElement.textContent = rsv;
             }else{
-                tdElement.textContent = '予約なし';
+                tdElement.textContent = '';
             }
         }
     }

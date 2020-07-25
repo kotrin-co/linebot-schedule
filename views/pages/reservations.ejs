@@ -30,15 +30,16 @@
                 <% } %>
             </tr>
         </thead>
-
-        <% for (let i=0; i<11; i++){ %>
-            <tr id="time<%= 9+i %>">
-                <td><%= 9+i %>:00</td>
-                <% for (let j=0; j<7; j++){ %>
-                <td id="d<%= j %>-<%= 9+i %>" class="e"></td>
-                <% } %>
-            </tr>
-        <% } %>
+        <tbody>
+            <% for (let i=0; i<11; i++){ %>
+                <tr id="time<%= 9+i %>">
+                    <td><%= 9+i %>:00</td>
+                    <% for (let j=0; j<7; j++){ %>
+                    <td id="d<%= j %>-<%= 9+i %>" class="e"></td>
+                    <% } %>
+                </tr>
+            <% } %>
+        </tbody>        
     </table>
 </div>
 

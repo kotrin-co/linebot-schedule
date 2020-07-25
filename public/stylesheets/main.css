@@ -51,7 +51,7 @@ table {
   margin:auto;
 }
 
-.reservation_table thead th {
+/* .reservation_table thead th {
   position: -webkit-sticky;
   position: sticky;
   white-space:nowrap;
@@ -63,6 +63,16 @@ table {
 
 .reservation_table thead tr:nth-child(2) th {
   top:3.5rem;
+} */
+
+thead,tbody{
+  display:block;
+}
+
+tbody {
+  overflow-x:hidden;
+  overflow-y:scroll;
+  height:100px;
 }
 
 td{
@@ -73,6 +83,7 @@ td{
 th{
   padding:10px 10px;
   border:solid 2px #aaa;
+  text-align:center;
 }
 
 .inline-block{
@@ -86,8 +97,8 @@ th{
 }
 
 .e {
-  width:130px;
-  height:200px;
+  width:120px;
+  height:170px;
   font-size:small;
 }
 

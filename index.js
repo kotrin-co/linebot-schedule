@@ -139,10 +139,11 @@ const get_Date = (timestamp,mode) => {
 const handleMessageEvent = (ev) => {
   console.log('handleMessageEvent!!',ev);
   const id = ev.source.userId;
+  const rp = ev.replyToken;
   const text = (ev.message.type === 'text') ? ev.message.text : '';
 
   if(text === '管理画面'){
-    client.pushMessage(id,{
+    client.replyMessage(rp,{
       "type":"flex",
       "altText":"FlexMessage",
       "contents":

@@ -47,7 +47,7 @@ const getDateElements = (timestamp) => {
 const getReservationDisplay = (timestamp,name,menu) => {
     const h = ('0'+new Date(timestamp).getHours()).slice(-2);
     const m = ('0'+new Date(timestamp).getMinutes()).slice(-2);
-    return `${m}〜 ${name}(${menu})`;
+    return `${h}：${m}\n${menu}\n`;
 }
 
 const weeks = ['日','月','火','水','木','金','土'];

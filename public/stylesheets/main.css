@@ -97,7 +97,7 @@ tbody {
 
 .fixed1{
   position:sticky;
-  top:50px;
+  top:55px;
   color:#000;
   background:#ff0;
 }
@@ -144,6 +144,7 @@ th{
   padding:5px 15px 5px 15px;
   margin:30px 0 30px 0;
   height:50px;
+  font-size:xx-large;
 }
 
 .table_element {

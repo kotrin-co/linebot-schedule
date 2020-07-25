@@ -53,7 +53,7 @@ const getReservationDisplay = (timestamp,name,menu) => {
     }else{
         mn = menu;
     }
-    return `■${h}：${m}<br>${mn}<br>`;
+    return `<a href="https://www.google.co.jp/">■${h}：${m}<br>　 ${mn}<br></a>`;
 }
 
 const weeks = ['日','月','火','水','木','金','土'];

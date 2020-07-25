@@ -62,10 +62,15 @@ table {
 }
 
 .reservation_table thead tr:nth-child(2) th {
-  top:3rem;
+  top:3.5rem;
 }
 
-td th {
+td{
+  padding:10px 10px;
+  border:solid 2px #aaa;
+}
+
+th{
   padding:10px 10px;
   border:solid 2px #aaa;
 }

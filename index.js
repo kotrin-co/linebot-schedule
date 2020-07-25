@@ -210,53 +210,45 @@ const handleMessageEvent = (ev) => {
                   reservedDate += `${get_Date(parseInt(object.starttime),2)}`;
                 });
                 client.replyMessage(rp,{
-                  "type":"text",
-                  "text":`次回予約日は${reservedDate}です。`
+                  "type":"flex",
+                  "altText":"FlexMessage",
+                  "contents":
+                  {
+                    "type": "bubble",
+                    "body": {
+                      "type": "box",
+                      "layout": "vertical",
+                      "contents": [
+                        {
+                          "type": "text",
+                          "text": `次回予約日は${reservedDate}です。この予約をキャンセルしますか？`
+                        }
+                      ]
+                    },
+                    "footer": {
+                      "type": "box",
+                      "layout": "horizontal",
+                      "contents": [
+                        {
+                          "type": "button",
+                          "action": {
+                            "type": "postback",
+                            "label": "はい",
+                            "data": "delete-yes"
+                          }
+                        },
+                        {
+                          "type": "button",
+                          "action": {
+                            "type": "postback",
+                            "label": "いいえ",
+                            "data": "delete-no"
+                          }
+                        }
+                      ]
+                    }
+                  }
                 });
-                // setTimeout(()=>{
-                //   client.pushMessage(id,
-                //     {
-                //       "type":"flex",
-                //       "altText":"FlexMessage",
-                //       "contents":
-                //       {
-                //         "type": "bubble",
-                //         "body": {
-                //           "type": "box",
-                //           "layout": "vertical",
-                //           "contents": [
-                //             {
-                //               "type": "text",
-                //               "text": "この予約をキャンセルしますか？"
-                //             }
-                //           ]
-                //         },
-                //         "footer": {
-                //           "type": "box",
-                //           "layout": "horizontal",
-                //           "contents": [
-                //             {
-                //               "type": "button",
-                //               "action": {
-                //                 "type": "postback",
-                //                 "label": "はい",
-                //                 "data": "delete-yes"
-                //               }
-                //             },
-                //             {
-                //               "type": "button",
-                //               "action": {
-                //                 "type": "postback",
-                //                 "label": "いいえ",
-                //                 "data": "delete-no"
-                //               }
-                //             }
-                //           ]
-                //         }
-                //       }
-                //     }
-                //   );
-                // },1500);
               }else{
                 client.replyMessage(rp,{
                   "type":"text",
@@ -463,12 +455,7 @@ const handlePostbackEvent = async (ev) => {
   
   if(ev.postback.data === 'cut'){
     reservation_order.menu = 0;
-      client.replyMessage(rp,[{
-        "type":"text",
-        "text":"ユーザーさん、次のご予約はMENU Aですね。ご希望の日にちを選択してください。"
-        // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
-      },
-      {
+      client.replyMessage(rp,{
         "type":"flex",
         "altText":"date_selector",
         "contents":
@@ -480,7 +467,8 @@ const handlePostbackEvent = async (ev) => {
               "contents": [
                 {
                   "type": "text",
-                  "text": "来店希望日を選択してください。"
+                  "text": "ユーザーさん、次のご予約はMENU Aですね。ご希望の日にちを選択してください。"
+                  // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
                 }
               ]
             },
@@ -518,30 +506,115 @@ const handlePostbackEvent = async (ev) => {
               ]
             }
           }
-        }]);
-      // setTimeout(()=>{
-      //   pushDateSelector(rp);
-      // },1000);
+        });
   }else if(ev.postback.data === 'cutandshampoo'){
     reservation_order.menu = 1;
       client.replyMessage(rp,{
-        "type":"text",
-        "text":"ユーザーさん、次のご予約はMENU Bですね。ご希望の日にちを選択してください。"
-        // "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。ご希望の日にちを選択してください。`
-      });
-      setTimeout(()=>{
-        pushDateSelector(id);
-      },1000);
+        "type":"flex",
+        "altText":"date_selector",
+        "contents":
+          {
+            "type": "bubble",
+            "header": {
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "ユーザーさん、次のご予約はMENU Bですね。ご希望の日にちを選択してください。"
+                  // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
+                }
+              ]
+            },
+            "body": {
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "separator",
+                  "margin": "xs"
+                },
+                {
+                  "type": "button",
+                  "action": {
+                    "type": "datetimepicker",
+                    "label": "日にちの選択",
+                    "data": "date_select",
+                    "mode": "date"
+                  },
+                  "position": "relative",
+                  "style": "primary",
+                  "margin": "lg"
+                },
+                {
+                  "type": "button",
+                  "action": {
+                    "type": "postback",
+                    "label": "キャンセル",
+                    "data": "cancel"
+                  },
+                  "position": "relative",
+                  "margin": "lg",
+                  "style": "secondary"
+                }
+              ]
+            }
+          }
+        });
   }else if(ev.postback.data === 'color'){
     reservation_order.menu = 2;
       client.replyMessage(rp,{
-        "type":"text",
-        "text":"ユーザーさん、次のご予約はMENU Cですね。ご希望の日にちを選択してください。"
-        // "text":`${pro.displayName}さん、次のご予約はカラーリングですね。ご希望の日にちを選択してください。`
-      });
-      setTimeout(()=>{
-        pushDateSelector(id);
-      },1000);
+        "type":"flex",
+        "altText":"date_selector",
+        "contents":
+          {
+            "type": "bubble",
+            "header": {
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "ユーザーさん、次のご予約はMENU Cですね。ご希望の日にちを選択してください。"
+                  // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
+                }
+              ]
+            },
+            "body": {
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "separator",
+                  "margin": "xs"
+                },
+                {
+                  "type": "button",
+                  "action": {
+                    "type": "datetimepicker",
+                    "label": "日にちの選択",
+                    "data": "date_select",
+                    "mode": "date"
+                  },
+                  "position": "relative",
+                  "style": "primary",
+                  "margin": "lg"
+                },
+                {
+                  "type": "button",
+                  "action": {
+                    "type": "postback",
+                    "label": "キャンセル",
+                    "data": "cancel"
+                  },
+                  "position": "relative",
+                  "margin": "lg",
+                  "style": "secondary"
+                }
+              ]
+            }
+          }
+        });
   }else if(ev.postback.data === 'cancel'){
     resetReservationOrder(rp,1);
   }else if(ev.postback.data === 'date_select'){
@@ -550,6 +623,7 @@ const handlePostbackEvent = async (ev) => {
     const targetDate = new Date(reservation_order.date).getTime();
     console.log('now:',now);
     console.log('targetDate:',targetDate);
+    // ここはもうちょっと厳密に比較する必要があり
     if(targetDate>=now){
       checkReservableTimes(ev,TIMES_OF_MENU[reservation_order.menu]*1000);
     }else{
@@ -561,7 +635,7 @@ const handlePostbackEvent = async (ev) => {
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = parseInt(ev.postback.data.slice(4));
     console.log('postback time proceeding! time:',time);
-    confirmReservation(id,time,0);
+    confirmReservation(ev,time,0);
 
   }else if(ev.postback.data.slice(0,6) === 'answer'){
     const result = ev.postback.data.split('-');
@@ -578,28 +652,20 @@ const handlePostbackEvent = async (ev) => {
         connection.query(insert_query)
           .then(res=>{
             const reservedTime = get_Date(s_time,1);
-            client.replyMessage(rp,{
+            client.replyMessage(rp,[{
               "type":"text",
-              "text":`${reservation_order.date}  ${reservedTime}に予約しました。`
-            });
+              "text":`${reservation_order.date}  ${reservedTime}に予約しました。ご来店を心よりお待ちしております。`
+            },
+            {
+              "type":"sticker",
+              "packageId":"11539",
+              "stickerId":"52114115"
+            }]);
             resetReservationOrder(rp,0);
-            setTimeout(()=>{
-              client.replyMessage(rp,{
-                "type":"text",
-                "text":"ご予約ありがとうございます。ご来店を心よりお待ちしております。"
-              });
-            },500);
-            setTimeout(()=>{
-              client.replyMessage(rp,{
-                "type":"sticker",
-                "packageId":"11539",
-                "stickerId":"52114115"
-              });
-            },750);
           })
           .catch(e=>console.error(e.stack));
     }else{
-      confirmReservation(id,parseInt(result[2]),parseInt(result[3])+1);
+      confirmReservation(ev,parseInt(result[2]),parseInt(result[3])+1);
     }
   }else if(ev.postback.data.slice(0,6) === 'delete'){
     console.log('reservation_order.reserved:',reservation_order.reserved);
@@ -613,21 +679,14 @@ const handlePostbackEvent = async (ev) => {
       connection.query(delete_query)
         .then(res=>{
           console.log('delete res.rows:',res.rows);
-          client.pushMessage(id,{
+          client.replyMessage(rp,{
             "type":"text",
-            "text":"予約キャンセルを受け付けました。"
+            "text":"予約キャンセルを受け付けました。またのご予約をお待ちしております。"
           });
-          setTimeout(()=>{
-            client.pushMessage(id,{
-              "type":"sticker",
-              "packageId":"11538",
-              "stickerId":"51626522"
-            });
-          },750);
         })
         .catch(e=>console.log(e.stack));
     }else{
-      client.pushMessage(id,{
+      client.replyMessage(rp,{
         "type":"text",
         "text":"キャンセルを取りやめした。"
       });
@@ -644,65 +703,10 @@ const resetReservationOrder = (rp,num) => {
   if(num === 1){
     client.replyMessage(rp,{
       "type":"text",
-      "text":"キャンセルしました"
+      "text":"終了します。"
     });
   }
   // console.log('reservation_order:',reservation_order);
-}
-
-const pushDateSelector = (rp) => {
-  client.replyMessage(rp,{
-    "type":"flex",
-    "altText":"date_selector",
-    "contents":
-      {
-        "type": "bubble",
-        "header": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            {
-              "type": "text",
-              "text": "来店希望日を選択してください。"
-            }
-          ]
-        },
-        "body": {
-          "type": "box",
-          "layout": "vertical",
-          "contents": [
-            {
-              "type": "separator",
-              "margin": "xs"
-            },
-            {
-              "type": "button",
-              "action": {
-                "type": "datetimepicker",
-                "label": "日にちの選択",
-                "data": "date_select",
-                "mode": "date"
-              },
-              "position": "relative",
-              "style": "primary",
-              "margin": "lg"
-            },
-            {
-              "type": "button",
-              "action": {
-                "type": "postback",
-                "label": "キャンセル",
-                "data": "cancel"
-              },
-              "position": "relative",
-              "margin": "lg",
-              "style": "secondary"
-            }
-          ]
-        }
-      }
-    }
-  );
 }
 
 const checkReservableTimes = (ev,treatTime) => {
@@ -866,7 +870,7 @@ const pushTimeSelector = (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "9時〜",
+                  "label": "9時-",
                   "data": "time0"
                 },
                 "style": "primary",
@@ -877,7 +881,7 @@ const pushTimeSelector = (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "10時〜",
+                  "label": "10時-",
                   "data": "time1"
                 },
                 "style": "primary",
@@ -888,7 +892,7 @@ const pushTimeSelector = (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "11時〜",
+                  "label": "11時-",
                   "data": "time2"
                 },
                 "margin": "md",
@@ -905,7 +909,7 @@ const pushTimeSelector = (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "12時〜",
+                  "label": "12時-",
                   "data": "time3"
                 },
                 "margin": "md",
@@ -916,7 +920,7 @@ const pushTimeSelector = (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "13時〜",
+                  "label": "13時-",
                   "data": "time4"
                 },
                 "margin": "md",
@@ -927,7 +931,7 @@ const pushTimeSelector = (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "14時〜",
+                  "label": "14時-",
                   "data": "time5"
                 },
                 "margin": "md",
@@ -945,7 +949,7 @@ const pushTimeSelector = (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "15時〜",
+                  "label": "15時-",
                   "data": "time6"
                 },
                 "margin": "md",
@@ -956,7 +960,7 @@ const pushTimeSelector = (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "16時〜",
+                  "label": "16時-",
                   "data": "time7"
                 },
                 "margin": "md",
@@ -967,7 +971,7 @@ const pushTimeSelector = (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "17時〜",
+                  "label": "17時-",
                   "data": "time8"
                 },
                 "margin": "md",
@@ -985,7 +989,7 @@ const pushTimeSelector = (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "18時〜",
+                  "label": "18時-",
                   "data": "time9"
                 },
                 "margin": "md",
@@ -996,7 +1000,7 @@ const pushTimeSelector = (ev) => {
                 "type": "button",
                 "action": {
                   "type": "postback",
-                  "label": "19時〜",
+                  "label": "19時-",
                   "data": "time10"
                 },
                 "margin": "md",
@@ -1023,14 +1027,15 @@ const pushTimeSelector = (ev) => {
   );
 }
 
-const confirmReservation = (id,time,i) => {
+const confirmReservation = (ev,time,i) => {
+  const rp = ev.replyToken;
   const reservableTimes = reservation_order.reservable[time];
   if(reservableTimes[i]){
     console.log('reservableTimes[i]:',reservableTimes[i]);
     const proposalTime = get_Date(reservableTimes[i],1);
     console.log('proposalTime:',proposalTime);
 
-    client.pushMessage(id,
+    client.replyMessage(rp,
       {
         "type":"flex",
         "altText":"FlexMessage",
@@ -1071,29 +1076,9 @@ const confirmReservation = (id,time,i) => {
           }
         }
       }
-    //   {
-    //   "type": "template",
-    //   "altText":"予約確認",
-    //   "template": {
-    //       "type": "confirm",
-    //       "text": `次回ご予約は ${proposalTime}〜 でいかがでしょうか。`,
-    //       "actions": [
-    //           {
-    //               "type": "postback",
-    //               "label": "はい",
-    //               "data": `answer-yes-${time}-${i}`
-    //           },
-    //           {
-    //               "type": "postback",
-    //               "label": "いいえ",
-    //               "data": `answer-no-${time}-${i}`
-    //           }
-    //       ]
-    //   }
-    // }
     );
   }else{
-    client.pushMessage(id,{
+    client.replyMessage(rp,{
       "type":"text",
       "text":"この時間帯には予約可能な時間はありません。別の時間帯を選択してください。"
     });

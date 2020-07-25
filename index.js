@@ -4,6 +4,7 @@ const path = require('path')
 const line = require('@line/bot-sdk');
 const PORT = process.env.PORT || 5000
 const { Client } = require('pg');
+const router = require('./routers/index');
 
 // ここはAPIテスト
 const todosRouter = require('./routers/todos');
@@ -49,34 +50,22 @@ const reservation_order = {
   reserved:null
 };
 
-const adminData = {
-  users:null,
-  reservations:null
-};
+// const adminData = {
+//   users:null,
+//   reservations:null
+// };
 
-module.exports = adminData;
+// module.exports = adminData;
 
 const MENU = ['cut','cut&shampoo','color'];
 const TIMES_OF_MENU = [900,1200,1800];
 
 app
   .use(express.static(path.join(__dirname, 'public')))
+  .use('/',router)
   // ここはAPIテスト
   .use('/api/todos',todosRouter)
   // ここまでテスト
-  .get('/',(req,res)=>{
-    res.render('pages/index');
-  })
-  .get('/users',(req,res)=>{
-    res.render('pages/users',{
-      usersData:adminData.users
-    });
-  })
-  .get('/reservations',(req,res)=>{
-    res.render('pages/reservations',{
-      reservationsData:adminData.reservations
-    });
-  })
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .post('/hook',line.middleware(config),(req,res)=> lineBot(req,res))
@@ -138,14 +127,12 @@ const greeting_follow = async (ev) => {
 
 const get_Date = (timestamp,mode) => {
   const date = new Date(timestamp);
-  console.log('date:',date);
   const y = date.getFullYear();
   const m = ("0" + (date.getMonth()+1)).slice(-2);
   const d = ("0" + date.getDate()).slice(-2);
   const h = ("0" + date.getHours()).slice(-2);
   const i = ("0" + date.getMinutes()).slice(-2);
   const s = ("0" + date.getSeconds()).slice(-2);
-  console.log(`タイムスタンプ変換${timestamp}　→　${y}/${m}/${d} ${h}:${i}:${s}`);
   if(mode === 0){
     return `${y}/${m}/${d} ${h}:${i}:${s}`;
   }else if(mode === 1){
@@ -153,7 +140,6 @@ const get_Date = (timestamp,mode) => {
   }else if(mode === 2){
     return `${m}/${d} ${h}:${i}`;
   }
-  
 }
 
 const handleMessageEvent = async (ev) => {
@@ -162,68 +148,56 @@ const handleMessageEvent = async (ev) => {
   const text = (ev.message.type === 'text') ? ev.message.text : '';
 
   if(text === '管理画面'){
-    pickupAllReservations()
-      .then(message=>{
-        console.log('message:',message);
-        // console.log('adminData.users:',adminData.users);
-        adminData.reservations.map(object=>{
-          object.starttime = get_Date(parseInt(object.starttime),2);
-          object.endtime = get_Date(parseInt(object.endtime),2);
-        });
-        // console.log('adminData.reservations:',adminData.reservations);
-        client.pushMessage(id,{
-          "type":"flex",
-          "altText":"FlexMessage",
-          "contents":
-            {
-              "type": "bubble",
-              "header": {
-                "type": "box",
-                "layout": "vertical",
-                "contents": [
-                  {
-                    "type": "text",
-                    "text": "管理者画面へ移動しますか?",
-                    "color": "#ffffff"
-                  }
-                ]
-              },
-              "body": {
-                "type": "box",
-                "layout": "vertical",
-                "contents": [
-                  {
-                    "type": "button",
-                    "action": {
-                      "type": "uri",
-                      "label": "管理者画面へ",
-                      "uri": "https://linebot-schedule.herokuapp.com/"
-                    },
-                    "style": "link"
-                  },
-                  {
-                    "type": "button",
-                    "action": {
-                      "type": "postback",
-                      "label": "終了",
-                      "data": "cancel"
-                    },
-                    "margin": "lg"
-                  }
-                ]
-              },
-              "styles": {
-                "header": {
-                  "backgroundColor": "#0000ff",
-                  "separator": true,
-                  "separatorColor": "#ffffff"
-                }
+    client.pushMessage(id,{
+      "type":"flex",
+      "altText":"FlexMessage",
+      "contents":
+        {
+          "type": "bubble",
+          "header": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "text",
+                "text": "管理者画面へ移動しますか?",
+                "color": "#ffffff"
               }
+            ]
+          },
+          "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+              {
+                "type": "button",
+                "action": {
+                  "type": "uri",
+                  "label": "管理者画面へ",
+                  "uri": "https://linebot-schedule.herokuapp.com/"
+                },
+                "style": "link"
+              },
+              {
+                "type": "button",
+                "action": {
+                  "type": "postback",
+                  "label": "終了",
+                  "data": "cancel"
+                },
+                "margin": "lg"
+              }
+            ]
+          },
+          "styles": {
+            "header": {
+              "backgroundColor": "#0000ff",
+              "separator": true,
+              "separatorColor": "#ffffff"
             }
+          }
         }
-        );
-      })
-      .catch(e=>console.log(e.stack));
+    });
   }
 
   // 「予約削除」のメッセージが送られて来た場合に、現在予約している日時をリプライし、
@@ -446,30 +420,6 @@ const checkUserExistence = (ev) => {
   });
 }
 
-const pickupAllReservations = () => {
-  return new Promise((resolve,reject)=>{
-    const pickup_users = {
-      text:'SELECT * FROM users ORDER BY id ASC;'
-    };
-    const pickup_reservations = {
-      text:'SELECT * FROM schedules ORDER BY starttime ASC;'
-    };
-    connection.query(pickup_users)
-      .then(res=>{
-        // console.log('users:',res.rows);
-        adminData.users = res.rows;
-        connection.query(pickup_reservations)
-          .then(res=>{
-            // console.log('reservations:',res.rows);
-            adminData.reservations = res.rows;
-            resolve('selectクエリー成功！！');
-          })
-          .catch(e=>console.log(e.stack));
-      })
-      .catch(e=>console.log(e.stack));
-  });
-}
-
 const pickupReservedOrder = (ev) => {
   return new Promise((resolve,reject)=>{
     const id = ev.source.userId;
@@ -531,8 +481,8 @@ const handlePostbackEvent = async (ev) => {
     reservation_order.date = ev.postback.params.date;
     const now = new Date().getTime();
     const targetDate = new Date(reservation_order.date).getTime();
-    // console.log('now:',now);
-    // console.log('targetDate:',targetDate);
+    console.log('now:',now);
+    console.log('targetDate:',targetDate);
     if(targetDate>now){
       checkReservableTimes(id,TIMES_OF_MENU[reservation_order.menu]*1000);
     }else{
@@ -543,17 +493,17 @@ const handlePostbackEvent = async (ev) => {
     }
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = parseInt(ev.postback.data.slice(4));
-    // console.log('postback time proceeding! time:',time);
+    console.log('postback time proceeding! time:',time);
     confirmReservation(id,time,0);
 
   }else if(ev.postback.data.slice(0,6) === 'answer'){
     const result = ev.postback.data.split('-');
-    // console.log('result:',result);
+    console.log('result:',result);
     if(result[1] === 'yes'){
       const s_time = reservation_order.reservable[parseInt(result[2])][parseInt(result[3])];
       const e_time = s_time + TIMES_OF_MENU[reservation_order.menu]*1000;
-      // console.log('s_time:',get_Date(s_time,1));
-      // console.log('e_time:',get_Date(e_time,1));
+      console.log('s_time:',get_Date(s_time,1));
+      console.log('e_time:',get_Date(e_time,1));
       const insert_query = {
           text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
           values:[id,pro.displayName,reservation_order.date,s_time,e_time,MENU[reservation_order.menu]]
@@ -585,7 +535,7 @@ const handlePostbackEvent = async (ev) => {
       confirmReservation(id,parseInt(result[2]),parseInt(result[3])+1);
     }
   }else if(ev.postback.data.slice(0,6) === 'delete'){
-    // console.log('reservation_order.reserved:',reservation_order.reserved);
+    console.log('reservation_order.reserved:',reservation_order.reserved);
     const result = ev.postback.data.split('-');
     if(result[1] === 'yes'){
       const target = reservation_order.reserved.starttime;
@@ -595,7 +545,7 @@ const handlePostbackEvent = async (ev) => {
       };
       connection.query(delete_query)
         .then(res=>{
-          // console.log('delete res.rows:',res.rows);
+          console.log('delete res.rows:',res.rows);
           client.pushMessage(id,{
             "type":"text",
             "text":"予約キャンセルを受け付けました。"

@@ -18,24 +18,24 @@
     <table class="reservation_table">
         <thead>
             <tr id="week">
-                <th></th>
+                <th class="left_col"></th>
                 <% for ( let i=0; i<7 ;i++ ){ %>
-                <th id="w<%= i %>"></th>
+                <th class="table_header" id="w<%= i %>"></th>
                 <% } %>
             </tr>
             <tr id="date">
-                <th></th>
+                <th class="left_col"></th>
                 <% for ( let i=0; i<7 ;i++ ){ %>
-                    <th id="d<%= i %>"></th>
+                    <th class="table_header" id="d<%= i %>"></th>
                 <% } %>
             </tr>
         </thead>
         <tbody>
             <% for (let i=0; i<11; i++){ %>
                 <tr id="time<%= 9+i %>">
-                    <td><%= 9+i %>:00</td>
+                    <td class="left_col"><%= 9+i %>:00</td>
                     <% for (let j=0; j<7; j++){ %>
-                    <td id="d<%= j %>-<%= 9+i %>" class="e"></td>
+                    <td class="table_element" id="d<%= j %>-<%= 9+i %>"></td>
                     <% } %>
                 </tr>
             <% } %>

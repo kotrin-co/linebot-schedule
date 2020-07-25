@@ -82,7 +82,7 @@ const displayCalendar = (data) =>{
         for(let j=0;j<11;j++){
             const tdElement = document.getElementById(`d${i}-${9+j}`);
             const filteredArray = data.filter(obj=>{
-                return ((obj.starttime >= base_ts+oneDay*i+oneHour*j) && (obj.starttime < base_ts+oneDay*i+oneHour*j+oneHour));
+                return ((obj.starttime >= base_ts+oneDay*i+oneHour*j-oneHour*9) && (obj.starttime < base_ts+oneDay*i+oneHour*j+oneHour-oneHour*9));
             });
             if(filteredArray.length){
                 let rsv = '';

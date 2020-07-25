@@ -8,10 +8,10 @@ const connection = new Client({
   });
 connection.connect();
 
-// const adminData = {
-//     users:null,
-//     reservations:null
-// };
+const adminData = {
+    users:null,
+    reservations:null
+};
 
 // const pickup_users = {
 //     text:'SELECT * FROM users ORDER BY id ASC;'
@@ -92,11 +92,6 @@ connection.connect();
 
 module.exports = {
     findAll:()=>{
-        const adminData = {
-            users:null,
-            reservations:null
-        };
-        
         const pickup_users = {
             text:'SELECT * FROM users ORDER BY id ASC;'
         };
@@ -115,10 +110,10 @@ module.exports = {
                             object.starttime = parseInt(object.starttime);
                             object.endtime = parseInt(object.endtime);
                         });
+                        return adminData.reservations.slice();
                     })
                     .catch(e=>console.log(e.stack));
             })
             .catch(e=>console.log(e.stack));
-        return adminData.reservations.slice();
     }
 };

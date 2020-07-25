@@ -213,50 +213,50 @@ const handleMessageEvent = (ev) => {
                   "type":"text",
                   "text":`次回予約日は${reservedDate}です。`
                 });
-                setTimeout(()=>{
-                  client.pushMessage(id,
-                    {
-                      "type":"flex",
-                      "altText":"FlexMessage",
-                      "contents":
-                      {
-                        "type": "bubble",
-                        "body": {
-                          "type": "box",
-                          "layout": "vertical",
-                          "contents": [
-                            {
-                              "type": "text",
-                              "text": "この予約をキャンセルしますか？"
-                            }
-                          ]
-                        },
-                        "footer": {
-                          "type": "box",
-                          "layout": "horizontal",
-                          "contents": [
-                            {
-                              "type": "button",
-                              "action": {
-                                "type": "postback",
-                                "label": "はい",
-                                "data": "delete-yes"
-                              }
-                            },
-                            {
-                              "type": "button",
-                              "action": {
-                                "type": "postback",
-                                "label": "いいえ",
-                                "data": "delete-no"
-                              }
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  );
-                },1500);
+                // setTimeout(()=>{
+                //   client.pushMessage(id,
+                //     {
+                //       "type":"flex",
+                //       "altText":"FlexMessage",
+                //       "contents":
+                //       {
+                //         "type": "bubble",
+                //         "body": {
+                //           "type": "box",
+                //           "layout": "vertical",
+                //           "contents": [
+                //             {
+                //               "type": "text",
+                //               "text": "この予約をキャンセルしますか？"
+                //             }
+                //           ]
+                //         },
+                //         "footer": {
+                //           "type": "box",
+                //           "layout": "horizontal",
+                //           "contents": [
+                //             {
+                //               "type": "button",
+                //               "action": {
+                //                 "type": "postback",
+                //                 "label": "はい",
+                //                 "data": "delete-yes"
+                //               }
+                //             },
+                //             {
+                //               "type": "button",
+                //               "action": {
+                //                 "type": "postback",
+                //                 "label": "いいえ",
+                //                 "data": "delete-no"
+                //               }
+                //             }
+                //           ]
+                //         }
+                //       }
+                //     }
+                //   );
+                // },1500);
               }else{
                 client.replyMessage(rp,{
                   "type":"text",
@@ -460,11 +460,12 @@ const pickupReservedOrder = (ev) => {
 const handlePostbackEvent = async (ev) => {
   const pro = await client.getProfile(ev.source.userId);
   const id = ev.source.userId;
+  const rp = ev.replyToken;
   console.log('postback event:',ev);
   
   if(ev.postback.data === 'cut'){
     reservation_order.menu = 0;
-      client.replyMessage(ev.replyToken,{
+      client.replyMessage(rp,{
         "type":"text",
         "text":"ユーザーさん、次のご予約はMENU Aですね。ご希望の日にちを選択してください。"
         // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
@@ -474,7 +475,7 @@ const handlePostbackEvent = async (ev) => {
       },1000);
   }else if(ev.postback.data === 'cutandshampoo'){
     reservation_order.menu = 1;
-      client.replyMessage(ev.replyToken,{
+      client.replyMessage(rp,{
         "type":"text",
         "text":"ユーザーさん、次のご予約はMENU Bですね。ご希望の日にちを選択してください。"
         // "text":`${pro.displayName}さん、次のご予約はカット＆シャンプーですね。ご希望の日にちを選択してください。`
@@ -484,7 +485,7 @@ const handlePostbackEvent = async (ev) => {
       },1000);
   }else if(ev.postback.data === 'color'){
     reservation_order.menu = 2;
-      client.replyMessage(ev.replyToken,{
+      client.replyMessage(rp,{
         "type":"text",
         "text":"ユーザーさん、次のご予約はMENU Cですね。ご希望の日にちを選択してください。"
         // "text":`${pro.displayName}さん、次のご予約はカラーリングですね。ご希望の日にちを選択してください。`
@@ -493,7 +494,7 @@ const handlePostbackEvent = async (ev) => {
         pushDateSelector(id);
       },1000);
   }else if(ev.postback.data === 'cancel'){
-    resetReservationOrder(id,1);
+    resetReservationOrder(rp,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
     const now = new Date().getTime();
@@ -532,7 +533,7 @@ const handlePostbackEvent = async (ev) => {
               "type":"text",
               "text":`${reservation_order.date}  ${reservedTime}に予約しました。`
             });
-            resetReservationOrder(id,0);
+            resetReservationOrder(rp,0);
             setTimeout(()=>{
               client.pushMessage(id,{
                 "type":"text",
@@ -581,18 +582,18 @@ const handlePostbackEvent = async (ev) => {
         "type":"text",
         "text":"キャンセルを取りやめした。"
       });
-      resetReservationOrder(id,0);
+      resetReservationOrder(rp,0);
     }
   }
 }
 
-const resetReservationOrder = (id,num) => {
+const resetReservationOrder = (rp,num) => {
   reservation_order.menu = null;
   reservation_order.date = null;
   reservation_order.reservable = null;
   reservation_order.reserved = null;
   if(num === 1){
-    client.pushMessage(id,{
+    client.replyMessage(rp,{
       "type":"text",
       "text":"キャンセルしました"
     });

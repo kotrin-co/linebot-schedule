@@ -469,10 +469,56 @@ const handlePostbackEvent = async (ev) => {
         // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
       },
       {
-        "type":"text",
-        "text":"本当に目ヌーAですな"
-        // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
-      }]);
+        "type":"flex",
+        "altText":"date_selector",
+        "contents":
+          {
+            "type": "bubble",
+            "header": {
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": "来店希望日を選択してください。"
+                }
+              ]
+            },
+            "body": {
+              "type": "box",
+              "layout": "vertical",
+              "contents": [
+                {
+                  "type": "separator",
+                  "margin": "xs"
+                },
+                {
+                  "type": "button",
+                  "action": {
+                    "type": "datetimepicker",
+                    "label": "日にちの選択",
+                    "data": "date_select",
+                    "mode": "date"
+                  },
+                  "position": "relative",
+                  "style": "primary",
+                  "margin": "lg"
+                },
+                {
+                  "type": "button",
+                  "action": {
+                    "type": "postback",
+                    "label": "キャンセル",
+                    "data": "cancel"
+                  },
+                  "position": "relative",
+                  "margin": "lg",
+                  "style": "secondary"
+                }
+              ]
+            }
+          }
+        }]);
       setTimeout(()=>{
         pushDateSelector(rp);
       },1000);

@@ -50,12 +50,6 @@ const reservation_order = {
   reserved:null
 };
 
-// const adminData = {
-//   users:null,
-//   reservations:null
-// };
-
-// module.exports = adminData;
 
 const MENU = ['cut','cut&shampoo','color'];
 const TIMES_OF_MENU = [900,1200,1800];
@@ -146,6 +140,8 @@ const handleMessageEvent = async (ev) => {
   console.log('handleMessageEvent!!',ev);
   const id = ev.source.userId;
   const text = (ev.message.type === 'text') ? ev.message.text : '';
+  console.log('id:',id);
+  console.log('text:',text);
 
   if(text === '管理画面'){
     client.pushMessage(id,{

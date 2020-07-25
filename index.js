@@ -463,7 +463,7 @@ const handlePostbackEvent = async (ev) => {
   
   if(ev.postback.data === 'cut'){
     reservation_order.menu = 0;
-      client.replyMessage(rp,{
+      client.replyMessage(rp,[{
         "type":"text",
         "text":"ユーザーさん、次のご予約はMENU Aですね。ご希望の日にちを選択してください。"
         // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
@@ -472,7 +472,7 @@ const handlePostbackEvent = async (ev) => {
         "type":"text",
         "text":"本当に目ヌーAですな"
         // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
-      });
+      }]);
       setTimeout(()=>{
         pushDateSelector(rp);
       },1000);

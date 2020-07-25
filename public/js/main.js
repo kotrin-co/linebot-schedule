@@ -47,7 +47,13 @@ const getDateElements = (timestamp) => {
 const getReservationDisplay = (timestamp,name,menu) => {
     const h = ('0'+new Date(timestamp-oneHour*9).getHours()).slice(-2);
     const m = ('0'+new Date(timestamp-oneHour*9).getMinutes()).slice(-2);
-    return `${h}：${m}<br>${menu}`;
+    const mn = '';
+    if(menu === 'cut&shampoo'){
+        mn = 'C&S'
+    }else{
+        mn = menu;
+    }
+    return `■${h}：${m}<br>${mn}<br>`;
 }
 
 const weeks = ['日','月','火','水','木','金','土'];

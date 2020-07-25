@@ -1,5 +1,4 @@
 const { Client } = require('pg');
-
 const connection = new Client({
     user:process.env.PG_USER,
     host:process.env.PG_HOST,
@@ -7,36 +6,35 @@ const connection = new Client({
     password:process.env.PG_PASSWORD,
     port:5432
   });
-
 connection.connect();
 
-const adminData = {
-    users:null,
-    reservations:null
-};
+// const adminData = {
+//     users:null,
+//     reservations:null
+// };
 
-const pickup_users = {
-    text:'SELECT * FROM users ORDER BY id ASC;'
-};
-const pickup_reservations = {
-    text:'SELECT * FROM schedules ORDER BY starttime ASC;'
-};
-connection.query(pickup_users)
-    .then(res=>{
-        // console.log('users:',res.rows);
-        adminData.users = res.rows;
-        connection.query(pickup_reservations)
-            .then(res=>{
-                // console.log('reservations:',res.rows);
-                adminData.reservations = res.rows;
-                adminData.reservations.map(object=>{
-                    object.starttime = parseInt(object.starttime);
-                    object.endtime = parseInt(object.endtime);
-                });
-            })
-            .catch(e=>console.log(e.stack));
-    })
-    .catch(e=>console.log(e.stack));
+// const pickup_users = {
+//     text:'SELECT * FROM users ORDER BY id ASC;'
+// };
+// const pickup_reservations = {
+//     text:'SELECT * FROM schedules ORDER BY starttime ASC;'
+// };
+// connection.query(pickup_users)
+//     .then(res=>{
+//         // console.log('users:',res.rows);
+//         adminData.users = res.rows;
+//         connection.query(pickup_reservations)
+//             .then(res=>{
+//                 // console.log('reservations:',res.rows);
+//                 adminData.reservations = res.rows;
+//                 adminData.reservations.map(object=>{
+//                     object.starttime = parseInt(object.starttime);
+//                     object.endtime = parseInt(object.endtime);
+//                 });
+//             })
+//             .catch(e=>console.log(e.stack));
+//     })
+//     .catch(e=>console.log(e.stack));
 
 // pickupAllReservations()
 //     .then(message=>{
@@ -94,6 +92,33 @@ connection.query(pickup_users)
 
 module.exports = {
     findAll:()=>{
+        const adminData = {
+            users:null,
+            reservations:null
+        };
+        
+        const pickup_users = {
+            text:'SELECT * FROM users ORDER BY id ASC;'
+        };
+        const pickup_reservations = {
+            text:'SELECT * FROM schedules ORDER BY starttime ASC;'
+        };
+        connection.query(pickup_users)
+            .then(res=>{
+                // console.log('users:',res.rows);
+                adminData.users = res.rows;
+                connection.query(pickup_reservations)
+                    .then(res=>{
+                        // console.log('reservations:',res.rows);
+                        adminData.reservations = res.rows;
+                        adminData.reservations.map(object=>{
+                            object.starttime = parseInt(object.starttime);
+                            object.endtime = parseInt(object.endtime);
+                        });
+                    })
+                    .catch(e=>console.log(e.stack));
+            })
+            .catch(e=>console.log(e.stack));
         return adminData.reservations.slice();
     }
 };

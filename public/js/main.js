@@ -45,11 +45,9 @@ const getDateElements = (timestamp) => {
 }
 
 const getReservationDisplay = (timestamp,name,menu) => {
-    const h = ('0'+new Date(timestamp).getHours()).slice(-2);
-    const m = ('0'+new Date(timestamp).getMinutes()).slice(-2);
-    return `${h}：${m}
-    ${menu}
-    `;
+    const h = ('0'+new Date(timestamp-oneHour*9).getHours()).slice(-2);
+    const m = ('0'+new Date(timestamp-oneHour*9).getMinutes()).slice(-2);
+    return `${h}：${m}<br>${menu}`;
 }
 
 const weeks = ['日','月','火','水','木','金','土'];
@@ -94,7 +92,7 @@ const displayCalendar = (data) =>{
                 filteredArray.forEach(obj=>{
                     rsv += getReservationDisplay(obj.starttime,obj.name,obj.menu);
                 });
-                tdElement.textContent = rsv;
+                tdElement.innerHTML = rsv;
             }else{
                 tdElement.textContent = '';
             }

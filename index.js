@@ -219,26 +219,48 @@ const handleMessageEvent = async (ev) => {
                   "text":`次回予約日は${reservedDate}です。`
                 });
                 setTimeout(()=>{
-                  client.pushMessage(id,{
-                    "type": "template",
-                    "altText": "予約キャンセル",
-                    "template": {
-                        "type": "confirm",
-                        "text": "この予約をキャンセルしますか？",
-                        "actions": [
+                  client.pushMessage(id,
+                    {
+                      "type":"flex",
+                      "altText":"FlexMessage",
+                      "contents":
+                      {
+                        "type": "bubble",
+                        "body": {
+                          "type": "box",
+                          "layout": "vertical",
+                          "contents": [
                             {
+                              "type": "text",
+                              "text": "この予約をキャンセルしますか？"
+                            }
+                          ]
+                        },
+                        "footer": {
+                          "type": "box",
+                          "layout": "horizontal",
+                          "contents": [
+                            {
+                              "type": "button",
+                              "action": {
                                 "type": "postback",
                                 "label": "はい",
                                 "data": "delete-yes"
+                              }
                             },
                             {
+                              "type": "button",
+                              "action": {
                                 "type": "postback",
                                 "label": "いいえ",
                                 "data": "delete-no"
+                              }
                             }
-                        ]
+                          ]
+                        }
+                      }
                     }
-                  });
+                  );
                 },1500);
               }else{
                 client.pushMessage(id,{
@@ -962,26 +984,68 @@ const confirmReservation = (id,time,i) => {
     const proposalTime = get_Date(reservableTimes[i],1);
     console.log('proposalTime:',proposalTime);
 
-    client.pushMessage(id,{
-      "type": "template",
-      "altText":"予約確認",
-      "template": {
-          "type": "confirm",
-          "text": `次回ご予約は ${proposalTime}〜 でいかがでしょうか。`,
-          "actions": [
+    client.pushMessage(id,
+      {
+        "type":"flex",
+        "altText":"FlexMessage",
+        "contents":
+        {
+          "type": "bubble",
+          "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
               {
+                "type": "text",
+                "text": `次回ご予約は ${proposalTime}〜 でいかがでしょうか。`
+              }
+            ]
+          },
+          "footer": {
+            "type": "box",
+            "layout": "horizontal",
+            "contents": [
+              {
+                "type": "button",
+                "action": {
                   "type": "postback",
                   "label": "はい",
                   "data": `answer-yes-${time}-${i}`
+                }
               },
               {
+                "type": "button",
+                "action": {
                   "type": "postback",
                   "label": "いいえ",
                   "data": `answer-no-${time}-${i}`
+                }
               }
-          ]
+            ]
+          }
+        }
       }
-    });
+    //   {
+    //   "type": "template",
+    //   "altText":"予約確認",
+    //   "template": {
+    //       "type": "confirm",
+    //       "text": `次回ご予約は ${proposalTime}〜 でいかがでしょうか。`,
+    //       "actions": [
+    //           {
+    //               "type": "postback",
+    //               "label": "はい",
+    //               "data": `answer-yes-${time}-${i}`
+    //           },
+    //           {
+    //               "type": "postback",
+    //               "label": "いいえ",
+    //               "data": `answer-no-${time}-${i}`
+    //           }
+    //       ]
+    //   }
+    // }
+    );
   }else{
     client.pushMessage(id,{
       "type":"text",

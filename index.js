@@ -290,12 +290,12 @@ const handleMessageEvent = (ev) => {
                 reservedArray.forEach(object=>{
                   reservedDate += `${get_Date(parseInt(object.starttime),2)}`;
                 });
-                client.pushMessage(id,{
+                client.replyMessage(rp,{
                   "type":"text",
                   "text":`次回予約日は${reservedDate}です。`
                 });
               }else{
-                client.pushMessage(id,{
+                client.replyMessage(rp,{
                   "type":"text",
                   "text":`次回の予約は入っておりません。`
                 });
@@ -303,7 +303,7 @@ const handleMessageEvent = (ev) => {
             })
             .catch(e=>console.log(e.stack));
         }else{
-          client.pushMessage(id,{
+          client.replyMessage(rp,{
             "type":"text",
             "text":"ユーザー登録のない方は予約できません。"
           });
@@ -321,13 +321,13 @@ const handleMessageEvent = (ev) => {
           pickupReservedOrder(ev)
             .then(reservedArray=>{
               if(reservedArray.length){
-                client.pushMessage(id,{
+                client.replyMessage(rp,{
                   "type":"text",
                   "text":"予約は２つ以上入れることはできません。"
                 });
               }else{
-                resetReservationOrder(id,0);
-                client.pushMessage(id,{
+                resetReservationOrder(rp,0);
+                client.replyMessage(rp,{
                   "type":"flex",
                   "altText":"FlexMessage",
                   "contents":
@@ -402,11 +402,9 @@ const handleMessageEvent = (ev) => {
                   })
               }
             })
-            .catch(e=>console.log(e.stack));
-
-          
+            .catch(e=>console.log(e.stack));          
         }else{
-          client.pushMessage(id,{
+          client.replyMessage(rp,{
             "type":"text",
             "text":"ユーザー登録のない方は予約できません。"
           });
@@ -501,10 +499,10 @@ const handlePostbackEvent = async (ev) => {
     const targetDate = new Date(reservation_order.date).getTime();
     console.log('now:',now);
     console.log('targetDate:',targetDate);
-    if(targetDate>now){
+    if(targetDate>=now){
       checkReservableTimes(id,TIMES_OF_MENU[reservation_order.menu]*1000);
     }else{
-      client.pushMessage(id,{
+      client.replyMessage(rp,{
         "type":"text",
         "text":"過去の日にちは指定できません。"
       });
@@ -529,19 +527,19 @@ const handlePostbackEvent = async (ev) => {
         connection.query(insert_query)
           .then(res=>{
             const reservedTime = get_Date(s_time,1);
-            client.pushMessage(id,{
+            client.replyMessage(rp,{
               "type":"text",
               "text":`${reservation_order.date}  ${reservedTime}に予約しました。`
             });
             resetReservationOrder(rp,0);
             setTimeout(()=>{
-              client.pushMessage(id,{
+              client.replyMessage(rp,{
                 "type":"text",
                 "text":"ご予約ありがとうございます。ご来店を心よりお待ちしております。"
               });
             },500);
             setTimeout(()=>{
-              client.pushMessage(id,{
+              client.replyMessage(rp,{
                 "type":"sticker",
                 "packageId":"11539",
                 "stickerId":"52114115"

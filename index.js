@@ -209,7 +209,7 @@ const handleMessageEvent = (ev) => {
                   reservation_order.reserved = object;
                   reservedDate += `${get_Date(parseInt(object.starttime),2)}`;
                 });
-                client.pushMessage(id,{
+                client.replyMessage(rp,{
                   "type":"text",
                   "text":`次回予約日は${reservedDate}です。`
                 });
@@ -258,7 +258,7 @@ const handleMessageEvent = (ev) => {
                   );
                 },1500);
               }else{
-                client.pushMessage(id,{
+                client.replyMessage(rp,{
                   "type":"text",
                   "text":`次回の予約は入っておりません。`
                 });
@@ -266,7 +266,7 @@ const handleMessageEvent = (ev) => {
             })
             .catch(e=>console.log(e.stack));
         }else{
-          client.pushMessage(id,{
+          client.replyMessage(rp,{
             "type":"text",
             "text":"ユーザー登録のない方は予約操作できません。"
           });

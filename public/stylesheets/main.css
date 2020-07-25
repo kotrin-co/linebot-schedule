@@ -150,7 +150,8 @@ th{
 .table_element {
   width:120px;
   height:170px;
-  font-size:small;
+  font-size:medium;
+  text-align:left;
 }
 
 [title="red"]{color:red;}

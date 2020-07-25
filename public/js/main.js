@@ -1,3 +1,5 @@
+console.log('その6　main.js');
+
 const rButton = document.getElementById('rButton');
 const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');

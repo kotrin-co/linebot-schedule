@@ -221,7 +221,8 @@ const handleMessageEvent = (ev) => {
                       "contents": [
                         {
                           "type": "text",
-                          "text": `次回予約日は${reservedDate}です。この予約をキャンセルしますか？`
+                          "text": `次回予約日は${reservedDate}です。この予約をキャンセルしますか？`,
+                          "wrap": true
                         }
                       ]
                     },
@@ -260,7 +261,8 @@ const handleMessageEvent = (ev) => {
         }else{
           client.replyMessage(rp,{
             "type":"text",
-            "text":"ユーザー登録のない方は予約操作できません。"
+            "text":"ユーザー登録のない方は予約操作できません。",
+            "wrap": true
           });
         }
       })
@@ -297,7 +299,8 @@ const handleMessageEvent = (ev) => {
         }else{
           client.replyMessage(rp,{
             "type":"text",
-            "text":"ユーザー登録のない方は予約できません。"
+            "text":"ユーザー登録のない方は予約できません。",
+            "wrap": true
           });
         }
       })
@@ -315,7 +318,8 @@ const handleMessageEvent = (ev) => {
               if(reservedArray.length){
                 client.replyMessage(rp,{
                   "type":"text",
-                  "text":"予約は２つ以上入れることはできません。"
+                  "text":"予約は２つ以上入れることはできません。",
+                  "wrap": true
                 });
               }else{
                 resetReservationOrder(rp,0);
@@ -398,7 +402,8 @@ const handleMessageEvent = (ev) => {
         }else{
           client.replyMessage(rp,{
             "type":"text",
-            "text":"ユーザー登録のない方は予約できません。"
+            "text":"ユーザー登録のない方は予約できません。",
+            "wrap": true
           });
         }
       })
@@ -467,7 +472,8 @@ const handlePostbackEvent = async (ev) => {
               "contents": [
                 {
                   "type": "text",
-                  "text": "ユーザーさん、次のご予約はMENU Aですね。ご希望の日にちを選択してください。"
+                  "text": "ユーザーさん、次のご予約はMENU Aですね。ご希望の日にちを選択してください。",
+                  "wrap": true
                   // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
                 }
               ]
@@ -521,7 +527,8 @@ const handlePostbackEvent = async (ev) => {
               "contents": [
                 {
                   "type": "text",
-                  "text": "ユーザーさん、次のご予約はMENU Bですね。ご希望の日にちを選択してください。"
+                  "text": "ユーザーさん、次のご予約はMENU Bですね。ご希望の日にちを選択してください。",
+                  "wrap": true
                   // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
                 }
               ]
@@ -575,7 +582,8 @@ const handlePostbackEvent = async (ev) => {
               "contents": [
                 {
                   "type": "text",
-                  "text": "ユーザーさん、次のご予約はMENU Cですね。ご希望の日にちを選択してください。"
+                  "text": "ユーザーさん、次のご予約はMENU Cですね。ご希望の日にちを選択してください。",
+                  "wrap": true
                   // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
                 }
               ]
@@ -654,7 +662,8 @@ const handlePostbackEvent = async (ev) => {
             const reservedTime = get_Date(s_time,1);
             client.replyMessage(rp,[{
               "type":"text",
-              "text":`${reservation_order.date}  ${reservedTime}に予約しました。ご来店を心よりお待ちしております。`
+              "text":`${reservation_order.date}  ${reservedTime}に予約しました。ご来店を心よりお待ちしております。`,
+              "wrap": true
             },
             {
               "type":"sticker",
@@ -681,7 +690,8 @@ const handlePostbackEvent = async (ev) => {
           console.log('delete res.rows:',res.rows);
           client.replyMessage(rp,{
             "type":"text",
-            "text":"予約キャンセルを受け付けました。またのご予約をお待ちしております。"
+            "text":"予約キャンセルを受け付けました。またのご予約をお待ちしております。",
+            "wrap": true
           });
         })
         .catch(e=>console.log(e.stack));
@@ -1048,7 +1058,8 @@ const confirmReservation = (ev,time,i) => {
             "contents": [
               {
                 "type": "text",
-                "text": `次回ご予約は ${proposalTime}〜 でいかがでしょうか。`
+                "text": `次回ご予約は ${proposalTime}〜 でいかがでしょうか。`,
+                "wrap": true
               }
             ]
           },
@@ -1080,7 +1091,8 @@ const confirmReservation = (ev,time,i) => {
   }else{
     client.replyMessage(rp,{
       "type":"text",
-      "text":"この時間帯には予約可能な時間はありません。別の時間帯を選択してください。"
+      "text":"この時間帯には予約可能な時間はありません。別の時間帯を選択してください。",
+      "wrap": true
     });
   }
 }

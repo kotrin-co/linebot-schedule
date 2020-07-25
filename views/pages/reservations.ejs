@@ -15,24 +15,27 @@
         <button id="pButton" class="inline-block changeButton">></button>
         <button id="thisWeekButton" class="inline-block thisweekButton">今 週</button>
     </div>
-    <table>
-        <tr id="week">
-            <td></td>
-            <% for ( let i=0; i<7 ;i++ ){ %>
-            <td id="w<%= i %>"></td>
-            <% } %>
-        </tr>
-        <tr id="date">
-            <td></td>
-            <% for ( let i=0; i<7 ;i++ ){ %>
-                <td id="d<%= i %>"></td>
-            <% } %>
-        </tr>
+    <table class="reservation_table">
+        <thead>
+            <tr id="week">
+                <th></th>
+                <% for ( let i=0; i<7 ;i++ ){ %>
+                <th id="w<%= i %>"></th>
+                <% } %>
+            </tr>
+            <tr id="date">
+                <th></th>
+                <% for ( let i=0; i<7 ;i++ ){ %>
+                    <th id="d<%= i %>"></th>
+                <% } %>
+            </tr>
+        </thead>
+
         <% for (let i=0; i<11; i++){ %>
             <tr id="time<%= 9+i %>">
                 <td><%= 9+i %>:00</td>
                 <% for (let j=0; j<7; j++){ %>
-                <td id="d<%= j %>-<%= 9+i %>" class="e">ほげ</td>
+                <td id="d<%= j %>-<%= 9+i %>" class="e"></td>
                 <% } %>
             </tr>
         <% } %>

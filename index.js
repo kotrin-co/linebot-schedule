@@ -519,9 +519,9 @@ const handlePostbackEvent = async (ev) => {
             }
           }
         }]);
-      setTimeout(()=>{
-        pushDateSelector(rp);
-      },1000);
+      // setTimeout(()=>{
+      //   pushDateSelector(rp);
+      // },1000);
   }else if(ev.postback.data === 'cutandshampoo'){
     reservation_order.menu = 1;
       client.replyMessage(rp,{
@@ -551,7 +551,7 @@ const handlePostbackEvent = async (ev) => {
     console.log('now:',now);
     console.log('targetDate:',targetDate);
     if(targetDate>=now){
-      checkReservableTimes(id,TIMES_OF_MENU[reservation_order.menu]*1000);
+      checkReservableTimes(ev,TIMES_OF_MENU[reservation_order.menu]*1000);
     }else{
       client.replyMessage(rp,{
         "type":"text",
@@ -705,7 +705,7 @@ const pushDateSelector = (rp) => {
   );
 }
 
-const checkReservableTimes = (id,treatTime) => {
+const checkReservableTimes = (ev,treatTime) => {
   const oneHour = 3600000;
   const timeStamps = [];
   const arrangedArray = [];
@@ -806,12 +806,13 @@ const checkReservableTimes = (id,treatTime) => {
       }
       reservation_order.reservable = reservableArray;
       console.log('reservation_order.reservable:',reservation_order.reservable);
-      pushTimeSelector(id);
+      pushTimeSelector(ev);
     })
     .catch(e=>console.error(e.stack));
 }
 
-const pushTimeSelector = (id) => {
+const pushTimeSelector = (ev) => {
+  const rp = ev.replyToken;
   console.log('reservation_order.reservable:',reservation_order.reservable);
   const color = [];
   for(let i=0;i<reservation_order.reservable.length;i++){
@@ -823,7 +824,7 @@ const pushTimeSelector = (id) => {
   }
   console.log('colorArray:',color);
 
-  client.pushMessage(id,{
+  client.replyMessage(rp,{
     "type":"flex",
     "altText":"time_selector",
     "contents":

@@ -41,6 +41,18 @@
             <% } %>
         </tbody>        
     </table>
+    <!--- スクロールバー --->
+    <div class="sBar" id="sNone"></div>
+    <div class="sBar" id="sDOWN"  onmousedown="sMouse('U')" onmouseup="sStop()" onmouseout="sStop()"></div>
+    <div class="sBar" id="sUP"    onmousedown="sMouse('D')" onmouseup="sStop()" onmouseout="sStop()"></div>
+    <div class="sBar" id="sRIGHT" onmousedown="sMouse('L')" onmouseup="sStop()" onmouseout="sStop()"></div>
+    <div class="sBar" id="sLEFT"  onmousedown="sMouse('R')" onmouseup="sStop()" onmouseout="sStop()"></div>
+    <!--- スクロールバーー隅の三角マーク --->
+    <svg class="sImg" id="iDOWN"  onmousedown="sMouse('U')" onmouseup="sStop()" onmouseout="sStop()"><path d="M0  0 L10  0 L5   7 Z" style="fill:#777"/></svg>
+    <svg class="sImg" id="iUP"    onmousedown="sMouse('D')" onmouseup="sStop()" onmouseout="sStop()"><path d="M5  3 L0  10 L10 10 Z" style="fill:#777"/></svg>
+    <svg class="sImg" id="iRIGHT" onmousedown="sMouse('L')" onmouseup="sStop()" onmouseout="sStop()"><path d="M0  0 L7   5 L0  10 Z" style="fill:#777"/></svg>
+    <svg class="sImg" id="iLEFT"  onmousedown="sMouse('R')" onmouseup="sStop()" onmouseout="sStop()"><path d="M10 0 L3   5 L10 10 Z" style="fill:#777"/></svg>
+
 </div>
 
 <script src='js/main.js'></script>

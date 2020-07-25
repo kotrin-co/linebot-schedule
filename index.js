@@ -469,7 +469,7 @@ const handlePostbackEvent = async (ev) => {
         // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
       });
       setTimeout(()=>{
-        pushDateSelector(id);
+        pushDateSelector(rp);
       },1000);
   }else if(ev.postback.data === 'cutandshampoo'){
     reservation_order.menu = 1;
@@ -599,8 +599,8 @@ const resetReservationOrder = (rp,num) => {
   // console.log('reservation_order:',reservation_order);
 }
 
-const pushDateSelector = (id) => {
-  client.pushMessage(id,{
+const pushDateSelector = (rp) => {
+  client.replyMessage(rp,{
     "type":"flex",
     "altText":"date_selector",
     "contents":

@@ -53,7 +53,9 @@ const weeks = ['日','月','火','水','木','金','土'];
 
 const displayCalendar = (data) =>{
     const base_ts = nowTime + oneWeek*index;
+    console.log('base_ts:',base_ts);
     const dateArray = getDateElements(base_ts);
+    console.log('dateArray:',dateArray);
     h2Element.textContent = `${dateArray[0]}年${dateArray[1]}月`;
     for(let i=0;i<7;i++){
         const dayElement = document.getElementById(`d${i}`);
@@ -82,7 +84,7 @@ const displayCalendar = (data) =>{
         for(let j=0;j<11;j++){
             const tdElement = document.getElementById(`d${i}-${9+j}`);
             const filteredArray = data.filter(obj=>{
-                return ((obj.starttime >= base_ts+oneDay*i+oneHour*j-oneHour*9) && (obj.starttime < base_ts+oneDay*i+oneHour*j+oneHour-oneHour*9));
+                return ((obj.starttime >= base_ts+oneDay*i+oneHour*j) && (obj.starttime < base_ts+oneDay*i+oneHour*j+oneHour));
             });
             if(filteredArray.length){
                 let rsv = '';

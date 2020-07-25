@@ -49,6 +49,7 @@ table {
   text-align:center;
   font-size:25px;
   margin:auto;
+  table-layout:fixed;
 }
 
 /* .reservation_table thead th {

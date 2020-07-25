@@ -136,12 +136,10 @@ const get_Date = (timestamp,mode) => {
   }
 }
 
-const handleMessageEvent = async (ev) => {
+const handleMessageEvent = (ev) => {
   console.log('handleMessageEvent!!',ev);
   const id = ev.source.userId;
   const text = (ev.message.type === 'text') ? ev.message.text : '';
-  console.log('id:',id);
-  console.log('text:',text);
 
   if(text === '管理画面'){
     client.pushMessage(id,{

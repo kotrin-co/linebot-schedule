@@ -1,5 +1,3 @@
-console.log('modelsのTodo.js実行');
-
 const { Client } = require('pg');
 const connection = new Client({
     user:process.env.PG_USER,
@@ -94,7 +92,31 @@ connection.query(pickup_users)
 
 module.exports = {
     findAll:()=>{
-        console.log('modelsのTodo.jsの中のfindAll実行');
-        return adminData.reservations.slice();
+        return new Promise((resolve,reject)=>{
+            const pickup_users = {
+                text:'SELECT * FROM users ORDER BY id ASC;'
+            };
+            const pickup_reservations = {
+                text:'SELECT * FROM schedules ORDER BY starttime ASC;'
+            };
+            connection.query(pickup_users)
+                .then(res=>{
+                    // console.log('users:',res.rows);
+                    adminData.users = res.rows;
+                    connection.query(pickup_reservations)
+                        .then(res=>{
+                            // console.log('reservations:',res.rows);
+                            adminData.reservations = res.rows;
+                            adminData.reservations.map(object=>{
+                                object.starttime = parseInt(object.starttime);
+                                object.endtime = parseInt(object.endtime);
+                            });
+                        })
+                        .catch(e=>console.log(e.stack));
+                        resolve(adminData.reservations.slice());
+                })
+                .catch(e=>console.log(e.stack));            
+        });
+        // return adminData.reservations.slice();
     }
 };

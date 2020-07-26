@@ -4,6 +4,7 @@ module.exports = {
     getTodos: (req,res) => {
         Todo.findAll()
             .then(reservations=>{
+                console.log('reservations:',reservations);
                 res.status(200).json(reservations);
             })
             .catch(e=>console.log(e.stack));

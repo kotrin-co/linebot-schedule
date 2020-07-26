@@ -3,6 +3,10 @@ const rButton = document.getElementById('rButton');
 const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
+const dialog = document.getElementById('dialog');
+const dialog_contents = document.getElementById('contents');
+const btn_cancel = document.getElementById('button-cancel');
+const btn_ok = document.getElementById('button-ok');
 let reservations = [];
 
 const API_URL = 'https://linebot-schedule.herokuapp.com/api/todos';
@@ -59,12 +63,12 @@ const getReservationDisplay = (timestamp,name,menu,id) => {
     }else{
         mn = menu;
     }
-    return `<a href="#" onclick="js_alert(${id})">■${h}：${m}<br>　 ${mn}<br></a>`;
+    return `<a href="#" onclick="js_confirm(${id})">■${h}：${m}<br>　 ${mn}<br></a>`;
 }
 
 const weeks = ['日','月','火','水','木','金','土'];
 
-const js_alert = (num) => {
+const js_confirm = (num) => {
     const target = reservations.find(({id})=> id === num);
     const month = new Date(target.starttime - oneHour*9).getMonth()+1;
     const date = new Date(target.starttime - oneHour*9).getDate();
@@ -72,8 +76,17 @@ const js_alert = (num) => {
     const s_m = ('0'+new Date(target.starttime-oneHour*9).getMinutes()).slice(-2);
     const e_h = ('0'+new Date(target.endtime-oneHour*9).getHours()).slice(-2);
     const e_m = ('0'+new Date(target.endtime-oneHour*9).getMinutes()).slice(-2);
-    window.confirm(`■予約id:${target.id}\n■予約名:${target.name}\n■予約日:${month}月${date}日\n■予約時間:${s_h}時${s_m}分〜${e_h}時${e_m}分\n■メニュー:${target.menu}`);
+    dialog_contents.innerHTML = `■予約id:${target.id}<br>■予約名:${target.name}<br>■予約日時:${month}月${date}日<br>　　　　${s_h}時${s_m}分〜${e_h}時${e_m}分<br>■メニュー:${target.menu}`
+    dialog.style.display = 'block';
 }
+
+btn_cancel.addEventListener('click',()=>{
+    dialog.style.display = 'none';
+});
+
+btn_ok.addEventListener('click',()=>{
+    dialog.style.display = 'none';
+});
 
 const displayCalendar = (data) =>{
     console.log('その6');

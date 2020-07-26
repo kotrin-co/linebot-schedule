@@ -8,34 +8,34 @@ const connection = new Client({
   });
 connection.connect();
 
-const adminData = {
-    users:null,
-    reservations:null
-};
+// const adminData = {
+//     users:null,
+//     reservations:null
+// };
 
-const pickup_users = {
-    text:'SELECT * FROM users ORDER BY id ASC;'
-};
-const pickup_reservations = {
-    text:'SELECT * FROM schedules ORDER BY starttime ASC;'
-};
-connection.query(pickup_users)
-    .then(res=>{
-        // console.log('users:',res.rows);
-        adminData.users = res.rows;
-        connection.query(pickup_reservations)
-            .then(res=>{
-                // console.log('reservations:',res.rows);
-                adminData.reservations = res.rows;
-                adminData.reservations.map(object=>{
-                    object.starttime = parseInt(object.starttime);
-                    object.endtime = parseInt(object.endtime);
-                });
-                console.log('Todo.jsの外側クエリ実行');
-            })
-            .catch(e=>console.log(e.stack));
-    })
-    .catch(e=>console.log(e.stack));
+// const pickup_users = {
+//     text:'SELECT * FROM users ORDER BY id ASC;'
+// };
+// const pickup_reservations = {
+//     text:'SELECT * FROM schedules ORDER BY starttime ASC;'
+// };
+// connection.query(pickup_users)
+//     .then(res=>{
+//         // console.log('users:',res.rows);
+//         adminData.users = res.rows;
+//         connection.query(pickup_reservations)
+//             .then(res=>{
+//                 // console.log('reservations:',res.rows);
+//                 adminData.reservations = res.rows;
+//                 adminData.reservations.map(object=>{
+//                     object.starttime = parseInt(object.starttime);
+//                     object.endtime = parseInt(object.endtime);
+//                 });
+//                 console.log('Todo.jsの外側クエリ実行');
+//             })
+//             .catch(e=>console.log(e.stack));
+//     })
+//     .catch(e=>console.log(e.stack));
 
 // pickupAllReservations()
 //     .then(message=>{
@@ -95,6 +95,10 @@ module.exports = {
     findAll:()=>{
         return new Promise((resolve,reject)=>{
             console.log('findallの中、頭');
+            const adminData = {
+                users:null,
+                reservations:null
+            };
             const pickup_users = {
                 text:'SELECT * FROM users ORDER BY id ASC;'
             };

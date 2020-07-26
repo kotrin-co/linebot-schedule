@@ -2,6 +2,7 @@ const Todo = require('../models/Todo');
 
 module.exports = {
     getTodos: (req,res) => {
+        console.log('getTodosの頭');
         Todo.findAll()
             .then(reservations=>{
                 console.log('getTodos実行。findAllからのプロミス返りthenの中');

@@ -143,11 +143,11 @@ th{
 #dialog{
   position:absolute;
   width:400px;
-  height:300px;
+  height:320px;
   left:50%;
   top:50%;
   margin-left:-200px;
-  margin-top:-150px;
+  margin-top:-160px;
   padding:30px 20px;
   display:none;
   text-align:left;
@@ -158,10 +158,14 @@ th{
 }
 
 #button-cancel{
-  margin:20px 20px auto 70px;
+  margin:15px 20px auto 70px;
 }
 
 #button-ok{
-  margin-top:30px;
-  width:120px;
+  margin-top:15px;
+  width:80px;
+}
+
+#button-edit{
+  margin:10px auto 10px 5px
 }

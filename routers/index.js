@@ -10,6 +10,9 @@ router
     })
     .get('/reservations',(req,res)=>{
         res.render('pages/reservations');
+    })
+    .get('/edit',(req,res)=>{
+        res.render('pages/edit');
     });
 
 module.exports = router;

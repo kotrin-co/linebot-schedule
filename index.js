@@ -144,6 +144,7 @@ const handleMessageEvent = (ev) => {
   const rp = ev.replyToken;
   const text = (ev.message.type === 'text') ? ev.message.text : '';
 
+  // 管理画面へは、決められたユーザーしか入れないようにする
   if(text === '管理画面'){
     client.replyMessage(rp,{
       "type":"flex",

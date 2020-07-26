@@ -66,7 +66,11 @@ const weeks = ['日','月','火','水','木','金','土'];
 
 const js_alert = (num) => {
     const target = reservations.find(({id})=> id === num);
-    window.confirm(target.name);
+    const s_h = ('0'+new Date(target.starttime-oneHour*9).getHours()).slice(-2);
+    const s_m = ('0'+new Date(target.starttime-oneHour*9).getMinutes()).slice(-2);
+    const e_h = ('0'+new Date(target.endtime-oneHour*9).getHours()).slice(-2);
+    const e_m = ('0'+new Date(target.endtime-oneHour*9).getMinutes()).slice(-2);
+    window.confirm(`予約id:${target.id}n予約名:${target.name}n予約日時:${s_h}時${s_m}分〜${e_h}時${e_m}分nメニュー:${target.menu}`);
 }
 
 const displayCalendar = (data) =>{

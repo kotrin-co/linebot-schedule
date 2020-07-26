@@ -65,7 +65,7 @@ const getReservationDisplay = (timestamp,name,menu) => {
 const weeks = ['日','月','火','水','木','金','土'];
 
 const js_alert = (num) => {
-    console.log(num;
+    console.log(num);
     alert(num);
 }
 

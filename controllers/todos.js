@@ -4,7 +4,7 @@ module.exports = {
     getTodos: (req,res) => {
         Todo.findAll()
             .then(reservations=>{
-                console.log('reservations:',reservations);
+                console.log('getTodos実行。findAllからのプロミス返りthenの中');
                 res.status(200).json(reservations);
             })
             .catch(e=>console.log(e.stack));

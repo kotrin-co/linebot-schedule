@@ -31,6 +31,7 @@ connection.query(pickup_users)
                     object.starttime = parseInt(object.starttime);
                     object.endtime = parseInt(object.endtime);
                 });
+                console.log('Todo.jsの外側クエリ実行');
             })
             .catch(e=>console.log(e.stack));
     })
@@ -93,6 +94,7 @@ connection.query(pickup_users)
 module.exports = {
     findAll:()=>{
         return new Promise((resolve,reject)=>{
+            console.log('findallの中、頭');
             const pickup_users = {
                 text:'SELECT * FROM users ORDER BY id ASC;'
             };
@@ -111,8 +113,10 @@ module.exports = {
                                 object.starttime = parseInt(object.starttime);
                                 object.endtime = parseInt(object.endtime);
                             });
+                            console.log('findallの中、クエリ実行終了');
                         })
                         .catch(e=>console.log(e.stack));
+                        console.log('findallの中、resolve前');
                         resolve(adminData.reservations.slice());
                 })
                 .catch(e=>console.log(e.stack));            

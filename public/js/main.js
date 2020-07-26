@@ -35,7 +35,7 @@ const fetchData = async () =>{
         const data = await response.json();
         console.log('その5');
         reservations = data;
-        console.log('reservationsダオ',reservations.length);
+        console.log('reservationsダオ',reservations);
         displayCalendar(reservations);
     }catch(error){
         alert(`読み込み失敗やで...${error.message}`);
@@ -50,7 +50,7 @@ const getDateElements = (timestamp) => {
     return [y,m,d,w];
 }
 
-const getReservationDisplay = (timestamp,name,menu) => {
+const getReservationDisplay = (timestamp,name,menu,id) => {
     const h = ('0'+new Date(timestamp-oneHour*9).getHours()).slice(-2);
     const m = ('0'+new Date(timestamp-oneHour*9).getMinutes()).slice(-2);
     let mn = '';
@@ -59,14 +59,13 @@ const getReservationDisplay = (timestamp,name,menu) => {
     }else{
         mn = menu;
     }
-    return `<a href="#" onclick="js_alert("あ")">■${h}：${m}<br>　 ${mn}<br></a>`;
+    return `<a href="#" onclick="js_alert(${id})">■${h}：${m}<br>　 ${mn}<br></a>`;
 }
 
 const weeks = ['日','月','火','水','木','金','土'];
 
-const js_alert = (name) => {
-    console.log(name);
-    alert(name);
+const js_alert = (id) => {
+    alert(id);
 }
 
 const displayCalendar = (data) =>{
@@ -108,7 +107,7 @@ const displayCalendar = (data) =>{
             if(filteredArray.length){
                 let rsv = '';
                 filteredArray.forEach(obj=>{
-                    rsv += getReservationDisplay(obj.starttime,obj.name,obj.menu);
+                    rsv += getReservationDisplay(obj.starttime,obj.name,obj.menu,parseInt(obj.id));
                 });
                 tdElement.innerHTML = rsv;
             }else{

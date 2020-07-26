@@ -12,7 +12,6 @@ connection.connect();
 module.exports = {
     findAll:()=>{
         return new Promise((resolve,reject)=>{
-            console.log('findallの中、頭');
             const adminData = {
                 users:null,
                 reservations:null

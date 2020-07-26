@@ -118,12 +118,12 @@ module.exports = {
                                 object.endtime = parseInt(object.endtime);
                             });
                             console.log('findallの中、クエリ実行終了');
+                            resolve(adminData.reservations.slice());
+                            console.log('findallの中、resolve後');   
                         })
                         .catch(e=>console.log(e.stack));
                 })
-                .catch(e=>console.log(e.stack));
-                console.log('findallの中、resolve前');
-                resolve(adminData.reservations.slice());           
+                .catch(e=>console.log(e.stack));        
         });
         // return adminData.reservations.slice();
     }

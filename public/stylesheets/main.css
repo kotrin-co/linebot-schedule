@@ -142,26 +142,26 @@ th{
 
 #dialog{
   position:absolute;
-  width:400px;
-  height:300px;
+  width:350px;
+  height:280px;
   left:50%;
   top:50%;
-  margin-left:-200px;
-  margin-top:-150px;
+  margin-left:-175px;
+  margin-top:-140px;
   padding:30px 20px;
   display:none;
   text-align:left;
   border:1px solid #aaa;
   box-shadow:2px 2px 4px #888;
   background:#ff0;
-  font-size:large;
+  font-size:x-large;
 }
 
 #button-cancel{
-  margin:30px 50px auto 100px;
+  margin:20px 20px auto 100px;
 }
 
 #button-ok{
   margin-top:30px;
-  width:80px;
+  width:120px;
 }

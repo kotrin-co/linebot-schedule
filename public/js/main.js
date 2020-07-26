@@ -76,7 +76,7 @@ const js_confirm = (num) => {
     const s_m = ('0'+new Date(target.starttime-oneHour*9).getMinutes()).slice(-2);
     const e_h = ('0'+new Date(target.endtime-oneHour*9).getHours()).slice(-2);
     const e_m = ('0'+new Date(target.endtime-oneHour*9).getMinutes()).slice(-2);
-    dialog_contents.innerHTML = `■予約id:${target.id}<br>■予約名:${target.name}<br>■予約日時:${month}月${date}日<br>　　　　${s_h}時${s_m}分〜${e_h}時${e_m}分<br>■メニュー:${target.menu}`
+    dialog_contents.innerHTML = `■予約id:${target.id}<br>■予約名:${target.name}<br>■予約日時:${month}月${date}日<br>　　　　 　${s_h}時${s_m}分〜${e_h}時${e_m}分<br>■メニュー:${target.menu}`
     dialog.style.display = 'block';
 }
 

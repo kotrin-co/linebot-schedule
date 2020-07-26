@@ -141,9 +141,9 @@ th{
 [title="blue"]{color:yellow;}
 
 #dialog{
-  width:250px;
+  width:300px;
   margin:auto;
-  margin-top:40vh;
+  margin-top:-40vh;
   padding:30px 20px;
   display:none;
   text-align:left;

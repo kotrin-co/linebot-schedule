@@ -96,27 +96,29 @@ const greeting_follow = async (ev) => {
   console.log('profile:',pro);
   const timeStamp = get_Date(ev.timestamp+32400000,0);
 
-  const userCheck = checkUserExistence(ev);
-
-  if(userCheck){
-    console.log('すでに存在するユーザーです。');
-    return;
-  }else{
-    const table_insert = {
-      text:'INSERT INTO users (line_uid,display_name,timestamp) VALUES($1,$2,$3)',
-      values:[ev.source.userId,pro.displayName,timeStamp]
-    };
-    connection.query(table_insert)
-      .then(()=>{
-        console.log('insert successfully!!@@')
-      })
-      .catch(e=>console.error(e.stack));
-  
-    return client.replyMessage(ev.replyToken,{
-      "type":"text",
-      "text":`${pro.displayName}さん、フォローありがとうございます！`
-    });
-  }
+  checkUserExistence(ev)
+    .then(ex=>{
+      if(ex){
+        console.log('すでに存在するユーザーです。');
+        return;
+      }else{
+        const table_insert = {
+          text:'INSERT INTO users (line_uid,display_name,timestamp) VALUES($1,$2,$3)',
+          values:[ev.source.userId,pro.displayName,timeStamp]
+        };
+        connection.query(table_insert)
+          .then(()=>{
+            console.log('insert successfully!!@@')
+          })
+          .catch(e=>console.error(e.stack));
+      
+        return client.replyMessage(ev.replyToken,{
+          "type":"text",
+          "text":`${pro.displayName}さん、フォローありがとうございます！`
+        });
+      }
+    })
+    .catch(e=>console.log(e.stack)); 
 }
 
 const get_Date = (timestamp,mode) => {

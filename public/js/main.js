@@ -31,11 +31,14 @@ const fetchData = async () =>{
         console.log('その3');
         const response = await fetch(API_URL);
         console.log('その4');
-        const data = await response.json();
-        console.log('その5');
-        reservations = data;
-        console.log('reservations:',reservations);
-        displayCalendar(reservations);
+        console.log('response.ok:',response.ok);
+        if(response.ok){
+            const data = await response.json();
+            console.log('その5');
+            reservations = data;
+            console.log('reservations:',reservations);
+            displayCalendar(reservations);
+        }
     }catch(error){
         alert(`読み込み失敗やで...${error.message}`);
     }

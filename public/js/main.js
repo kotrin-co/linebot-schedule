@@ -36,7 +36,7 @@ const fetchData = async () =>{
             const data = await response.json();
             console.log('その5');
             reservations = data;
-            console.log('reservations:',reservations);
+            console.log('reservationsダオ',reservations.length);
             displayCalendar(reservations);
         }
     }catch(error){

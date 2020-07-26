@@ -423,6 +423,7 @@ const checkUserExistence = (ev) => {
       .then(res=>{
         // console.log('res:',res.rows);
         if(res.rows.length){
+          console.log('res.rows:',res.rows);
           console.log('存在するユーザーです。');
           check = true;
         }

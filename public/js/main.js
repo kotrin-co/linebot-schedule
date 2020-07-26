@@ -1,5 +1,4 @@
-console.log('その6　main.js');
-
+console.log('その１');
 const rButton = document.getElementById('rButton');
 const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
@@ -23,13 +22,17 @@ const OPEN_TIME = 9;
 let index = 0;
 
 window.addEventListener('load',(event)=>{
+    console.log('その2');
     fetchData();
 });
 
 const fetchData = async () =>{
     try{
+        console.log('その3');
         const response = await fetch(API_URL);
+        console.log('その4');
         const data = await response.json();
+        console.log('その5');
         reservations = data;
         console.log('reservations:',reservations);
         displayCalendar(reservations);
@@ -61,6 +64,7 @@ const getReservationDisplay = (timestamp,name,menu) => {
 const weeks = ['日','月','火','水','木','金','土'];
 
 const displayCalendar = (data) =>{
+    console.log('その6');
     const base_ts = nowTime + oneHour*OPEN_TIME + oneWeek*index;
     console.log('base_ts:',base_ts);
     const dateArray = getDateElements(base_ts);
@@ -105,7 +109,7 @@ const displayCalendar = (data) =>{
                 tdElement.textContent = '';
             }
         }
-    }
+    }console.log('その7');
 }
 
 rButton.addEventListener('click',(event)=>{

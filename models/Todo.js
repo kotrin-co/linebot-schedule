@@ -1,5 +1,3 @@
-console.log('その１　Todo.js(models)');
-
 const { Client } = require('pg');
 const connection = new Client({
     user:process.env.PG_USER,
@@ -95,7 +93,6 @@ connection.query(pickup_users)
 module.exports = {
     findAll:()=>{
         return new Promise((resolve,reject)=>{
-            console.log('その2　Todo.js(models) findall');
             const pickup_users = {
                 text:'SELECT * FROM users ORDER BY id ASC;'
             };

@@ -64,8 +64,9 @@ const getReservationDisplay = (timestamp,name,menu,id) => {
 
 const weeks = ['日','月','火','水','木','金','土'];
 
-const js_alert = (id) => {
-    window.confirm(id);
+const js_alert = (num) => {
+    const target = reservations.find(({id})=> id === num);
+    window.confirm(target.name);
 }
 
 const displayCalendar = (data) =>{

@@ -116,10 +116,10 @@ module.exports = {
                             console.log('findallの中、クエリ実行終了');
                         })
                         .catch(e=>console.log(e.stack));
-                        console.log('findallの中、resolve前');
-                        resolve(adminData.reservations.slice());
                 })
-                .catch(e=>console.log(e.stack));            
+                .catch(e=>console.log(e.stack));
+                console.log('findallの中、resolve前');
+                resolve(adminData.reservations.slice());           
         });
         // return adminData.reservations.slice();
     }

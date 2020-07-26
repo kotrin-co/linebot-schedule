@@ -59,12 +59,13 @@ const getReservationDisplay = (timestamp,name,menu) => {
     }else{
         mn = menu;
     }
-    return `<a href="#" onclick="js_alert(name)">■${h}：${m}<br>　 ${mn}<br></a>`;
+    return `<a href="#" onclick="js_alert(${name})">■${h}：${m}<br>　 ${mn}<br></a>`;
 }
 
 const weeks = ['日','月','火','水','木','金','土'];
 
 const js_alert = (name) => {
+    console.log(name);
     alert(name);
 }
 

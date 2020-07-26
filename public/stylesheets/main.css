@@ -141,12 +141,18 @@ th{
 [title="blue"]{color:yellow;}
 
 #dialog{
+  position:absolute;
   width:300px;
-  margin:auto;
-  margin-top:-40vh;
+  height:250px;
+  left:50%;
+  top:50%;
+  margin-left:-150px;
+  margin-top:-125px;
   padding:30px 20px;
   display:none;
   text-align:left;
   border:1px solid #aaa;
   box-shadow:2px 2px 4px #888;
+  background:#fff;
+  font-size:x-large;
 }

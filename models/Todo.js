@@ -25,7 +25,7 @@ class Create {
     queryArray(){
         console.log('queryArray実行');
         const scheduledate = `${this.year}/${this.date_m}/${this.date_d}`;
-        const starttime = new Date(`${scheduledate} ${this.starttime_h}:${this.starttime_m}`);
+        const starttime = new Date(`${scheduledate} ${this.starttime_h}:${this.starttime_m}`).getTime();
         let menuTime = 0;
         switch(this.menu){
             case 'cut':
@@ -42,7 +42,7 @@ class Create {
         }
         const endtime = starttime + menuTime;
         console.log('queryArray:',[this.line_uid,this.name,scheduledate,starttime,endtime,menuTime]);
-        return [this.line_uid,this.name,scheduledate,starttime,endtime,menuTime];
+        return [this.line_uid,this.name,scheduledate,starttime,endtime,this.menu];
     }
 }
 
@@ -99,7 +99,7 @@ module.exports = {
                 text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
                 values:createReservation
               };
-            resolve(createReservation);
+            resolve(insert_query);
         })
         
 

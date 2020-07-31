@@ -190,3 +190,7 @@ th{
   background:#ff0;
   font-size:x-large;
 }
+
+.select-date {
+  width:30px;
+}

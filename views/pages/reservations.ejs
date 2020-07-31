@@ -55,15 +55,69 @@
     <form action="/api/todos" method="post">
         <p>LINE ID:<input type="text" id="line_uid" name="line_uid"></p>
         <p>名前:<input type="text" id="name" name="name"></p>
+        <div>
+            <select name="year" class="select-date">
+                <option value="2020" selected="selected">2020</option>
+                <option value=2021>2021</option>
+                <option value=2022>2022</option>
+            </select>
+            <select name="date_m" class="select-date">
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6" selected="selected">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+            <select name="date_d" class="select-date">
+                <option value="1">01</option>
+                <option value="2">02</option>
+                <option value="3">03</option>
+                <option value="4">04</option>
+                <option value="5">05</option>
+                <option value="6">06</option>
+                <option value="7">07</option>
+                <option value="8">08</option>
+                <option value="9">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
+            </select>
+        </div>
         <p><input type="text" id="year" name="year" size="6" maxlength="4"> 年 <input type="text" id="date_m" name="date_m" size="4" maxlength="2"> 月 <input type="text" id="date_d" name="date_d" size="4" maxlength="2"> 日</p>
         <p>メニュー:
-            <select name="menu" size="3">
+            <select name="menu">
                 <option value="cut" selected>カット</option>
                 <option value="cut&shampoo">カット＆シャンプー</option>
                 <option value="color">カラーリング</option>
             </select>
         </p>
-        <p>時間：<input type="text" id="starttime_h" name="starttime_h"  size="5" maxlength="2"> 時 <input type="text" id="starttime_m" name="starttime_m"  size="5" maxlength="2"> 分</p>
+        <p>時間：<input type="text" id="starttime_h" name="starttime_h"  size="4" maxlength="2"> 時 <input type="text" id="starttime_m" name="starttime_m"  size="4" maxlength="2"> 分</p>
         <div>
             <button id="cancel-form">キャンセル</button>
             <input type="submit" value="送信">

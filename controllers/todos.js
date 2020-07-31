@@ -13,6 +13,7 @@ module.exports = {
         try{
             const {line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu} = req.body;
             const createdReservation = Todo.create({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu});
+            console.log('createdReservation:',createdReservation);
             res.status(200).json(createdReservation);
          }catch(error){
              res.status(400).json({message:error.message});

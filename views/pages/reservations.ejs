@@ -53,33 +53,16 @@
 
 <div id="registration">
     <form action="/api/todos" method="post">
-        <div>
-            <label for="line_uid">ラインID</label>
-            <input type="text" id="line_uid" name="line_uid">
-        </div>
-        <div>
-            <label for="name">名前</label>
-            <input type="text" id="name" name="name">
-        </div>
-        <div>
-            <input type="text" id="year" name="year"> 年
-            <input type="text" id="date_m" name="date_m"> 月
-            <input type="text" id="date_d" name="date_d"> 日
-        </div>
-        <div>
-            <label for="menu">メニュー</label>
+        <p>LINE ID:<input type="text" id="line_uid" name="line_uid"></p>
+        <p>名前:<input type="text" id="name" name="name"></p>
+        <p><input type="text" id="year" name="year"> 年 <input type="text" id="date_m" name="date_m"> 月 <input type="text" id="date_d" name="date_d"> 日</p>
+        <p>メニュー:
             <select name="menu" size="3"></select>
             <option value="cut" selected>カット</option>
             <option value="cut&shampoo">カット＆シャンプー</option>
             <option value="color">カラーリング</option>
-        </div>
-        <div>
-            <p>
-                希望時間：
-            </p>
-            <input type="text" id="starttime_h" name="starttime_h"> 時
-            <input type="text" id="starttime_m" name="starttime_m"> 分
-        </div>
+        </p>
+        <p>時間：<input type="text" id="starttime_h" name="starttime_h"> 時 <input type="text" id="starttime_m" name="starttime_m"> 分</p>
         <div>
             <button id="cancel-form">キャンセル</button>
             <input type="submit" value="送信">

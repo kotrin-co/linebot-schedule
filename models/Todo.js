@@ -99,7 +99,13 @@ module.exports = {
                 text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
                 values:createReservation
               };
-            resolve(insert_query);
+            connection.query(insert_query)
+              .then(res=>{
+                  console.log('res.rows:',res.rows);
+                  resolve({"text":"insert成功！"});
+              })
+              .catch(e=>console.log(e.stack));
+            
         })
         
 

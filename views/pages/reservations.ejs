@@ -55,14 +55,15 @@
     <form action="/api/todos" method="post">
         <p>LINE ID:<input type="text" id="line_uid" name="line_uid"></p>
         <p>名前:<input type="text" id="name" name="name"></p>
-        <p><input type="text" id="year" name="year"> 年 <input type="text" id="date_m" name="date_m"> 月 <input type="text" id="date_d" name="date_d"> 日</p>
+        <p><input type="text" id="year" name="year" size="6" maxlength="4"> 年 <input type="text" id="date_m" name="date_m" size="4" maxlength="2"> 月 <input type="text" id="date_d" name="date_d" size="4" maxlength="2"> 日</p>
         <p>メニュー:
-            <select name="menu" size="3"></select>
-            <option value="cut" selected>カット</option>
-            <option value="cut&shampoo">カット＆シャンプー</option>
-            <option value="color">カラーリング</option>
+            <select name="menu" size="3">
+                <option value="cut" selected>カット</option>
+                <option value="cut&shampoo">カット＆シャンプー</option>
+                <option value="color">カラーリング</option>
+            </select>
         </p>
-        <p>時間：<input type="text" id="starttime_h" name="starttime_h"> 時 <input type="text" id="starttime_m" name="starttime_m"> 分</p>
+        <p>時間：<input type="text" id="starttime_h" name="starttime_h"  size="5" maxlength="2"> 時 <input type="text" id="starttime_m" name="starttime_m"  size="5" maxlength="2"> 分</p>
         <div>
             <button id="cancel-form">キャンセル</button>
             <input type="submit" value="送信">

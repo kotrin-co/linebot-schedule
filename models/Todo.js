@@ -93,11 +93,12 @@ module.exports = {
                 menu:menu
             }).queryArray();
 
-            console.log('createReservation:',createdReservation);
+            console.log('createReservation:',createReservation);
             const insert_query = {
                 text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
                 values:createReservation
               };
+            resolve(createReservation);
         })
         
 

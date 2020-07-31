@@ -57,6 +57,8 @@ const TIMES_OF_MENU = [900,1200,1800];
 app
   .use(express.static(path.join(__dirname, 'public')))
   .use('/',router)
+  .use(express.json())
+  .use(express.urlencoded({extended:true}))
   // ここはAPIテスト
   .use('/api/todos',todosRouter)
   // ここまでテスト

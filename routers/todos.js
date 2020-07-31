@@ -4,6 +4,7 @@ const controller = require('../controllers/todos');
 
 router
     .route('/')
-    .get(controller.getTodos);
+    .get(controller.getTodos)
+    .post(controller.postTodo);
 
 module.exports = router;

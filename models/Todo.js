@@ -8,6 +8,43 @@ const connection = new Client({
   });
 connection.connect();
 
+const TIMES_OF_MENU = [900000,1200000,1800000];
+
+class Create {
+    constructor({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu}){
+        this.line_uid = line_uid;
+        this.name = name;
+        this.year = year;
+        this.date_m = date_m;
+        this.date_d = date_d;
+        this.starttime_h = starttime_h;
+        this.starttime_m = starttime_m;
+        this.menu = menu;
+    }
+
+    queryArray(){
+        console.log('queryArray実行');
+        const scheduledate = `${this.year}/${this.date_m}/${this.date_d}`;
+        const starttime = new Date(`${scheduledate} ${this.starttime_h}:${this.starttime_m}`);
+        let menuTime = 0;
+        switch(this.menu){
+            case 'cut':
+                menuTime = TIMES_OF_MENU[0];
+                break;
+            case 'cut&shampoo':
+                menuTime = TIMES_OF_MENU[1];
+                break;
+            case 'color':
+                menuTime = TIMES_OF_MENU[2];
+                break;
+            default:
+                menuTime = 0;
+        }
+        const endtime = starttime + menuTime;
+        console.log('queryArray:',[this.line_uid,this.name,scheduledate,starttime,endtime,menuTime]);
+        return [this.line_uid,this.name,scheduledate,starttime,endtime,menuTime];
+    }
+}
 
 module.exports = {
     findAll:()=>{
@@ -38,5 +75,31 @@ module.exports = {
                 })
                 .catch(e=>console.log(e.stack));        
         });
+    },
+
+    create:({line_uid,name,date_m,date_d,starttime_h,starttime_m,menu})=>{
+        return new Promise((resolve,reject)=>{
+            if(!menu || !date || !starttime_h || !starttime_m){
+                throw new Error('必須項目が未入力です。');
+            }
+    
+            const createReservation = new Create({
+                line_uid:line_uid,
+                name:name,
+                date_m:date_m,
+                date_d:date_d,
+                starttime_h:starttime_h,
+                starttime_m:starttime_m,
+                menu:menu
+            }).queryArray();
+
+            console.log('createReservation:',createdReservation);
+            const insert_query = {
+                text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+                values:createReservation
+              };
+        })
+        
+
     }
 };

@@ -191,6 +191,10 @@ th{
   font-size:x-large;
 }
 
+.select-year{
+  width:90px;
+}
+
 .select-date {
-  width:100px;
+  width:60px;
 }

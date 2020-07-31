@@ -7,6 +7,10 @@ const dialog = document.getElementById('dialog');
 const dialog_contents = document.getElementById('contents');
 const btn_cancel = document.getElementById('button-cancel');
 const btn_ok = document.getElementById('button-ok');
+const registration = document.getElementById('registration');
+const cancel_form = document.getElementById('cancel-form');
+const registButton = document.getElementById('registrationButton');
+
 let reservations = [];
 
 const API_URL = 'https://linebot-schedule.herokuapp.com/api/todos';
@@ -88,6 +92,17 @@ btn_cancel.addEventListener('click',()=>{
 btn_ok.addEventListener('click',()=>{
     dialog.style.display = 'none';
 });
+
+registButton.addEventListener('click',()=>{
+    registration.style.display='block';
+});
+
+cancel_form.addEventListener('click',()=>{
+    registration.style.display='none';
+})
+
+
+
 
 const displayCalendar = (data) =>{
     console.log('その6');

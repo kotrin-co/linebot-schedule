@@ -77,15 +77,16 @@ module.exports = {
         });
     },
 
-    create:({line_uid,name,date_m,date_d,starttime_h,starttime_m,menu})=>{
+    create:({line_uid,year,name,date_m,date_d,starttime_h,starttime_m,menu})=>{
         return new Promise((resolve,reject)=>{
-            if(!menu || !date || !starttime_h || !starttime_m){
-                throw new Error('必須項目が未入力です。');
-            }
+            // if(!menu || !date || !starttime_h || !starttime_m){
+            //     throw new Error('必須項目が未入力です。');
+            // }
     
             const createReservation = new Create({
                 line_uid:line_uid,
                 name:name,
+                year:year,
                 date_m:date_m,
                 date_d:date_d,
                 starttime_h:starttime_h,

@@ -59,10 +59,12 @@
         <p>名前:<input type="text" id="name" name="name"></p>
         <div>
             <select name="year" class="select-year">
-                <option value="2019"><%= new Date().getYear() %></option>
-                <option value="2020" selected="selected">2020</option>
+                <% for(let i=0; i<4; i++){ %>
+                    <option value="<%= new Date().getFullYear()-1+i %>"><%= new Date().getFullYear()-1+i %></option>
+                <% } %>
+                <!-- <option value="2020" selected="selected">2020</option>
                 <option value=2021>2021</option>
-                <option value=2022>2022</option>
+                <option value=2022>2022</option> -->
             </select>
             年
             <select name="date_m" class="select-date">

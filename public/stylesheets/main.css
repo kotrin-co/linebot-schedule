@@ -177,7 +177,7 @@ th{
 #registration{
   position:absolute;
   width:400px;
-  height:500px;
+  height:600px;
   left:50%;
   top:50%;
   margin-left:-200px;
@@ -202,4 +202,8 @@ th{
 .submit{
   margin-top:20px;
   margin-bottom:20px;
+}
+
+.menu{
+  margin-top:5px;
 }

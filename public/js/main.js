@@ -171,6 +171,7 @@ wButton.addEventListener('click',(event)=>{
 
 submitButton.addEventListener('click',()=>{
     const formData = document.getElementById('registration-form');
+    console.log('formData:',formData);
     const postData = new FormData(formData);
     console.log('postData:',postData);
 

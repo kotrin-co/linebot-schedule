@@ -175,7 +175,7 @@ submitButton.addEventListener('click',()=>{
 
     const XHR = new XMLHttpRequest();
 
-    XHR.open("POST","/api/todos",true);
+    XHR.open("POST","./api/todos",true);
 
     XHR.send(postData);
 
@@ -184,4 +184,4 @@ submitButton.addEventListener('click',()=>{
             console.log('送信成功');
         }
     }
-})
+},false);

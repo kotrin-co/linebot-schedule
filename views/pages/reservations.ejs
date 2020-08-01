@@ -62,13 +62,13 @@
                 <% for(let i=0; i<4; i++){ %>
                     <option value="<%= new Date().getFullYear()-1+i %>" <% if(i===1){ %>selected="selected"<% } %>><%= new Date().getFullYear()-1+i %></option>
                 <% } %>
-                <!-- <option value="2020" selected="selected">2020</option>
-                <option value=2021>2021</option>
-                <option value=2022>2022</option> -->
             </select>
             年
             <select name="date_m" class="select-date">
-                <option value="1">01</option>
+                <% for(let i=0; i<12; i++){ %>
+                    <option value="<%= i+1 %>" <% if(i=== new Date().getMonth()+1){ %>selected="selected"<% } %>><%= ('0'+(i+1)).slice(-2) %></option>
+                <% } %>
+                <!-- <option value="1">01</option>
                 <option value="2">02</option>
                 <option value="3">03</option>
                 <option value="4">04</option>
@@ -79,7 +79,7 @@
                 <option value="9">09</option>
                 <option value="10">10</option>
                 <option value="11">11</option>
-                <option value="12">12</option>
+                <option value="12">12</option> -->
             </select>
             月
             <select name="date_d" class="select-date">

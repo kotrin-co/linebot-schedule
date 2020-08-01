@@ -13,8 +13,8 @@ module.exports = {
         try{
             const {line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu} = req.body;
             Todo.create({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})
-                .then(message=>{
-                    res.status(200).json(message);
+                .then(()=>{
+                    res.status(200).json();
                 })
                 .catch(e=>console.log(e.stack));
             // const createdReservation = Todo.create({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu});

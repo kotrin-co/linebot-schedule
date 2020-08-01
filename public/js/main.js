@@ -10,6 +10,7 @@ const btn_ok = document.getElementById('button-ok');
 const registration = document.getElementById('registration');
 const cancel_form = document.getElementById('cancel-form');
 const registButton = document.getElementById('registrationButton');
+const submitButton = document.getElementById('form-submit');
 
 let reservations = [];
 
@@ -166,4 +167,21 @@ pButton.addEventListener('click',(event)=>{
 wButton.addEventListener('click',(event)=>{
     index = 0;
     displayCalendar(reservations);
+})
+
+submitButton.addEventListener('click',()=>{
+    const formData = document.getElementById('registration-form');
+    const postData = new FormData(formData);
+
+    const XHR = new XMLHttpRequest();
+
+    XHR.open("POST","/api/todos",true);
+
+    XHR.send(postData);
+
+    XHR.onreadystatechange = () => {
+        if(XHR.readyState === 4 && XHR.status === 200){
+            console.log('送信成功');
+        }
+    }
 })

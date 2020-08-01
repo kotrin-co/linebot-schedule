@@ -60,7 +60,7 @@
         <div>
             <select name="year" class="select-year">
                 <% for(let i=0; i<4; i++){ %>
-                    <option value="<%= new Date().getFullYear()-1+i %>"><%= new Date().getFullYear()-1+i %></option>
+                    <option value="<%= new Date().getFullYear()-1+i %>" <% if(i===0){ %>selected="selected"<% } %>><%= new Date().getFullYear()-1+i %></option>
                 <% } %>
                 <!-- <option value="2020" selected="selected">2020</option>
                 <option value=2021>2021</option>

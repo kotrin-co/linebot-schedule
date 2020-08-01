@@ -10,7 +10,8 @@ const btn_ok = document.getElementById('button-ok');
 const registration = document.getElementById('registration');
 const cancel_form = document.getElementById('cancel-form');
 const registButton = document.getElementById('registrationButton');
-// const submitButton = document.getElementById('form-submit');
+const editButton = document.getElementById('button-edit');
+const editor = document.getElementById('editor');
 
 let reservations = [];
 
@@ -86,23 +87,6 @@ const js_confirm = (num) => {
     dialog.style.display = 'block';
 }
 
-btn_cancel.addEventListener('click',()=>{
-    dialog.style.display = 'none';
-});
-
-btn_ok.addEventListener('click',()=>{
-    dialog.style.display = 'none';
-});
-
-registButton.addEventListener('click',()=>{
-    registration.style.display='block';
-});
-
-cancel_form.addEventListener('click',()=>{
-    registration.style.display='none';
-})
-
-
 const displayCalendar = (data) =>{
     console.log('その6');
     const base_ts = nowTime + oneHour*OPEN_TIME + oneWeek*index;
@@ -167,24 +151,23 @@ wButton.addEventListener('click',(event)=>{
     displayCalendar(reservations);
 })
 
+btn_cancel.addEventListener('click',()=>{
+    dialog.style.display = 'none';
+});
 
-// const submitButton = document.getElementById('form-submit');
+btn_ok.addEventListener('click',()=>{
+    dialog.style.display = 'none';
+});
 
-// submitButton.addEventListener('click',()=>{
-//     const formData = document.getElementById('registration-form');
-//     console.log('formData:',formData);
-//     const postData = new FormData(formData);
-//     console.log('postData:',postData);
+registButton.addEventListener('click',()=>{
+    registration.style.display='block';
+});
 
-//     const XHR = new XMLHttpRequest();
+cancel_form.addEventListener('click',()=>{
+    registration.style.display='none';
+});
 
-//     XHR.open("POST","./api/todos",true);
-
-//     XHR.send(postData);
-
-//     XHR.onreadystatechange = () => {
-//         if(XHR.readyState === 4 && XHR.status === 200){
-//             console.log('送信成功');
-//         }
-//     }
-// },false);
+editButton.addEventListener('click',()=>{
+    dialog.style.display = 'none';
+    editor.style.display = 'block';
+})

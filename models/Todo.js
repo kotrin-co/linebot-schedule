@@ -107,7 +107,19 @@ module.exports = {
               .catch(e=>console.log(e.stack));
             
         })
-        
+    },
 
+    update:({id,year,name,date_m,date_d,starttime_h,starttime_m,menu})=>{
+        return new Promise((resolve,reject)=>{
+            const select_query = {
+                text:'SELECT * FROM schedules WHERE id = $1;',
+                values:[`${id}`]
+            };
+            connection.query(select_query)
+                .then(res=>{
+                    const targetReservation = res.rows[0];
+                    
+                })
+        })
     }
 };

@@ -10,7 +10,6 @@ const btn_ok = document.getElementById('button-ok');
 const registration = document.getElementById('registration');
 const cancel_form = document.getElementById('cancel-form');
 const registButton = document.getElementById('registrationButton');
-const submitButton = document.getElementById('form-submit');
 
 let reservations = [];
 
@@ -169,21 +168,44 @@ wButton.addEventListener('click',(event)=>{
     displayCalendar(reservations);
 })
 
-submitButton.addEventListener('click',()=>{
-    const formData = document.getElementById('registration-form');
-    console.log('formData:',formData);
-    const postData = new FormData(formData);
-    console.log('postData:',postData);
+window.addEventListener("load",()=>{
+    document.getElementById('form-submit').addEventListener('click',()=>{
+        let formData = document.getElementById('registration-form');
+        console.log('formData:',formData);
+        let postData = new FormData(formData);
+        console.log('postData:',postData);
 
-    const XHR = new XMLHttpRequest();
+        let XHR = new XMLHttpRequest();
 
-    XHR.open("POST","./api/todos",true);
+        XHR.open("POST","./api/todos",true);
 
-    XHR.send(postData);
+        XHR.send(postData);
 
-    XHR.onreadystatechange = () => {
-        if(XHR.readyState === 4 && XHR.status === 200){
-            console.log('送信成功');
+        XHR.onreadystatechange = () => {
+            if(XHR.readyState === 4 && XHR.status === 200){
+                console.log('送信成功');
         }
     }
+    },false);
 },false);
+
+// const submitButton = document.getElementById('form-submit');
+
+// submitButton.addEventListener('click',()=>{
+//     const formData = document.getElementById('registration-form');
+//     console.log('formData:',formData);
+//     const postData = new FormData(formData);
+//     console.log('postData:',postData);
+
+//     const XHR = new XMLHttpRequest();
+
+//     XHR.open("POST","./api/todos",true);
+
+//     XHR.send(postData);
+
+//     XHR.onreadystatechange = () => {
+//         if(XHR.readyState === 4 && XHR.status === 200){
+//             console.log('送信成功');
+//         }
+//     }
+// },false);

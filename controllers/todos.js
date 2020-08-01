@@ -14,8 +14,8 @@ module.exports = {
             const {line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu} = req.body;
             Todo.create({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})
                 .then(message=>{
-                    res.redirect('/reservations');
-                    res.status(200).json(message);
+                    console.log('message:',message);
+                    res.status(200).redirect('/reservations');
                 })
                 .catch(e=>console.log(e.stack));
             // const createdReservation = Todo.create({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu});

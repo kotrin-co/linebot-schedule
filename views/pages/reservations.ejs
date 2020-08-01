@@ -53,7 +53,7 @@
 
 <div id="registration">
     <h2>予約新規作成</h2>
-    <form action="/api/todos" method="post" id="registration-form">
+    <form action="/api/todos" method="post" id="registration-form" onsubmit="return false">
         <p>LINE ID:<input type="text" id="line_uid" name="line_uid"></p>
         <p>名前:<input type="text" id="name" name="name"></p>
         <div>
@@ -155,16 +155,12 @@
             分
         </div>
         <!-- <p>時間：<input type="text" id="starttime_h" name="starttime_h"  size="4" maxlength="2"> 時 <input type="text" id="starttime_m" name="starttime_m"  size="4" maxlength="2"> 分</p> -->
-        <div>
-            
-            <!-- <input type="submit" value="送信" class="submit" id="form-submit"> -->
+        <div>            
+            <input type="submit" value="送信" class="submit" id="form-submit">
         </div>
     </form>
-    <button type="button" id="form-submit" class="submit">送信</button>
+    <!-- <button type="button" id="form-submit" class="submit">送信</button> -->
     <button id="cancel-form">キャンセル</button>
-    <!-- <p id="contents"></p>
-    <button id="button-cancel">キャンセル</button>
-    <button id="button-ok">OK</button> -->
 </div>
 
 <script src='js/main.js'></script>

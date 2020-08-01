@@ -172,6 +172,7 @@ wButton.addEventListener('click',(event)=>{
 submitButton.addEventListener('click',()=>{
     const formData = document.getElementById('registration-form');
     const postData = new FormData(formData);
+    console.log('postData:',postData);
 
     const XHR = new XMLHttpRequest();
 

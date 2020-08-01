@@ -102,7 +102,7 @@ module.exports = {
             connection.query(insert_query)
               .then(res=>{
                   console.log('res.rows:',res.rows);
-                  resolve();
+                  resolve("insert成功！");
               })
               .catch(e=>console.log(e.stack));
             

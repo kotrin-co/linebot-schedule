@@ -14,7 +14,6 @@ module.exports = {
             const {line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu} = req.body;
             Todo.create({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})
                 .then(message=>{
-                    res.status(200).render('pages/reservations');
                     res.status(200).json(message);
                 })
                 .catch(e=>console.log(e.stack));

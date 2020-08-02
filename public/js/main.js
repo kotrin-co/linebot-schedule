@@ -12,6 +12,7 @@ const cancel_form = document.getElementById('cancel-form');
 const registButton = document.getElementById('registrationButton');
 const editButton = document.getElementById('button-edit');
 const editor = document.getElementById('editor');
+const titleElement = document.getElementById('title');
 
 let reservations = [];
 
@@ -82,10 +83,14 @@ const js_confirm = (num) => {
     const date = new Date(target.starttime - oneHour*9).getDate();
     const s_h = new Date(target.starttime-oneHour*9).getHours();
     const s_m = new Date(target.starttime-oneHour*9).getMinutes();
+    const e_h = new Date(target.endtime-oneHour*9).getHours();
+    const e_m = new Date(target.endtime-oneHour*9).getMinutes();
     // const s_h = ('0'+new Date(target.starttime-oneHour*9).getHours()).slice(-2);
     // const s_m = ('0'+new Date(target.starttime-oneHour*9).getMinutes()).slice(-2);
-    const e_h = ('0'+new Date(target.endtime-oneHour*9).getHours()).slice(-2);
-    const e_m = ('0'+new Date(target.endtime-oneHour*9).getMinutes()).slice(-2);
+    // const e_h = ('0'+new Date(target.endtime-oneHour*9).getHours()).slice(-2);
+    // const e_m = ('0'+new Date(target.endtime-oneHour*9).getMinutes()).slice(-2);
+
+    titleElement.innerHTML = '予約確認';
 
     const lineId = document.getElementById('line_uid');
     lineId.value=target.line_uid;
@@ -120,6 +125,14 @@ const js_confirm = (num) => {
     const smSelector = document.getElementById('starttime_m');
     smSelector.options[s_m/5].selected = true;
     smSelector.disabled = true;
+
+    const ehSelector = document.getElementById('endtime_h');
+    ehSelector.options[e_h - 9].selected = true;
+    ehSelector.disabled = true;
+
+    const emSelector = document.getElementById('endtime_m');
+    emSelector.options[e_m/5].selected = true;
+    emSelector.disabled = true;
 
     // const divElement = document.createElement('div');
     // divElement.setAttribute('id','dialog2');

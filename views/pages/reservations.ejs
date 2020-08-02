@@ -52,7 +52,7 @@
 </div> -->
 
 <div id="dialog">
-    <h2>予約内容確認</h2>
+    <h2 id="title"></h2>
     <form action="/api/todos" method="post" id="registration-form">
         <p>LINE ID:<input type="text" id="line_uid" name="line_uid"></p>
         <p>名前:<input type="text" id="name" name="name"></p>
@@ -88,6 +88,7 @@
             </p>
         </div>
         <div>
+            <p>開始：
             <select name="starttime_h" class="select-date" id="starttime_h">
                 <% for(let i=0; i<11; i++){ %>
                     <option value="<%= 9+i %>"><%= ('0'+(9+i)).slice(-2) %></option>
@@ -100,6 +101,23 @@
                 <% } %>
             </select>
             分
+            </p>
+        </div>
+        <div>
+            <p>終了：
+            <select name="endtime_h" class="select-date" id="endtime_h">
+                <% for(let i=0; i<11; i++){ %>
+                    <option value="<%= 9+i %>"><%= ('0'+(9+i)).slice(-2) %></option>
+                <% } %>
+            </select>
+            時
+            <select name="endtime_m" class="select-date" id="endtime_m">
+                <% for(let i=0; i<12; i++){ %>
+                    <option value="<%= i*5 %>"><%= ('0'+(i*5)).slice(-2) %></option>
+                <% } %>
+            </select>
+            分
+            </p>
         </div>
         <div>            
             <input type="submit" value="送信" class="submit" id="form-submit">

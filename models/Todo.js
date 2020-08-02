@@ -126,8 +126,7 @@ module.exports = {
 
             const update_query = {
                 // text:`UPDATE schedules SET name='${createReservation[1]}' WHERE id=${parsedId};`
-                text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) = VALUES ($1,$2,$3,$4,$5,$6) WHERE id=${parsedId};`,
-                values:createReservation
+                text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) = ('${createReservation[0]}','${createReservation[1]}','${createReservation[2]}',${createReservation[3]},${createReservation[4]},'${createReservation[5]}') WHERE id=${parsedId};`
                 // text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) = (${createReservation.line_uid}, ${createReservation.name}, ${createReservation.scheduledate}, ${createReservation.starttime}, ${createReservation.endtime}, ${createReservation.menu}) WHERE id=${id};`
             }
 

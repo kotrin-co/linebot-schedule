@@ -57,6 +57,7 @@ const TIMES_OF_MENU = [900,1200,1800];
 app
   .use(express.static(path.join(__dirname, 'public')))
   .use('/',router)
+  .post('/hook',line.middleware(config),(req,res)=> lineBot(req,res))
   .use(express.json())
   .use(express.urlencoded({extended:true}))
   // ここはAPIテスト
@@ -64,7 +65,6 @@ app
   // ここまでテスト
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
-  .post('/hook',line.middleware(config),(req,res)=> lineBot(req,res))
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
 const lineBot = (req,res) => {

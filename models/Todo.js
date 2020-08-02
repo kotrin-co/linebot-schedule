@@ -111,15 +111,40 @@ module.exports = {
 
     update:({id,year,name,date_m,date_d,starttime_h,starttime_m,menu})=>{
         return new Promise((resolve,reject)=>{
-            const select_query = {
-                text:'SELECT * FROM schedules WHERE id = $1;',
-                values:[`${id}`]
+            const createReservation = new Create({
+                line_uid:line_uid,
+                name:name,
+                year:year,
+                date_m:date_m,
+                date_d:date_d,
+                starttime_h:starttime_h,
+                starttime_m:starttime_m,
+                menu:menu
+            }).queryArray();
+            console.log('createReservation:',createReservation);
+
+            const update_query = {
+                text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6) WHERE id = ${id};`,
+                values:createReservation
             };
-            connection.query(select_query)
+
+            connection.query(update_query)
                 .then(res=>{
-                    const targetReservation = res.rows[0];
-                    
+                    console.log('更新成功');
+                    resolve('更新成功！！！');
                 })
-        })
+                .catch(e=>console.log(e.stack));
+            // const select_query = {
+            //     text:'SELECT * FROM schedules WHERE id = $1;',
+            //     values:[`${id}`]
+            // };
+            // connection.query(select_query)
+            //     .then(res=>{
+            //         const targetReservation = res.rows[0];
+            //         console.log('targetReservation:',targetReservation);
+            //         targetReservation.name = name;
+            //         targetReservation.scheduledate = new Date()
+            //     })
+        });
     }
 };

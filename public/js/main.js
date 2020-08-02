@@ -3,7 +3,7 @@ const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
 const dialog = document.getElementById('dialog');
-const registration = document.getElementById('registration');
+const registration_form = document.getElementById('registration-form');
 const submit_form = document.getElementById('form-submit');
 const cancel_form = document.getElementById('cancel-form');
 const registButton = document.getElementById('registrationButton');
@@ -94,8 +94,7 @@ const js_confirm = (num) => {
     
     revId.innerHTML = target.id;
     
-    lineId.value=target.line_uid;
-    lineId.disabled = true;
+    lineId.innerHTML=target.line_uid;
 
     nameElement.value = target.name;
     nameElement.disabled = true;
@@ -202,6 +201,8 @@ wButton.addEventListener('click',(event)=>{
 registButton.addEventListener('click',()=>{
     dialog.style.display='block';
     editButton.style.display ='none';
+    registration_form.setAttribute("method","post");
+    registration_form.setAttribute("action",`/api/todos`);
 });
 
 cancel_form.addEventListener('click',()=>{
@@ -209,7 +210,6 @@ cancel_form.addEventListener('click',()=>{
 });
 
 editButton.addEventListener('click',()=>{
-    lineId.disabled = false;
     nameElement.disabled = false;
     yearSelector.disabled = false;
     monthSelector.disabled = false;
@@ -221,5 +221,9 @@ editButton.addEventListener('click',()=>{
     emSelector.disabled = false;
     submit_form.style.display = 'block';
     editButton.style.display = 'none';
+    registration_form.setAttribute("method","put");
+    const id = parseInt(revId.textContent,10);
+    console.log('id:',id);
+    registration_form.setAttribute("action",`/api/todos/${id}`);
     console.log('この中にformのdisabledをfalseにする関数を入れる');
 })

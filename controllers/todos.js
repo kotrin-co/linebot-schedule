@@ -24,5 +24,21 @@ module.exports = {
          }catch(error){
              res.status(400).json({message:error.message});
          }
+    },
+
+    putTodo: (req,res) => {
+        const id = req.params.id;
+        const {line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu} = req.body;
+        const parsedId = parseInt(id,10);
+        try{
+            Todo.update({parsedId,line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})
+                .then(message=>{
+                    console.log('message:',message);
+                    res.status(200).redirect('/reservations');
+                })
+                .catch(e=>console.log(e.stack));
+        }catch(error){
+            res.status(400).json({message:error.message});
+        }
     }
 }

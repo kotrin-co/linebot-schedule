@@ -1,12 +1,11 @@
-console.log('その１');
 const rButton = document.getElementById('rButton');
 const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
 const dialog = document.getElementById('dialog');
-const dialog_contents = document.getElementById('contents');
-const btn_cancel = document.getElementById('button-cancel');
-const btn_ok = document.getElementById('button-ok');
+// const dialog_contents = document.getElementById('contents');
+// const btn_cancel = document.getElementById('button-cancel');
+// const btn_ok = document.getElementById('button-ok');
 const registration = document.getElementById('registration');
 const submit_form = document.getElementById('form-submit');
 const cancel_form = document.getElementById('cancel-form');
@@ -93,6 +92,9 @@ const js_confirm = (num) => {
     // const e_m = ('0'+new Date(target.endtime-oneHour*9).getMinutes()).slice(-2);
 
     titleElement.innerHTML = '予約確認';
+
+    const revId = document.getElementById('rev-id');
+    revId.innerHTML = target.id;
 
     const lineId = document.getElementById('line_uid');
     lineId.value=target.line_uid;

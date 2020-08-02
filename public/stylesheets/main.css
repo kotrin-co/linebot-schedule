@@ -144,7 +144,7 @@ th{
 
 [title="blue"]{color:yellow;}
 
-#dialog{
+/* #dialog{
   position:absolute;
   width:400px;
   height:330px;
@@ -159,7 +159,7 @@ th{
   box-shadow:2px 2px 4px #888;
   background:#ff0;
   font-size:x-large;
-}
+} */
 
 #button-cancel{
   margin:5px 20px auto 90px;
@@ -174,7 +174,7 @@ th{
   margin:2px auto 10px 5px
 }
 
-#registration{
+#registration,#editor,#dialog{
   position:absolute;
   width:400px;
   height:600px;

@@ -75,7 +75,10 @@ const getReservationDisplay = (timestamp,name,menu,id) => {
 const weeks = ['日','月','火','水','木','金','土'];
 
 const js_confirm = (num) => {
+    dialog.style.display = 'block';
     const target = reservations.find(({id})=> id === num);
+    const lineId = document.getElementById('line_uid');
+    lineId.value= target.line_uid;
     const month = new Date(target.starttime - oneHour*9).getMonth()+1;
     const date = new Date(target.starttime - oneHour*9).getDate();
     const s_h = ('0'+new Date(target.starttime-oneHour*9).getHours()).slice(-2);
@@ -89,7 +92,7 @@ const js_confirm = (num) => {
     // pElement.innerHTML = `■予約id:${target.id}<br>■予約名:${target.name}<br>■予約日時:${month}月${date}日<br>　　　　 ${s_h}時${s_m}分〜${e_h}時${e_m}分<br>■メニュー:${target.menu}`;
     // divElement.appendChild(pElement);
     dialog_contents.innerHTML = `■予約id:${target.id}<br>■予約名:${target.name}<br>■予約日時:${month}月${date}日<br>　　　　 ${s_h}時${s_m}分〜${e_h}時${e_m}分<br>■メニュー:${target.menu}`;
-    dialog.style.display = 'block';
+
 }
 
 const displayCalendar = (data) =>{

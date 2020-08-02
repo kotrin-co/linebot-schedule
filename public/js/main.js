@@ -78,7 +78,11 @@ const js_confirm = (num) => {
     dialog.style.display = 'block';
     const target = reservations.find(({id})=> id === num);
     const lineId = document.getElementById('line_uid');
-    lineId.value= target.line_uid;
+    lineId.value=target.line_uid;
+    lineId.disabled = true;
+    const nameElement = document.getElementById('name');
+    nameElement.value = target.name;
+    nameElement.disabled = true;
     const month = new Date(target.starttime - oneHour*9).getMonth()+1;
     const date = new Date(target.starttime - oneHour*9).getDate();
     const s_h = ('0'+new Date(target.starttime-oneHour*9).getHours()).slice(-2);

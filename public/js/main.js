@@ -81,8 +81,9 @@ const js_confirm = (num) => {
     const month = new Date(target.starttime - oneHour*9).getMonth()+1;
     const date = new Date(target.starttime - oneHour*9).getDate();
     const s_h = new Date(target.starttime-oneHour*9).getHours();
+    const s_m = new Date(target.starttime-oneHour*9).getMinutes();
     // const s_h = ('0'+new Date(target.starttime-oneHour*9).getHours()).slice(-2);
-    const s_m = ('0'+new Date(target.starttime-oneHour*9).getMinutes()).slice(-2);
+    // const s_m = ('0'+new Date(target.starttime-oneHour*9).getMinutes()).slice(-2);
     const e_h = ('0'+new Date(target.endtime-oneHour*9).getHours()).slice(-2);
     const e_m = ('0'+new Date(target.endtime-oneHour*9).getMinutes()).slice(-2);
 
@@ -115,6 +116,10 @@ const js_confirm = (num) => {
     const shSelector = document.getElementById('starttime_h');
     shSelector.options[s_h - 9].selected = true;
     shSelector.disabled = true;
+
+    const smSelector = document.getElementById('starttime_m');
+    smSelector.options[s_m/5].selected = true;
+    smSelector.disabled = true;
 
     // const divElement = document.createElement('div');
     // divElement.setAttribute('id','dialog2');

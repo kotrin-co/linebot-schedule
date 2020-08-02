@@ -34,8 +34,7 @@ module.exports = {
             Todo.update({parsedId,line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})
                 .then(message=>{
                     console.log('message:',message);
-                    res.status(200).json(message);
-                    // res.status(200).redirect('/reservations');
+                    res.status(200).redirect('/reservations');
                 })
                 .catch(e=>console.log(e.stack));
         }catch(error){

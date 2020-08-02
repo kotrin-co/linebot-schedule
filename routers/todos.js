@@ -11,4 +11,8 @@ router
     .route('/:id')
     .post(controller.putTodo);
 
+router
+    .route('/remove/:id')
+    .post(controller.removeTodo);
+
 module.exports = router;

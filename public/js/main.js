@@ -20,6 +20,7 @@ const shSelector = document.getElementById('starttime_h');
 const ehSelector = document.getElementById('endtime_h');
 const smSelector = document.getElementById('starttime_m');
 const emSelector = document.getElementById('endtime_m');
+const deleteButton = document.getElementById('button-delete');
 
 let reservations = [];
 
@@ -237,4 +238,10 @@ editButton.addEventListener('click',()=>{
     console.log('id:',id);
     registration_form.setAttribute("action",`/api/todos/${id}`);
     console.log('この中にformのdisabledをfalseにする関数を入れる');
+});
+
+deleteButton.addEventListener('click',()=>{
+    const id = parseInt(revId.textContent,10);
+    console.log('id:',id);
+    registration_form.setAttribute("action",`/api/todos/delete/${id}`);
 })

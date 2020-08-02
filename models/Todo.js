@@ -154,5 +154,22 @@ module.exports = {
             //         targetReservation.scheduledate = new Date()
             //     })
         });
+    },
+
+    remove:({parsedId})=>{
+        return new Promise((resolve,reject)=>{
+            console.log('parsedId:',parsedId);
+
+            const remove_query = {
+                text:`DELETE FROM schedules WHERE id=${parsedId};`
+            };
+
+            connection.query(remove_query)
+                .then(res=>{
+                    console.log('削除成功');
+                    resolve('削除成功！！！');
+                })
+                .catch(e=>console.log(e.stack));
+        });
     }
 };

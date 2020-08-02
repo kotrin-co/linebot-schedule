@@ -80,7 +80,8 @@ const js_confirm = (num) => {
     const year = new Date(target.starttime - oneHour*9).getFullYear();
     const month = new Date(target.starttime - oneHour*9).getMonth()+1;
     const date = new Date(target.starttime - oneHour*9).getDate();
-    const s_h = ('0'+new Date(target.starttime-oneHour*9).getHours()).slice(-2);
+    const s_h = new Date(target.starttime-oneHour*9).getHours();
+    // const s_h = ('0'+new Date(target.starttime-oneHour*9).getHours()).slice(-2);
     const s_m = ('0'+new Date(target.starttime-oneHour*9).getMinutes()).slice(-2);
     const e_h = ('0'+new Date(target.endtime-oneHour*9).getHours()).slice(-2);
     const e_m = ('0'+new Date(target.endtime-oneHour*9).getMinutes()).slice(-2);
@@ -105,6 +106,16 @@ const js_confirm = (num) => {
     const dateSelector = document.getElementById('day');
     dateSelector.options[date-1].selected = true;
     dateSelector.disabled = true;
+
+    const menuSelector = document.getElementById('menu');
+    const menuList = ['cut','cut&shampoo','color'];
+    menuSelector.options[menuList.indexOf(target.menu)].selected = true;
+    menuSelector.disabled = true;
+
+    const shSelector = document.getElementById('starttime_h');
+    shSelector.options[s_h - 9].selected = true;
+    shSelector.disabled = true;
+
     // const divElement = document.createElement('div');
     // divElement.setAttribute('id','dialog2');
     // const pElement = document.createElement('p');

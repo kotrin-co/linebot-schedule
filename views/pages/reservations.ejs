@@ -80,7 +80,7 @@
         </div>
         <div class="menu">
             <p>メニュー:
-                <select name="menu">
+                <select name="menu" id="menu">
                     <option value="cut" selected>カット</option>
                     <option value="cut&shampoo">カット＆シャンプー</option>
                     <option value="color">カラーリング</option>
@@ -88,13 +88,13 @@
             </p>
         </div>
         <div>
-            <select name="starttime_h" class="select-date">
+            <select name="starttime_h" class="select-date" id="starttime_h">
                 <% for(let i=0; i<11; i++){ %>
                     <option value="<%= 9+i %>"><%= ('0'+(9+i)).slice(-2) %></option>
                 <% } %>
             </select>
             時
-            <select name="starttime_m" class="select-date">
+            <select name="starttime_m" class="select-date" id="starttime_m">
                 <% for(let i=0; i<12; i++){ %>
                     <option value="<%= i*5 %>"><%= ('0'+(i*5)).slice(-2) %></option>
                 <% } %>

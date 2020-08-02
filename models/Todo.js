@@ -109,8 +109,9 @@ module.exports = {
         })
     },
 
-    update:({id,line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})=>{
+    update:({parsedId,line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})=>{
         return new Promise((resolve,reject)=>{
+            console.log('parsedId:',parsedId);
             const createReservation = new Create({
                 line_uid:line_uid,
                 name:name,
@@ -124,7 +125,7 @@ module.exports = {
             console.log('createReservation:',createReservation);
 
             const update_query = {
-                text:`UPDATE schedules SET name=${createReservation[1]} WHERE id=${id};`
+                text:`UPDATE schedules SET name=${createReservation[1]} WHERE id=${parsedId};`
                 // text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) = (${createReservation.line_uid}, ${createReservation.name}, ${createReservation.scheduledate}, ${createReservation.starttime}, ${createReservation.endtime}, ${createReservation.menu}) WHERE id=${id};`
             }
 

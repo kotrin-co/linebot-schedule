@@ -218,5 +218,7 @@ editButton.addEventListener('click',()=>{
     smSelector.disabled = false;
     ehSelector.disabled = false;
     emSelector.disabled = false;
+    submit_form.style.display = 'block';
+    editButton.style.display = 'none';
     console.log('この中にformのdisabledをfalseにする関数を入れる');
 })

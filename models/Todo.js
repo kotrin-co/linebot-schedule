@@ -124,9 +124,12 @@ module.exports = {
             console.log('createReservation:',createReservation);
 
             const update_query = {
-                text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) = VALUES($1,$2,$3,$4,$5,$6) WHERE id = ${id};`,
-                values:createReservation
-            };
+                text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) = (${createReservation.line_uid}, ${createReservation.name}, ${createReservation.scheduledate}, ${createReservation.starttime}, ${createReservation.endtime}, ${createReservation.menu}) WHERE id=${id};`
+            }
+            // const update_query = {
+            //     text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) = VALUES($1,$2,$3,$4,$5,$6) WHERE id = ${id};`,
+            //     values:createReservation
+            // };
 
             connection.query(update_query)
                 .then(res=>{

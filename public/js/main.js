@@ -203,6 +203,16 @@ wButton.addEventListener('click',(event)=>{
 
 registButton.addEventListener('click',()=>{
     titleElement.innerHTML = '新規予約作成';
+    revId.innerHTML = '';
+    lineId.value = '';
+    nameElement.value = '';
+    yearSelector.selectedIndex = 1;
+    monthSelector.selectedIndex = parseInt(new Date().getMonth());
+    dateSelector.selectedIndex = parseInt(new Date().getDate()-1);
+    shSelector.selectedIndex = 0;
+    smSelector.selectedIndex = 0;
+    ehSelector.selectedIndex = 0;
+    emSelector.selectedIndex = 0;
     dialog.style.display='block';
     editButton.style.display ='none';
     nameElement.disabled = false;

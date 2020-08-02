@@ -81,6 +81,7 @@ const weeks = ['日','月','火','水','木','金','土'];
 const js_confirm = (num) => {
     dialog.style.display = 'block';
     submit_form.style.display = 'none';
+    editButton.style.display = 'block';
     const target = reservations.find(({id})=> id === num);
     const year = new Date(target.starttime - oneHour*9).getFullYear();
     const month = new Date(target.starttime - oneHour*9).getMonth()+1;
@@ -201,6 +202,15 @@ wButton.addEventListener('click',(event)=>{
 registButton.addEventListener('click',()=>{
     dialog.style.display='block';
     editButton.style.display ='none';
+    nameElement.disabled = false;
+    yearSelector.disabled = false;
+    monthSelector.disabled = false;
+    dateSelector.disabled = false;
+    menuSelector.disabled = false;
+    shSelector.disabled = false;
+    smSelector.disabled = false;
+    ehSelector.disabled = false;
+    emSelector.disabled = false;
     registration_form.setAttribute("method","post");
     registration_form.setAttribute("action",`/api/todos`);
 });

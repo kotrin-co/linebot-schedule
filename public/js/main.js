@@ -8,6 +8,7 @@ const dialog_contents = document.getElementById('contents');
 const btn_cancel = document.getElementById('button-cancel');
 const btn_ok = document.getElementById('button-ok');
 const registration = document.getElementById('registration');
+const submit_form = document.getElementById('form-submit');
 const cancel_form = document.getElementById('cancel-form');
 const registButton = document.getElementById('registrationButton');
 const editButton = document.getElementById('button-edit');
@@ -77,6 +78,7 @@ const weeks = ['日','月','火','水','木','金','土'];
 
 const js_confirm = (num) => {
     dialog.style.display = 'block';
+    submit_form.style.display = 'none';
     const target = reservations.find(({id})=> id === num);
     const year = new Date(target.starttime - oneHour*9).getFullYear();
     const month = new Date(target.starttime - oneHour*9).getMonth()+1;
@@ -221,7 +223,7 @@ registButton.addEventListener('click',()=>{
 });
 
 cancel_form.addEventListener('click',()=>{
-    registration.style.display='none';
+    dialog.style.display='none';
 });
 
 editButton.addEventListener('click',()=>{

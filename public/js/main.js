@@ -95,7 +95,7 @@ const js_confirm = (num) => {
     
     revId.innerHTML = target.id;
     
-    lineId.innerHTML=target.line_uid;
+    lineId.value=target.line_uid;
 
     nameElement.value = target.name;
     nameElement.disabled = true;

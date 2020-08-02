@@ -63,13 +63,13 @@
                 <% } %>
             </select>
             年
-            <select name="date_m" class="select-date">
+            <select name="date_m" class="select-date" id='month'>
                 <% for(let i=0; i<12; i++){ %>
                     <option value="<%= i+1 %>" <% if(i=== new Date().getMonth()){ %>selected="selected"<% } %>><%= ('0'+(i+1)).slice(-2) %></option>
                 <% } %>
             </select>
             月
-            <select name="date_d" class="select-date">
+            <select name="date_d" class="select-date" id="date">
                 <% for(let i=0; i<31; i++){ %>
                     <option value="<%= i+1 %>">
                         <%= ('0'+(i+1)).slice(-2) %>

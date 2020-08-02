@@ -88,15 +88,23 @@ const js_confirm = (num) => {
     const lineId = document.getElementById('line_uid');
     lineId.value=target.line_uid;
     lineId.disabled = true;
+    
     const nameElement = document.getElementById('name');
     nameElement.value = target.name;
     nameElement.disabled = true;
+    
     const yearSelector = document.getElementById('year');
     const yearOptions = yearSelector.options;
     yearOptions[year - new Date().getFullYear() +1].selected = true;
     yearSelector.disabled = true;
 
-    
+    const monthSelector = document.getElementById('month');
+    monthSelector.options[month-1].selected = true;
+    monthSelector.disabled = true;
+
+    const dateSelector = document.getElementById('date');
+    dateSelector.options[date-1].selected = true;
+    dateSelector.disabled = true;
     // const divElement = document.createElement('div');
     // divElement.setAttribute('id','dialog2');
     // const pElement = document.createElement('p');

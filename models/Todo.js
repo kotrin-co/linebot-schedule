@@ -124,7 +124,7 @@ module.exports = {
             console.log('createReservation:',createReservation);
 
             const update_query = {
-                text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6) WHERE id = ${id};`,
+                text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) = VALUES($1,$2,$3,$4,$5,$6) WHERE id = ${id};`,
                 values:createReservation
             };
 

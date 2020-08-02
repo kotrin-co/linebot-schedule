@@ -200,6 +200,7 @@ wButton.addEventListener('click',(event)=>{
 // });
 
 registButton.addEventListener('click',()=>{
+    titleElement.innerHTML = '新規予約作成';
     dialog.style.display='block';
     editButton.style.display ='none';
     nameElement.disabled = false;
@@ -220,6 +221,7 @@ cancel_form.addEventListener('click',()=>{
 });
 
 editButton.addEventListener('click',()=>{
+    titleElement.innerHTML = '予約編集';
     nameElement.disabled = false;
     yearSelector.disabled = false;
     monthSelector.disabled = false;

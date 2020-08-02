@@ -102,7 +102,7 @@ const js_confirm = (num) => {
     monthSelector.options[month-1].selected = true;
     monthSelector.disabled = true;
 
-    const dateSelector = document.getElementById('date');
+    const dateSelector = document.getElementById('day');
     dateSelector.options[date-1].selected = true;
     dateSelector.disabled = true;
     // const divElement = document.createElement('div');

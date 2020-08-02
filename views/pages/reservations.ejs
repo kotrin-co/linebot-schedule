@@ -66,24 +66,17 @@
             年
             <select name="date_m" class="select-date">
                 <% for(let i=0; i<12; i++){ %>
-                    <option value="<%= i+1 %>" <% if(i=== new Date().getMonth()+1){ %>selected="selected"<% } %>><%= ('0'+(i+1)).slice(-2) %></option>
+                    <option value="<%= i+1 %>" <% if(i=== new Date().getMonth()){ %>selected="selected"<% } %>><%= ('0'+(i+1)).slice(-2) %></option>
                 <% } %>
-                <!-- <option value="1">01</option>
-                <option value="2">02</option>
-                <option value="3">03</option>
-                <option value="4">04</option>
-                <option value="5">05</option>
-                <option value="6" selected="selected">06</option>
-                <option value="7">07</option>
-                <option value="8">08</option>
-                <option value="9">09</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option> -->
             </select>
             月
             <select name="date_d" class="select-date">
-                <option value="1">01</option>
+                <% for(let i=0; i<31; i++){ %>
+                    <option value="<%= i+1 %>">
+                        <%= document.registration-form.date_m.options[document.registration-form.date_m.selectedIndex].value %>
+                    </option>
+                <% } %>
+                <!-- <option value="1">01</option>
                 <option value="2">02</option>
                 <option value="3">03</option>
                 <option value="4">04</option>
@@ -113,7 +106,7 @@
                 <option value="28">28</option>
                 <option value="29">29</option>
                 <option value="30">30</option>
-                <option value="31">31</option>
+                <option value="31">31</option> -->
             </select>
             日
         </div>

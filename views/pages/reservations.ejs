@@ -57,7 +57,7 @@
         <p>LINE ID:<input type="text" id="line_uid" name="line_uid"></p>
         <p>名前:<input type="text" id="name" name="name"></p>
         <div>
-            <select name="year" class="select-year">
+            <select name="year" class="select-year" id="year">
                 <% for(let i=0; i<4; i++){ %>
                     <option value="<%= new Date().getFullYear()-1+i %>" <% if(i===1){ %>selected="selected"<% } %>><%= new Date().getFullYear()-1+i %></option>
                 <% } %>

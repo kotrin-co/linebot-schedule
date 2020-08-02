@@ -77,25 +77,33 @@ const weeks = ['日','月','火','水','木','金','土'];
 const js_confirm = (num) => {
     dialog.style.display = 'block';
     const target = reservations.find(({id})=> id === num);
-    const lineId = document.getElementById('line_uid');
-    lineId.value=target.line_uid;
-    lineId.disabled = true;
-    const nameElement = document.getElementById('name');
-    nameElement.value = target.name;
-    nameElement.disabled = true;
+    const year = new Date(target.starttime - oneHour*9).getFullYear();
     const month = new Date(target.starttime - oneHour*9).getMonth()+1;
     const date = new Date(target.starttime - oneHour*9).getDate();
     const s_h = ('0'+new Date(target.starttime-oneHour*9).getHours()).slice(-2);
     const s_m = ('0'+new Date(target.starttime-oneHour*9).getMinutes()).slice(-2);
     const e_h = ('0'+new Date(target.endtime-oneHour*9).getHours()).slice(-2);
     const e_m = ('0'+new Date(target.endtime-oneHour*9).getMinutes()).slice(-2);
+
+    const lineId = document.getElementById('line_uid');
+    lineId.value=target.line_uid;
+    lineId.disabled = true;
+    const nameElement = document.getElementById('name');
+    nameElement.value = target.name;
+    nameElement.disabled = true;
+    const yearSelector = document.getElementById('year');
+    const yearOptions = yearSelector.options;
+    yearOptions[year - new Date().getFullYear() +1].selected = true;
+    yearSelector.disabled = true;
+
+    
     // const divElement = document.createElement('div');
     // divElement.setAttribute('id','dialog2');
     // const pElement = document.createElement('p');
     // pElement.setAttribute('id','contents2');
     // pElement.innerHTML = `■予約id:${target.id}<br>■予約名:${target.name}<br>■予約日時:${month}月${date}日<br>　　　　 ${s_h}時${s_m}分〜${e_h}時${e_m}分<br>■メニュー:${target.menu}`;
     // divElement.appendChild(pElement);
-    dialog_contents.innerHTML = `■予約id:${target.id}<br>■予約名:${target.name}<br>■予約日時:${month}月${date}日<br>　　　　 ${s_h}時${s_m}分〜${e_h}時${e_m}分<br>■メニュー:${target.menu}`;
+    // dialog_contents.innerHTML = `■予約id:${target.id}<br>■予約名:${target.name}<br>■予約日時:${month}月${date}日<br>　　　　 ${s_h}時${s_m}分〜${e_h}時${e_m}分<br>■メニュー:${target.menu}`;
 
 }
 

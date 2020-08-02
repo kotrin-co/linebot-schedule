@@ -227,6 +227,5 @@ cancel_form.addEventListener('click',()=>{
 });
 
 editButton.addEventListener('click',()=>{
-    dialog.style.display = 'none';
-    editor.style.display = 'block';
+    console.log('この中にformのdisabledをfalseにする関数を入れる');
 })

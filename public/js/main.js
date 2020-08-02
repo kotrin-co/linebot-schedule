@@ -215,6 +215,7 @@ registButton.addEventListener('click',()=>{
     emSelector.selectedIndex = 0;
     dialog.style.display='block';
     editButton.style.display ='none';
+    deleteButton.style.display='none';
     nameElement.disabled = false;
     yearSelector.disabled = false;
     monthSelector.disabled = false;

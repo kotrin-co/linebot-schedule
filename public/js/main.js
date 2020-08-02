@@ -243,5 +243,5 @@ editButton.addEventListener('click',()=>{
 deleteButton.addEventListener('click',()=>{
     const id = parseInt(revId.textContent,10);
     console.log('id:',id);
-    registration_form.setAttribute("action",`/api/todos/delete/${id}`);
+    registration_form.setAttribute("action",`/api/todos/remove/${id}`);
 })

@@ -3,23 +3,27 @@ const pButton = document.getElementById('pButton');
 const h2Element = document.getElementById('monthArea');
 const wButton = document.getElementById('thisWeekButton');
 const dialog = document.getElementById('dialog');
-// const dialog_contents = document.getElementById('contents');
-// const btn_cancel = document.getElementById('button-cancel');
-// const btn_ok = document.getElementById('button-ok');
 const registration = document.getElementById('registration');
 const submit_form = document.getElementById('form-submit');
 const cancel_form = document.getElementById('cancel-form');
 const registButton = document.getElementById('registrationButton');
 const editButton = document.getElementById('button-edit');
-const editor = document.getElementById('editor');
 const titleElement = document.getElementById('title');
+const revId = document.getElementById('rev-id');
+const lineId = document.getElementById('line_uid');
+const nameElement = document.getElementById('name');
+const yearSelector = document.getElementById('year');
+const monthSelector = document.getElementById('month');
+const dateSelector = document.getElementById('day');
+const menuSelector = document.getElementById('menu');
+const shSelector = document.getElementById('starttime_h');
+const ehSelector = document.getElementById('endtime_h');
+const smSelector = document.getElementById('starttime_m');
+const emSelector = document.getElementById('endtime_m');
 
 let reservations = [];
 
 const API_URL = 'https://linebot-schedule.herokuapp.com/api/todos';
-
-// import { adminData } from ('../../index.js');
-// console.log('adminData:',adminData);
 
 const thisYear = new Date().getFullYear();
 const thisMonth = new Date().getMonth()+1;
@@ -33,7 +37,6 @@ const OPEN_TIME = 9;
 let index = 0;
 
 window.addEventListener('load',(event)=>{
-    console.log('その2');
     fetchData();
 });
 
@@ -86,66 +89,42 @@ const js_confirm = (num) => {
     const s_m = new Date(target.starttime-oneHour*9).getMinutes();
     const e_h = new Date(target.endtime-oneHour*9).getHours();
     const e_m = new Date(target.endtime-oneHour*9).getMinutes();
-    // const s_h = ('0'+new Date(target.starttime-oneHour*9).getHours()).slice(-2);
-    // const s_m = ('0'+new Date(target.starttime-oneHour*9).getMinutes()).slice(-2);
-    // const e_h = ('0'+new Date(target.endtime-oneHour*9).getHours()).slice(-2);
-    // const e_m = ('0'+new Date(target.endtime-oneHour*9).getMinutes()).slice(-2);
 
     titleElement.innerHTML = '予約確認';
-
-    const revId = document.getElementById('rev-id');
+    
     revId.innerHTML = target.id;
-
-    const lineId = document.getElementById('line_uid');
+    
     lineId.value=target.line_uid;
     lineId.disabled = true;
-    
-    const nameElement = document.getElementById('name');
+
     nameElement.value = target.name;
     nameElement.disabled = true;
     
-    const yearSelector = document.getElementById('year');
     const yearOptions = yearSelector.options;
     yearOptions[year - new Date().getFullYear() +1].selected = true;
     yearSelector.disabled = true;
-
-    const monthSelector = document.getElementById('month');
+    
     monthSelector.options[month-1].selected = true;
     monthSelector.disabled = true;
-
-    const dateSelector = document.getElementById('day');
+    
     dateSelector.options[date-1].selected = true;
     dateSelector.disabled = true;
-
-    const menuSelector = document.getElementById('menu');
+    
     const menuList = ['cut','cut&shampoo','color'];
     menuSelector.options[menuList.indexOf(target.menu)].selected = true;
     menuSelector.disabled = true;
-
-    const shSelector = document.getElementById('starttime_h');
+    
     shSelector.options[s_h - 9].selected = true;
     shSelector.disabled = true;
-
-    const smSelector = document.getElementById('starttime_m');
+    
     smSelector.options[s_m/5].selected = true;
     smSelector.disabled = true;
-
-    const ehSelector = document.getElementById('endtime_h');
+    
     ehSelector.options[e_h - 9].selected = true;
     ehSelector.disabled = true;
-
-    const emSelector = document.getElementById('endtime_m');
+    
     emSelector.options[e_m/5].selected = true;
     emSelector.disabled = true;
-
-    // const divElement = document.createElement('div');
-    // divElement.setAttribute('id','dialog2');
-    // const pElement = document.createElement('p');
-    // pElement.setAttribute('id','contents2');
-    // pElement.innerHTML = `■予約id:${target.id}<br>■予約名:${target.name}<br>■予約日時:${month}月${date}日<br>　　　　 ${s_h}時${s_m}分〜${e_h}時${e_m}分<br>■メニュー:${target.menu}`;
-    // divElement.appendChild(pElement);
-    // dialog_contents.innerHTML = `■予約id:${target.id}<br>■予約名:${target.name}<br>■予約日時:${month}月${date}日<br>　　　　 ${s_h}時${s_m}分〜${e_h}時${e_m}分<br>■メニュー:${target.menu}`;
-
 }
 
 const displayCalendar = (data) =>{
@@ -229,5 +208,15 @@ cancel_form.addEventListener('click',()=>{
 });
 
 editButton.addEventListener('click',()=>{
+    lineId.disabled = false;
+    nameElement.disabled = false;
+    yearSelector.disabled = false;
+    monthSelector.disabled = false;
+    dateSelector.disabled = false;
+    menuSelector.disabled = false;
+    shSelector.disabled = false;
+    smSelector.disabled = false;
+    ehSelector.disabled = false;
+    emSelector.disabled = false;
     console.log('この中にformのdisabledをfalseにする関数を入れる');
 })

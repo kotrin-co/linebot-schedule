@@ -111,7 +111,7 @@ module.exports = {
 
     update:({parsedId,line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})=>{
         return new Promise((resolve,reject)=>{
-            console.log('parsedId:',parsedId);
+            console.log('line_uid:',line_uid);
             const createReservation = new Create({
                 line_uid:line_uid,
                 name:name,

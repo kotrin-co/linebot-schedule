@@ -9,6 +9,6 @@ router
 
 router
     .route('/:id')
-    .put(controller.putTodo);
+    .post(controller.putTodo);
 
 module.exports = router;

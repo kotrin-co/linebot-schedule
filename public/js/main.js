@@ -233,7 +233,6 @@ editButton.addEventListener('click',()=>{
     emSelector.disabled = false;
     submit_form.style.display = 'block';
     editButton.style.display = 'none';
-    registration_form.setAttribute("method","put");
     const id = parseInt(revId.textContent,10);
     console.log('id:',id);
     registration_form.setAttribute("action",`/api/todos/${id}`);

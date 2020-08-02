@@ -83,6 +83,7 @@ const js_confirm = (num) => {
     dialog.style.display = 'block';
     submit_form.style.display = 'none';
     editButton.style.display = 'block';
+    deleteButton.style.display='block';
     const target = reservations.find(({id})=> id === num);
     const year = new Date(target.starttime - oneHour*9).getFullYear();
     const month = new Date(target.starttime - oneHour*9).getMonth()+1;
@@ -233,7 +234,9 @@ editButton.addEventListener('click',()=>{
     ehSelector.disabled = false;
     emSelector.disabled = false;
     submit_form.style.display = 'block';
+    // submit_form.value = '編集を送信する'
     editButton.style.display = 'none';
+    deleteButton.style.display='none';
     const id = parseInt(revId.textContent,10);
     console.log('id:',id);
     registration_form.setAttribute("action",`/api/todos/${id}`);
@@ -244,4 +247,8 @@ deleteButton.addEventListener('click',()=>{
     const id = parseInt(revId.textContent,10);
     console.log('id:',id);
     registration_form.setAttribute("action",`/api/todos/remove/${id}`);
+    // submit_form.value = '削除を送信する'
+    submit_form.style.display = 'block';
+    editButton.style.display = 'none';
+    deleteButton.style.display='none';
 })

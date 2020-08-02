@@ -210,13 +210,13 @@ wButton.addEventListener('click',(event)=>{
     displayCalendar(reservations);
 })
 
-btn_cancel.addEventListener('click',()=>{
-    dialog.style.display = 'none';
-});
+// btn_cancel.addEventListener('click',()=>{
+//     dialog.style.display = 'none';
+// });
 
-btn_ok.addEventListener('click',()=>{
-    dialog.style.display = 'none';
-});
+// btn_ok.addEventListener('click',()=>{
+//     dialog.style.display = 'none';
+// });
 
 registButton.addEventListener('click',()=>{
     registration.style.display='block';

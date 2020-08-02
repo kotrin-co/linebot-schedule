@@ -77,7 +77,7 @@ module.exports = {
         });
     },
 
-    create:({line_uid,year,name,date_m,date_d,starttime_h,starttime_m,menu})=>{
+    create:({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})=>{
         return new Promise((resolve,reject)=>{
             // if(!menu || !date || !starttime_h || !starttime_m){
             //     throw new Error('必須項目が未入力です。');
@@ -109,7 +109,7 @@ module.exports = {
         })
     },
 
-    update:({id,year,name,date_m,date_d,starttime_h,starttime_m,menu})=>{
+    update:({id,line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})=>{
         return new Promise((resolve,reject)=>{
             const createReservation = new Create({
                 line_uid:line_uid,

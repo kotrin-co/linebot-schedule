@@ -201,6 +201,7 @@ wButton.addEventListener('click',(event)=>{
 
 registButton.addEventListener('click',()=>{
     dialog.style.display='block';
+    editButton.style.display ='none';
 });
 
 cancel_form.addEventListener('click',()=>{

@@ -200,7 +200,7 @@ wButton.addEventListener('click',(event)=>{
 // });
 
 registButton.addEventListener('click',()=>{
-    registration.style.display='block';
+    dialog.style.display='block';
 });
 
 cancel_form.addEventListener('click',()=>{

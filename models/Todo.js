@@ -124,10 +124,11 @@ module.exports = {
             console.log('createReservation:',createReservation);
 
             const update_query = {
-                text:`UPDATE schedules SET name=$1 WHERE id=${id};`,
-                values:[`${createReservation[1]}`]
+                text:`UPDATE schedules SET name=${createReservation[1]} WHERE id=${id};`
                 // text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) = (${createReservation.line_uid}, ${createReservation.name}, ${createReservation.scheduledate}, ${createReservation.starttime}, ${createReservation.endtime}, ${createReservation.menu}) WHERE id=${id};`
             }
+
+            console.log('query_text:',update_query);
             // const update_query = {
             //     text:`UPDATE schedules SET (line_uid, name, scheduledate, starttime, endtime, menu) = VALUES($1,$2,$3,$4,$5,$6) WHERE id = ${id};`,
             //     values:createReservation

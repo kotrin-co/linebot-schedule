@@ -69,7 +69,8 @@ module.exports = {
                                 object.starttime = parseInt(object.starttime);
                                 object.endtime = parseInt(object.endtime);
                             });
-                            resolve(adminData.slice()); 
+                            console.log('adminData:',adminData);
+                            resolve(Object.assign({},adminData)); 
                         })
                         .catch(e=>console.log(e.stack));
                 })

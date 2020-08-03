@@ -47,7 +47,7 @@ const createTable = () => {
                     td.textContent = users[i-1].timestamp;
                 }else if(j===7){
                     const button = document.createElement('button');
-                    button.value = '編集';
+                    button.textContent = '編集';
                     button.setAttribute('id',`edit-${users[i-1].id}`);
                     td.appendChild(button);
                 }else{

@@ -23,6 +23,7 @@ const emSelector = document.getElementById('endtime_m');
 const deleteButton = document.getElementById('button-delete');
 
 let reservations = [];
+let users = [];
 
 const API_URL = 'https://linebot-schedule.herokuapp.com/api/todos';
 
@@ -216,6 +217,7 @@ registButton.addEventListener('click',()=>{
     dialog.style.display='block';
     editButton.style.display ='none';
     deleteButton.style.display='none';
+    submit_form.style.display = 'block';
     nameElement.disabled = false;
     yearSelector.disabled = false;
     monthSelector.disabled = false;

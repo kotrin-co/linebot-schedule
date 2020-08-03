@@ -34,6 +34,7 @@ const createTable = () => {
         for(let j=0;j<7;j++){
             if(i===0){
                 const th = document.createElement('th');
+                th.setAttribute('class','fixed0');
                 th.textContent = header[j];
                 tr.appendChild(th);
             }else{

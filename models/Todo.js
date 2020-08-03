@@ -69,7 +69,7 @@ module.exports = {
                                 object.starttime = parseInt(object.starttime);
                                 object.endtime = parseInt(object.endtime);
                             });
-                            resolve(adminData.reservations.slice()); 
+                            resolve(adminData.slice()); 
                         })
                         .catch(e=>console.log(e.stack));
                 })

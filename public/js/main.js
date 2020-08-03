@@ -44,14 +44,14 @@ window.addEventListener('load',(event)=>{
 
 const fetchData = async () =>{
     try{
-        console.log('その3');
         const response = await fetch(API_URL);
-        console.log('その4');
         console.log('response.ok:',response.ok);
         const data = await response.json();
-        console.log('その5');
-        reservations = data;
+        console.log('data:',data);
+        reservations = data.reservations;
+        users = data.users;
         console.log('reservationsダオ',reservations);
+        console.log('usersダオ',users);
         displayCalendar(reservations);
     }catch(error){
         alert(`読み込み失敗やで...${error.message}`);

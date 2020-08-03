@@ -8,10 +8,22 @@
 
   <% include ../partials/nav.ejs %>
 
-<h1>ユーザー管理画面</h1>
-    <% usersData.forEach((item)=>{ %>
-        <li><%= item.display_name %></li>
-    <% }); %>
+<h1>ユーザー管理ページ</h1>
 
+<table class="users_table" id="users_table">
+  <!-- <thead>
+    <tr>
+      <th class="table_header fixed0">ID</th>
+      <th class="table_header fixed0">名前</th>
+      <th class="table_header fixed0">登録日</th>
+      <th class="table_header fixed0">次回予約</th>
+      <th class="table_header fixed0">Cut</th>
+      <th class="table_header fixed0">C&S</th>
+      <th class="table_header fixed0">Color</th>
+    </tr>
+  </thead> -->
+</table>
+
+<script src='js/main2.js'></script>
 </body>
 </html>

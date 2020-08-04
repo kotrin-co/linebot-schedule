@@ -224,3 +224,7 @@ th{
   background:#ff0;
   font-size:x-large;
 }
+
+.dialog_users{
+  background:yellow;
+}

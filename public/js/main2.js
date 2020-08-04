@@ -1,3 +1,5 @@
+import { urlencoded } from "express";
+
 let reservations = [];
 let users = [];
 const header = ['ID','名前','登録日時','次回予約','Cut','C&S','Color','編集'];
@@ -46,9 +48,11 @@ const createTable = () => {
                 }else if(j===2){
                     td.textContent = users[i-1].timestamp;
                 }else if(j===7){
-                    const button = document.createElement('button');
-                    button.textContent = '編集';
+                    const button = document.createElement('input');
+                    button.type = 'button';
+                    button.value = '編集';
                     button.setAttribute('id',`edit-${users[i-1].id}`);
+                    button.onclick = displayDialog(users[i-1].id);
                     td.appendChild(button);
                 }else{
                     td.textContent = '工事中';
@@ -57,6 +61,17 @@ const createTable = () => {
             }
         }
     }
+}
+
+const displayDialog = (id) => {
+    const div = document.createElement('div');
+    div.setAttribute('class','dialog_users');
+    const ul = document.createElement('ul');
+    for(let i=0;i<3;i++){
+        const li = users[i].display_name;
+        ul.appendChild(li);
+    }
+    div.appendChild(ul);
 }
 
 // const rButton = document.getElementById('rButton');

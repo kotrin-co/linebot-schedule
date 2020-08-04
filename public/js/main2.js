@@ -1,5 +1,3 @@
-import { urlencoded } from "express";
-
 let reservations = [];
 let users = [];
 const header = ['ID','名前','登録日時','次回予約','Cut','C&S','Color','編集'];

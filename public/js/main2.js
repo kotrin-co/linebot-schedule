@@ -49,8 +49,8 @@ const createTable = () => {
                     const button = document.createElement('button');
                     button.textContent = '編集';
                     button.setAttribute('id',`edit-${users[i-1].id}`);
-                    button.onclick = displayDialog(users[i-1].id);
-                    // button.addEventListener('click',displayDialog(users[i-1].id));
+                    // button.onclick = displayDialog(users[i-1].id);
+                    button.addEventListener('click',displayDialog(users[i-1].id));
                     td.appendChild(button);
                 }else{
                     td.textContent = '工事中';
@@ -62,7 +62,7 @@ const createTable = () => {
 }
 
 const displayDialog = (id) => {
-    console.log('click');
+    console.log(`clicked ${id}!!`);
     // const div = document.createElement('div');
     // div.setAttribute('class','dialog_users');
     // const ul = document.createElement('ul');

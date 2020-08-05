@@ -46,11 +46,13 @@ const createTable = () => {
                 }else if(j===2){
                     td.textContent = users[i-1].timestamp;
                 }else if(j===7){
-                    const button = document.createElement('button');
-                    button.textContent = '編集';
-                    button.setAttribute('id',`edit-${users[i-1].id}`);
-                    button.addEventListener('click',displayDialog(users[i-1].id));
-                    td.appendChild(button);
+                    td.innerHTML = '編集';
+                    td.onclick = displayDialog(users[i-1].id);
+                    // const button = document.createElement('button');
+                    // button.textContent = '編集';
+                    // button.setAttribute('id',`edit-${users[i-1].id}`);
+                    // button.addEventListener('click',displayDialog(users[i-1].id));
+                    // td.appendChild(button);
                 }else{
                     td.textContent = '工事中';
                 }

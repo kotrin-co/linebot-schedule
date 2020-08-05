@@ -46,13 +46,11 @@ const createTable = () => {
                 }else if(j===2){
                     td.textContent = users[i-1].timestamp;
                 }else if(j===7){
-                    td.innerHTML = '編集';
-                    td.onclick = displayDialog(users[i-1].id);
-                    // const button = document.createElement('button');
-                    // button.textContent = '編集';
-                    // button.setAttribute('id',`edit-${users[i-1].id}`);
-                    // button.addEventListener('click',displayDialog(users[i-1].id));
-                    // td.appendChild(button);
+                    const button = document.createElement('button');
+                    button.textContent = '編集';
+                    button.setAttribute('id',`edit-${users[i-1].id}`);
+                    button.addEventListener('click',displayDialog(users[i-1].id));
+                    td.appendChild(button);
                 }else{
                     td.textContent = '工事中';
                 }
@@ -63,14 +61,15 @@ const createTable = () => {
 }
 
 const displayDialog = (id) => {
-    const div = document.createElement('div');
-    div.setAttribute('class','dialog_users');
-    const ul = document.createElement('ul');
-    for(let i=0;i<3;i++){
-        const li = users[i].display_name;
-        ul.appendChild(li);
-    }
-    div.appendChild(ul);
+    console.log('click');
+    // const div = document.createElement('div');
+    // div.setAttribute('class','dialog_users');
+    // const ul = document.createElement('ul');
+    // for(let i=0;i<3;i++){
+    //     const li = users[i].display_name;
+    //     ul.appendChild(li);
+    // }
+    // div.appendChild(ul);
 }
 
 // const rButton = document.getElementById('rButton');

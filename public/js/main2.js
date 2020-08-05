@@ -50,7 +50,7 @@ const createTable = () => {
                     // button.type = 'button';
                     button.textContent = '編集';
                     button.setAttribute('id',`edit-${users[i-1].id}`);
-                    // button.onclick = displayDialog(users[i-1].id);
+                    button.onclick = displayDialog(users[i-1].id);
                     td.appendChild(button);
                 }else{
                     td.textContent = '工事中';
@@ -61,16 +61,16 @@ const createTable = () => {
     }
 }
 
-// const displayDialog = (id) => {
-//     const div = document.createElement('div');
-//     div.setAttribute('class','dialog_users');
-//     const ul = document.createElement('ul');
-//     for(let i=0;i<3;i++){
-//         const li = users[i].display_name;
-//         ul.appendChild(li);
-//     }
-//     div.appendChild(ul);
-// }
+const displayDialog = (id) => {
+    const div = document.createElement('div');
+    div.setAttribute('class','dialog_users');
+    const ul = document.createElement('ul');
+    for(let i=0;i<3;i++){
+        const li = users[i].display_name;
+        ul.appendChild(li);
+    }
+    div.appendChild(ul);
+}
 
 // const rButton = document.getElementById('rButton');
 // const pButton = document.getElementById('pButton');

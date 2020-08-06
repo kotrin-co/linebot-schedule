@@ -65,10 +65,12 @@ const createTable = () => {
 
 const displayDialog = (id) => {
     console.log(`clicked ${id}!!`);
+    console.log('users:',users);
     const div = document.createElement('div');
     div.setAttribute('class','dialog_users');
     const ul = document.createElement('ul');
     for(let i=0;i<3;i++){
+        console.log('users:',users[i].display_name);
         const li = users[i].display_name;
         ul.appendChild(li);
     }

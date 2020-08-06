@@ -71,13 +71,29 @@ const displayDialog = (u_id) => {
     div.setAttribute('class','dialog_users');
 
     const idElement = document.createElement('p');
-    idElement.textContent = targetUser.id;
+    idElement.innerHTML = `ID:${targetUser.id}`;
     div.appendChild(idElement);
 
     const nameElement = document.createElement('input');
-    nameElement.innerHTML = targetUser.display_name;
-    nameElement.disable = true;
+    nameElement.value = targetUser.display_name;
+    nameElement.disabled = true;
     div.appendChild(nameElement);
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'キャンセル';
+    cancelButton.addEventListener('click',()=>{
+        console.log('キャンセル　クリック');
+    });
+    div.appendChild(cancelButton);
+
+    const editButton = document.createElement('button');
+    editButton.textContent = '編集';
+    editButton.addEventListener('click',()=>{
+        console.log('編集　クリック');
+        nameElement.disabled = false;
+    });
+    div.appendChild(editButton);
+
     // const ul = document.createElement('ul');
     // for(let i=0;i<3;i++){
     //     console.log('users:',users[i].display_name);

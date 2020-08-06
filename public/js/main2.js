@@ -90,6 +90,21 @@ const displayDialog = (u_id) => {
     pCut.appendChild(cutInput);
     div.appendChild(pCut);
 
+    const pCutAndShampoo = document.createElement('p');
+    pCutAndShampoo.textContent = 'カット＆シャンプー時間(分)：';
+    const csInput = document.createElement('input');
+    csInput.value = 20;
+    csInput.disabled = true;
+    pCutAndShampoo.appendChild(csInput);
+    div.appendChild(pCutAndShampoo);
+
+    const pColor = document.createElement('p');
+    pColor.textContent = 'カラーリング時間(分)：';
+    const colorInput = document.createElement('input');
+    colorInput.value = 30;
+    colorInput.disabled = true;
+    pColor.appendChild(colorInput);
+    div.appendChild(pColor);
 
     const divButton = document.createElement('div');
 

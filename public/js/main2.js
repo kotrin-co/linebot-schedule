@@ -49,7 +49,10 @@ const createTable = () => {
                     const button = document.createElement('button');
                     button.textContent = '編集';
                     button.setAttribute('id',`edit-${users[i-1].id}`);
-                    button.setAttribute('onclick',displayDialog(users[i-1].id));
+                    button.addEventListener('click',()=>{
+                        console.log('クリックイベント追加');
+                        displayDialog(users[i-1].id);
+                    })
                     td.appendChild(button);
                 }else{
                     td.textContent = '工事中';

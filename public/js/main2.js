@@ -71,7 +71,8 @@ const displayDialog = (id) => {
     const ul = document.createElement('ul');
     for(let i=0;i<3;i++){
         console.log('users:',users[i].display_name);
-        const li = users[i].display_name;
+        const li = document.createElement('li');
+        li.textContent = users[i].display_name;
         ul.appendChild(li);
     }
     div.appendChild(ul);

@@ -82,13 +82,13 @@ const displayDialog = (u_id) => {
     pName.appendChild(nameElement);
     div.appendChild(pName);
 
-    const pName = document.createElement('p');
-    pName.textContent = 'カット時間(分)：';
-    const nameElement = document.createElement('input');
-    nameElement.value = 15;
-    nameElement.disabled = true;
-    pName.appendChild(nameElement);
-    div.appendChild(pName);
+    const pCut = document.createElement('p');
+    pCut.textContent = 'カット時間(分)：';
+    const cutInput = document.createElement('input');
+    cutInput.value = 15;
+    cutInput.disabled = true;
+    pCut.appendChild(cutInput);
+    div.appendChild(pCut);
 
 
     const divButton = document.createElement('div');

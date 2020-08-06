@@ -242,3 +242,11 @@ th{
   background:#ff0;
   font-size:x-large;
 }
+
+.timeInput{
+  width:30px;
+}
+
+.dialogButton{
+  margin-left:15px;
+}

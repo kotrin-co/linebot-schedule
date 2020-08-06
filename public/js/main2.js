@@ -70,6 +70,10 @@ const displayDialog = (u_id) => {
     const div = document.createElement('div');
     div.setAttribute('class','dialog_users');
 
+    const titleElement = document.createElement('h2');
+    titleElement.innerHTML = 'ユーザーデータ';
+    div.appendChild(titleElement);
+    
     const idElement = document.createElement('p');
     idElement.innerHTML = `ID:${targetUser.id}`;
     div.appendChild(idElement);
@@ -85,6 +89,7 @@ const displayDialog = (u_id) => {
     const pCut = document.createElement('p');
     pCut.textContent = 'カット時間(分)：';
     const cutInput = document.createElement('input');
+    cutInput.setAttribute('class','timeInput');
     cutInput.value = 15;
     cutInput.disabled = true;
     pCut.appendChild(cutInput);
@@ -93,14 +98,16 @@ const displayDialog = (u_id) => {
     const pCutAndShampoo = document.createElement('p');
     pCutAndShampoo.textContent = 'カット＆シャンプー時間(分)：';
     const csInput = document.createElement('input');
+    csInput.setAttribute('class','timeInput');
     csInput.value = 20;
     csInput.disabled = true;
     pCutAndShampoo.appendChild(csInput);
     div.appendChild(pCutAndShampoo);
-
+    colorInput.setAttribute('class','timeInput');
     const pColor = document.createElement('p');
     pColor.textContent = 'カラーリング時間(分)：';
     const colorInput = document.createElement('input');
+    
     colorInput.value = 30;
     colorInput.disabled = true;
     pColor.appendChild(colorInput);
@@ -109,6 +116,7 @@ const displayDialog = (u_id) => {
     const divButton = document.createElement('div');
 
     const cancelButton = document.createElement('button');
+    cancelButton.setAttribute('class','dialogButton');
     cancelButton.textContent = 'キャンセル';
     cancelButton.addEventListener('click',()=>{
         div.style.display = 'none';
@@ -116,6 +124,7 @@ const displayDialog = (u_id) => {
     divButton.appendChild(cancelButton);
 
     const editButton = document.createElement('button');
+    editButton.setAttribute('class','dialogButton');
     editButton.textContent = '編集';
     editButton.addEventListener('click',()=>{
         nameElement.disabled = false;

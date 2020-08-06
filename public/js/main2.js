@@ -63,19 +63,29 @@ const createTable = () => {
     }
 }
 
-const displayDialog = (id) => {
-    console.log(`clicked ${id}!!`);
-    console.log('users:',users);
+const displayDialog = (u_id) => {
+    const targetUser = users.find(({id})=> id===u_id)
+    console.log(`clicked ${u_id}!!`);
+    console.log('targetuser:',targetUser);
     const div = document.createElement('div');
     div.setAttribute('class','dialog_users');
-    const ul = document.createElement('ul');
-    for(let i=0;i<3;i++){
-        console.log('users:',users[i].display_name);
-        const li = document.createElement('li');
-        li.textContent = users[i].display_name;
-        ul.appendChild(li);
-    }
-    div.appendChild(ul);
+
+    const idElement = document.createElement('p');
+    idElement.textContent = targetUser.id;
+    div.appendChild(idElement);
+
+    const nameElement = document.createElement('input');
+    nameElement.innerHTML = targetUser.display_name;
+    nameElement.disable = true;
+    div.appendChild(nameElement);
+    // const ul = document.createElement('ul');
+    // for(let i=0;i<3;i++){
+    //     console.log('users:',users[i].display_name);
+    //     const li = document.createElement('li');
+    //     li.textContent = users[i].display_name;
+    //     ul.appendChild(li);
+    // }
+    // div.appendChild(ul);
     document.body.appendChild(div);
 }
 

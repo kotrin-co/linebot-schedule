@@ -227,8 +227,8 @@ th{
 
 .dialog_users{
   position:absolute;
-  width:400px;
-  height:600px;
+  width:auto;
+  height:auto;
   left:50%;
   top:50%;
   margin-left:-200px;

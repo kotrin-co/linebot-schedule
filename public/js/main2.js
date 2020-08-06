@@ -73,7 +73,7 @@ const displayDialog = (u_id) => {
     const titleElement = document.createElement('h2');
     titleElement.innerHTML = 'ユーザーデータ';
     div.appendChild(titleElement);
-    
+
     const idElement = document.createElement('p');
     idElement.innerHTML = `ID:${targetUser.id}`;
     div.appendChild(idElement);
@@ -103,11 +103,12 @@ const displayDialog = (u_id) => {
     csInput.disabled = true;
     pCutAndShampoo.appendChild(csInput);
     div.appendChild(pCutAndShampoo);
-    colorInput.setAttribute('class','timeInput');
+
+    
     const pColor = document.createElement('p');
     pColor.textContent = 'カラーリング時間(分)：';
     const colorInput = document.createElement('input');
-    
+    colorInput.setAttribute('class','timeInput');
     colorInput.value = 30;
     colorInput.disabled = true;
     pColor.appendChild(colorInput);
@@ -128,6 +129,9 @@ const displayDialog = (u_id) => {
     editButton.textContent = '編集';
     editButton.addEventListener('click',()=>{
         nameElement.disabled = false;
+        cutInput.disabled = false;
+        csInput.disabled = false;
+        colorInput.disabled = false;
     });
     divButton.appendChild(editButton);
 

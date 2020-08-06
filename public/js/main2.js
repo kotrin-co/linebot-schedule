@@ -82,20 +82,27 @@ const displayDialog = (u_id) => {
     pName.appendChild(nameElement);
     div.appendChild(pName);
 
+    const pName = document.createElement('p');
+    pName.textContent = 'カット時間(分)：';
+    const nameElement = document.createElement('input');
+    nameElement.value = 15;
+    nameElement.disabled = true;
+    pName.appendChild(nameElement);
+    div.appendChild(pName);
+
 
     const divButton = document.createElement('div');
 
     const cancelButton = document.createElement('button');
     cancelButton.textContent = 'キャンセル';
     cancelButton.addEventListener('click',()=>{
-        console.log('キャンセル　クリック');
+        div.style.display = 'none';
     });
     divButton.appendChild(cancelButton);
 
     const editButton = document.createElement('button');
     editButton.textContent = '編集';
     editButton.addEventListener('click',()=>{
-        console.log('編集　クリック');
         nameElement.disabled = false;
     });
     divButton.appendChild(editButton);

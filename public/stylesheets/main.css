@@ -176,8 +176,10 @@ th{
 
 #registration,#editor,#dialog{
   position:absolute;
-  width:400px;
-  height:600px;
+  width:auto;
+  height:auto;
+  /* width:400px;
+  height:600px; */
   left:50%;
   top:50%;
   margin-left:-200px;

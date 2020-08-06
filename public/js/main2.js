@@ -76,7 +76,7 @@ const displayDialog = (id) => {
         ul.appendChild(li);
     }
     div.appendChild(ul);
-    // document.body.appendChild(div);
+    document.body.appendChild(div);
 }
 
 // const rButton = document.getElementById('rButton');

@@ -65,14 +65,15 @@ const createTable = () => {
 
 const displayDialog = (id) => {
     console.log(`clicked ${id}!!`);
-    // const div = document.createElement('div');
-    // div.setAttribute('class','dialog_users');
-    // const ul = document.createElement('ul');
-    // for(let i=0;i<3;i++){
-    //     const li = users[i].display_name;
-    //     ul.appendChild(li);
-    // }
-    // div.appendChild(ul);
+    const div = document.createElement('div');
+    div.setAttribute('class','dialog_users');
+    const ul = document.createElement('ul');
+    for(let i=0;i<3;i++){
+        const li = users[i].display_name;
+        ul.appendChild(li);
+    }
+    div.appendChild(ul);
+    document.body.appendChild(div);
 }
 
 // const rButton = document.getElementById('rButton');

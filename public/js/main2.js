@@ -74,17 +74,23 @@ const displayDialog = (u_id) => {
     idElement.innerHTML = `ID:${targetUser.id}`;
     div.appendChild(idElement);
 
+    const pName = document.createElement('p');
+    pName.textContent = '名前：';
     const nameElement = document.createElement('input');
     nameElement.value = targetUser.display_name;
     nameElement.disabled = true;
-    div.appendChild(nameElement);
+    pName.appendChild(nameElement);
+    div.appendChild(pName);
+
+
+    const divButton = document.createElement('div');
 
     const cancelButton = document.createElement('button');
     cancelButton.textContent = 'キャンセル';
     cancelButton.addEventListener('click',()=>{
         console.log('キャンセル　クリック');
     });
-    div.appendChild(cancelButton);
+    divButton.appendChild(cancelButton);
 
     const editButton = document.createElement('button');
     editButton.textContent = '編集';
@@ -92,7 +98,9 @@ const displayDialog = (u_id) => {
         console.log('編集　クリック');
         nameElement.disabled = false;
     });
-    div.appendChild(editButton);
+    divButton.appendChild(editButton);
+
+    div.appendChild(divButton);
 
     // const ul = document.createElement('ul');
     // for(let i=0;i<3;i++){

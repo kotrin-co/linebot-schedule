@@ -80,6 +80,7 @@ const displayDialog = (u_id) => {
 
     const formElement = document.createElement('form');
     formElement.setAttribute('id','userForm');
+    formElement.setAttribute('method','post');
 
     const pName = document.createElement('p');
     pName.textContent = '名前：';
@@ -134,13 +135,15 @@ const displayDialog = (u_id) => {
 
     const editButton = document.createElement('input');
     editButton.setAttribute('class','dialogButton');
-    editButton.textContent = '編集';
+    editButton.value = '編集';
+    editButton.type = 'button';
     editButton.addEventListener('click',()=>{
         nameElement.disabled = false;
         cutInput.disabled = false;
         csInput.disabled = false;
         colorInput.disabled = false;
-        editButton.textContent = '送信';
+        editButton.value = '送信';
+        editButton.type = 'submit';
     });
     divButton.appendChild(editButton);
 

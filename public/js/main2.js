@@ -78,13 +78,17 @@ const displayDialog = (u_id) => {
     idElement.innerHTML = `ID:${targetUser.id}`;
     div.appendChild(idElement);
 
+    const formElement = document.createElement('form');
+    formElement.setAttribute('id','userForm');
+
     const pName = document.createElement('p');
     pName.textContent = '名前：';
     const nameElement = document.createElement('input');
     nameElement.value = targetUser.display_name;
     nameElement.disabled = true;
     pName.appendChild(nameElement);
-    div.appendChild(pName);
+    formElement.appendChild(pName);
+    // div.appendChild(pName);
 
     const pCut = document.createElement('p');
     pCut.textContent = 'カット時間(分)：';
@@ -93,7 +97,8 @@ const displayDialog = (u_id) => {
     cutInput.value = 15;
     cutInput.disabled = true;
     pCut.appendChild(cutInput);
-    div.appendChild(pCut);
+    formElement.appendChild(pCut);
+    // div.appendChild(pCut);
 
     const pCutAndShampoo = document.createElement('p');
     pCutAndShampoo.textContent = 'カット＆シャンプー時間(分)：';
@@ -102,8 +107,8 @@ const displayDialog = (u_id) => {
     csInput.value = 20;
     csInput.disabled = true;
     pCutAndShampoo.appendChild(csInput);
-    div.appendChild(pCutAndShampoo);
-
+    formElement.appendChild(pCutAndShampoo);
+    // div.appendChild(pCutAndShampoo);
     
     const pColor = document.createElement('p');
     pColor.textContent = 'カラーリング時間(分)：';
@@ -112,7 +117,10 @@ const displayDialog = (u_id) => {
     colorInput.value = 30;
     colorInput.disabled = true;
     pColor.appendChild(colorInput);
-    div.appendChild(pColor);
+    formElement.appendChild(pColor);
+    // div.appendChild(pColor);
+
+    div.appendChild(formElement);
 
     const divButton = document.createElement('div');
 
@@ -124,7 +132,7 @@ const displayDialog = (u_id) => {
     });
     divButton.appendChild(cancelButton);
 
-    const editButton = document.createElement('button');
+    const editButton = document.createElement('input');
     editButton.setAttribute('class','dialogButton');
     editButton.textContent = '編集';
     editButton.addEventListener('click',()=>{
@@ -132,6 +140,7 @@ const displayDialog = (u_id) => {
         cutInput.disabled = false;
         csInput.disabled = false;
         colorInput.disabled = false;
+        editButton.textContent = '送信';
     });
     divButton.appendChild(editButton);
 

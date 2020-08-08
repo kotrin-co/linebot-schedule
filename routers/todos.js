@@ -19,4 +19,8 @@ router
     .route('/users/:id')
     .post(controller.postUser);
 
+router
+    .route('/users/remove/:id')
+    .post(controller.deleteUser);
+
 module.exports = router;

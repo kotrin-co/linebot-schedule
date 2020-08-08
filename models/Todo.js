@@ -205,6 +205,20 @@ module.exports = {
                     resolve('ユーザーテーブル更新成功！!!');
                 })
                 .catch(e=>console.log(e.stack));
-        })
+        });
+    },
+
+    removeUser:({parsedId})=>{
+        return new Promise((resolve,reject)=>{
+            const remove_query = {
+                text:`DELETE FROM users WHERE id=${parsedId};`
+            }
+            connection.query(remove_query)
+                .then(res=>{
+                    console.log('ユーザー削除成功!');
+                    resolve('ユーザー削除成功!!!');
+                })
+                .catch(e=>console.log(e.stack));
+        });
     }
 };

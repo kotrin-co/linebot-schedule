@@ -72,5 +72,20 @@ module.exports = {
         }catch(error){
             res.status(400).json({message:error.message});
         }
+    },
+
+    deleteUser: (req,res) => {
+        const id = req.params.id;
+        const parsedId = parseInt(id,10);
+        try{
+            Todo.removeUser({parsedId})
+                .then(message=>{
+                    console.log('message:',message);
+                    res.status(200).redirect('/users');
+                })
+                .catch(e=>console.log(e.stack));
+        }catch(error){
+            res.status(400).json({message:error.message});
+        }
     }
 }

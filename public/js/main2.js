@@ -176,6 +176,7 @@ const displayDialog = (u_id) => {
         formElement.setAttribute('action',`/api/todos/users/${targetUser.id}`);
         editButton.setAttribute('class','dialogButton');
         editButton.style.display = 'none';
+        deleteButton.style.display = 'none';
         divButton.appendChild(submitButton);
     });
     divButton.appendChild(editButton);
@@ -191,6 +192,7 @@ const displayDialog = (u_id) => {
         formElement.setAttribute('action',`/api/todos/users/remove/${targetUser.id}`);
         deleteButton.setAttribute('class','dialogButton');
         deleteButton.style.display = 'none';
+        editButton.style.display = 'none';
         divButton.appendChild(submitButton);
     });
     divButton.appendChild(deleteButton);

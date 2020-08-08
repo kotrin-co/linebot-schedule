@@ -59,7 +59,11 @@ const createTable = () => {
                     }else{
                         td.textContent = '予約なし';
                     }                    
-                }else if(j===6){
+                }else if(j===4){
+                    td.textContent = users[i-1].cuttime;
+                }else if(j===5){
+                    td.textContent = users[i-1].colortime;
+                }else{
                     const button = document.createElement('button');
                     button.textContent = '編集';
                     button.setAttribute('id',`edit-${users[i-1].id}`);
@@ -68,8 +72,6 @@ const createTable = () => {
                         displayDialog(users[i-1].id);
                     })
                     td.appendChild(button);
-                }else{
-                    td.textContent = '工事中';
                 }
                 tr.appendChild(td);
             }
@@ -132,21 +134,19 @@ const displayDialog = (u_id) => {
     pCut.textContent = 'カット時間(分)：';
     const cutInput = document.createElement('input');
     cutInput.setAttribute('class','timeInput');
-    cutInput.value = 15;
+    cutInput.value = targetUser.cuttime;
     cutInput.disabled = true;
     pCut.appendChild(cutInput);
     formElement.appendChild(pCut);
-    // div.appendChild(pCut);
 
     const pCutAndShampoo = document.createElement('p');
     pCutAndShampoo.textContent = 'カット＆シャンプー時間(分)：';
     const csInput = document.createElement('input');
     csInput.setAttribute('class','timeInput');
-    csInput.value = 20;
+    csInput.value = targetUser.colortime;
     csInput.disabled = true;
     pCutAndShampoo.appendChild(csInput);
     formElement.appendChild(pCutAndShampoo);
-    // div.appendChild(pCutAndShampoo);
     
     const pColor = document.createElement('p');
     pColor.textContent = 'カラーリング時間(分)：';
@@ -156,7 +156,6 @@ const displayDialog = (u_id) => {
     colorInput.disabled = true;
     pColor.appendChild(colorInput);
     formElement.appendChild(pColor);
-    // div.appendChild(pColor);
 
     div.appendChild(formElement);
 

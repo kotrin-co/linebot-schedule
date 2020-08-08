@@ -199,7 +199,7 @@ module.exports = {
             const update_query = {
                 text:`UPDATE users SET (display_name,cuttime,colortime) = ('${name}',${cuttime},${colortime}) WHERE id=${parsedId};`
             }
-            connection(update_query)
+            connection.query(update_query)
                 .then(res=>{
                     console.log('ユーザーテーブル更新成功！');
                     resolve('ユーザーテーブル更新成功！!!');

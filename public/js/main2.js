@@ -50,9 +50,16 @@ const createTable = () => {
                     const targetReservations = reservations.filter(({line_uid})=>{
                         return line_uid===users[i-1].line_uid;
                     });
+                    console.log('targetReservations:',targetReservations);
                     const nextRev = findNextReservation(targetReservations);
+                    console.log('nexRev:',nextRev);
                     const length = nextRev.length;
-                    td.textContent = new Date(nextRev[length].starttime);
+                    if(length){
+                        td.textContent = new Date(nextRev[length-1].starttime);
+                    }else{
+                        td.textContent = '予約なし';
+                    }
+                    
                 }else if(j===7){
                     const button = document.createElement('button');
                     button.textContent = '編集';

@@ -644,7 +644,7 @@ const handlePostbackEvent = async (ev) => {
         console.log('now:',now);
         console.log('targetDate:',targetDate);
         // ここはもうちょっと厳密に比較する必要があり
-        if(targetDate>=now){
+        if(targetDate>now || (targetDate<now && (targetDate+9*60*60*1000)>now)){
           checkReservableTimes(ev);
           // checkReservableTimes(ev,TIMES_OF_MENU[reservation_order.menu]*1000);
         }else{

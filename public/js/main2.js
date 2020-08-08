@@ -180,9 +180,15 @@ const displayDialog = (u_id) => {
         nameElement.disabled = false;
         cutInput.disabled = false;
         colorInput.disabled = false;
-        editButton.value = '送信';
-        editButton.type = 'submit';
-        formElement.setAttribute('action',`/api/todos/users/${targetUser.id}`)
+        const submitButton = document.createElement('input');
+        submitButton.value = '送信';
+        submitButton.type = 'submit';
+        formElement.setAttribute('action',`/api/todos/users/${targetUser.id}`);
+        editButton.style.display = 'none';
+        divButton.appendChild(submitButton);
+        // editButton.value = '送信';
+        // editButton.type = 'submit';
+        // formElement.setAttribute('action',`/api/todos/users/${targetUser.id}`)
     });
     divButton.appendChild(editButton);
 

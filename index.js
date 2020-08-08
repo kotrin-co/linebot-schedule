@@ -6,9 +6,8 @@ const PORT = process.env.PORT || 5000
 const { Client } = require('pg');
 const router = require('./routers/index');
 
-// ここはAPIテスト
 const todosRouter = require('./routers/todos');
-// ここまでテスト
+
 
 const config = {
   channelAccessToken: process.env.ACCESS_TOKEN,
@@ -60,9 +59,7 @@ app
   .post('/hook',line.middleware(config),(req,res)=> lineBot(req,res))
   .use(express.json())
   .use(express.urlencoded({extended:true}))
-  // ここはAPIテスト
   .use('/api/todos',todosRouter)
-  // ここまでテスト
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))

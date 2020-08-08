@@ -160,8 +160,6 @@ const displayDialog = (u_id) => {
     pColor.appendChild(colorInput);
     formElement.appendChild(pColor);
 
-    div.appendChild(formElement);
-
     const divButton = document.createElement('div');
 
     const cancelButton = document.createElement('button');
@@ -192,7 +190,7 @@ const displayDialog = (u_id) => {
     });
     divButton.appendChild(editButton);
 
-    div.appendChild(divButton);
+    formElement.appendChild(divButton);
 
     // const ul = document.createElement('ul');
     // for(let i=0;i<3;i++){
@@ -202,6 +200,7 @@ const displayDialog = (u_id) => {
     //     ul.appendChild(li);
     // }
     // div.appendChild(ul);
+    div.appendChild(formElement);
     document.body.appendChild(div);
 }
 

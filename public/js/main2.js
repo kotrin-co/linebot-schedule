@@ -179,7 +179,6 @@ const displayDialog = (u_id) => {
     editButton.addEventListener('click',()=>{
         nameElement.disabled = false;
         cutInput.disabled = false;
-        csInput.disabled = false;
         colorInput.disabled = false;
         editButton.value = '送信';
         editButton.type = 'submit';

@@ -44,7 +44,15 @@ const createTable = () => {
                 }else if(j===1){
                     td.textContent = users[i-1].display_name;
                 }else if(j===2){
-                    td.textContent = users[i-1].timestamp;
+                    td.textContent = users[i-1].timestamp.slice(0,10);
+                }else if(j===3){
+                    // const targetUser = users.find(({id})=> id===u_id);
+                    const targetReservations = reservations.filter(({line_uid})=>{
+                        return line_uid===users[i-1].line_uid;
+                    });
+                    const nextRev = findNextReservation(targetReservations);
+                    const length = nextRev.length;
+                    td.textContent = new Date(nextRev[length].starttime);
                 }else if(j===7){
                     const button = document.createElement('button');
                     button.textContent = '編集';
@@ -76,9 +84,6 @@ const displayDialog = (u_id) => {
     const targetReservation = reservations.filter(({line_uid})=>{
         return line_uid===targetUser.line_uid;
     });
-    console.log('targetReservation:',targetReservation);
-    console.log(`clicked ${u_id}!!`);
-    console.log('targetuser:',targetUser);
 
     const nextRev = findNextReservation(targetReservation);
     console.log('nextRev:',nextRev);

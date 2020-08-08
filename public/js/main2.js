@@ -155,6 +155,7 @@ const displayDialog = (u_id) => {
 
     const cancelButton = document.createElement('button');
     cancelButton.setAttribute('class','dialogButton');
+    cancelButton.setAttribute('type','button');
     cancelButton.textContent = 'キャンセル';
     cancelButton.addEventListener('click',()=>{
         div.style.display = 'none';

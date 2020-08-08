@@ -63,10 +63,26 @@ const createTable = () => {
     }
 }
 
+const findNextReservation = (target) => {
+    const nowTimestamp = new Date().getTime();
+    const nextReservation = target.filter(object=>{
+        return nowTimestamp < object.starttime - 9*3600000;
+    });
+    return nextReservation;
+};
+
 const displayDialog = (u_id) => {
-    const targetUser = users.find(({id})=> id===u_id)
+    const targetUser = users.find(({id})=> id===u_id);
+    const targetReservation = reservations.filter(({line_uid})=>{
+        return line_uid===targetUser.line_uid;
+    });
+    console.log('targetReservation:',targetReservation);
     console.log(`clicked ${u_id}!!`);
     console.log('targetuser:',targetUser);
+
+    const nextRev = findNextReservation(targetReservation);
+    console.log('nextRev:',nextRev);
+
     const div = document.createElement('div');
     div.setAttribute('class','dialog_users');
 

@@ -182,7 +182,7 @@ const displayDialog = (u_id) => {
         colorInput.disabled = false;
         editButton.value = '送信';
         editButton.type = 'submit';
-        formElement.setAttribute('action',`/api/todos/${targetUser.id}`)
+        formElement.setAttribute('action',`/api/todos/users/${targetUser.id}`)
     });
     divButton.appendChild(editButton);
 

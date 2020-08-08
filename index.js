@@ -724,8 +724,9 @@ const handlePostbackEvent = async (ev) => {
 const calcTreatmentTime = (id) => {
   return new Promise((resolve,reject)=>{
     const select_query = {
-      text:`SELECT * FROM users WHERE line_uid=${id};`
-    }
+      text:'SELECT * FROM users WHERE line_uid = $1;',
+      values:[`${id}`]
+    };
     connection.query(select_query)
       .then(res=>{
         if(res.rows.length){

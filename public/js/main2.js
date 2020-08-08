@@ -1,6 +1,6 @@
 let reservations = [];
 let users = [];
-const header = ['ID','名前','登録日時','次回予約','Cut','C&S','Color','編集'];
+const header = ['ID','名前','登録日時','次回予約','Cut','Color','編集'];
 
 const API_URL = 'https://linebot-schedule.herokuapp.com/api/todos';
 
@@ -31,7 +31,7 @@ const createTable = () => {
     for(let i=0;i<l;i++){
         const tr = table.insertRow(-1);
         // const tr = document.createElement('tr');
-        for(let j=0;j<8;j++){
+        for(let j=0;j<7;j++){
             if(i===0){
                 const th = document.createElement('th');
                 th.setAttribute('class','fixed0');
@@ -59,7 +59,7 @@ const createTable = () => {
                     }else{
                         td.textContent = '予約なし';
                     }                    
-                }else if(j===7){
+                }else if(j===6){
                     const button = document.createElement('button');
                     button.textContent = '編集';
                     button.setAttribute('id',`edit-${users[i-1].id}`);

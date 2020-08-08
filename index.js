@@ -758,6 +758,7 @@ const checkReservableTimes = (ev) => {
   const arrangedArray = [];
   const reservableArray = [];
   const treatTime = reservation_order.treatTime[reservation_order.menu];
+  console.log('treatTime:',treatTime);
   for(let i=0;i<12;i++){
     let baseTime = new Date(`${reservation_order.date} ${9+i}:00`);
     timeStamps.push(baseTime.getTime());

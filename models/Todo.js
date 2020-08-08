@@ -189,7 +189,7 @@ module.exports = {
 
     updateUser:({parsedId,name,cuttime,colortime})=>{
         return new Promise((resolve,reject)=>{
-            const newUser = User({
+            const newUser = new User({
                 name:name,
                 cuttime,cuttime,
                 colortime:colortime

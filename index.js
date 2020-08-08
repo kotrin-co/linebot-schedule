@@ -26,7 +26,7 @@ const connection = new Client({
 connection.connect();
 
 const create_utable = {
-  text:'CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL, line_uid VARCHAR(255) NOT NULL, display_name VARCHAR(255) NOT NULL, timestamp VARCHAR(255) NOT NULL);'
+  text:'CREATE TABLE IF NOT EXISTS users (id SERIAL NOT NULL, line_uid VARCHAR(255), display_name VARCHAR(255), timestamp VARCHAR(255), cuttime SMALLINT, colortime SMALLINT);'
 };
 connection.query(create_utable)
   .then(()=>{
@@ -105,8 +105,8 @@ const greeting_follow = async (ev) => {
         return;
       }else{
         const table_insert = {
-          text:'INSERT INTO users (line_uid,display_name,timestamp) VALUES($1,$2,$3)',
-          values:[ev.source.userId,pro.displayName,timeStamp]
+          text:'INSERT INTO users (line_uid,display_name,timestamp,cuttime,colortime) VALUES($1,$2,$3,$4,$5);',
+          values:[ev.source.userId,pro.displayName,timeStamp,15,30]
         };
         connection.query(table_insert)
           .then(()=>{

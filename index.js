@@ -42,6 +42,7 @@ connection.query(create_stable)
   })
   .catch(e=>console.error(e.stack));
 
+// このグローバル変数は廃止
 const reservation_order = {
   menu:null,
   date:null,
@@ -757,7 +758,6 @@ const resetReservationOrder = (rp,num) => {
       "text":"終了します。"
     });
   }
-  // console.log('reservation_order:',reservation_order);
 }
 
 const checkReservableTimes = (ev) => {
@@ -787,7 +787,7 @@ const checkReservableTimes = (ev) => {
 
         for(let i=0;i<11;i++){
           const filteredArray = reservedArray.filter(array=>{
-            if((array[0]-timeStamps[i]-treatTime>=0 && array[0]-timeStamps[i]-treatTime<=oneHour) || 
+            if((array[0]-timeStamps[i]-treatTime>=0 && array[0]-timeStamps[i]-treatTime<oneHour) || 
                 array[1]-timeStamps[i]>0 && array[1]-timeStamps[i]<oneHour){
               return true;
             }else{

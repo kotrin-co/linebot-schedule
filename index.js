@@ -46,12 +46,13 @@ const reservation_order = {
   menu:null,
   date:null,
   reservable:null,
-  reserved:null
+  reserved:null,
+  treatTime:null
 };
 
 
 const MENU = ['cut','cut&shampoo','color'];
-const TIMES_OF_MENU = [900,1200,1800];
+// const TIMES_OF_MENU = [900,1200,1800];
 
 app
   .use(express.static(path.join(__dirname, 'public')))
@@ -357,7 +358,7 @@ const handleMessageEvent = (ev) => {
                             "type": "button",
                             "action": {
                               "type": "postback",
-                              "label": "MENU A  ¥1500",
+                              "label": "カット",
                               "data": "cut"
                             },
                             "style": "primary",
@@ -367,7 +368,7 @@ const handleMessageEvent = (ev) => {
                             "type": "button",
                             "action": {
                               "type": "postback",
-                              "label": "MENU B  ¥2000",
+                              "label": "カット＆シャンプー",
                               "data": "cutandshampoo"
                             },
                             "style": "primary",
@@ -378,7 +379,7 @@ const handleMessageEvent = (ev) => {
                             "type": "button",
                             "action": {
                               "type": "postback",
-                              "label": "MENU C  ¥4000",
+                              "label": "カラーリング",
                               "data": "color"
                             },
                             "position": "relative",
@@ -438,7 +439,10 @@ const checkUserExistence = (ev) => {
 const pickupReservedOrder = (ev) => {
   return new Promise((resolve,reject)=>{
     const id = ev.source.userId;
+
+    // +32400000いらないかも starttimeから-32400000だから一緒か
     const now = ev.timestamp+32400000;
+
     const pickup_query = {
       text:'SELECT * FROM schedules WHERE line_uid = $1 ORDER BY starttime ASC;',
       values:[`${id}`]
@@ -475,9 +479,9 @@ const handlePostbackEvent = async (ev) => {
               "contents": [
                 {
                   "type": "text",
-                  "text": "ユーザーさん、次のご予約はMENU Aですね。ご希望の日にちを選択してください。",
-                  "wrap": true
-                  // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
+                  // "text": "ユーザーさん、次のご予約はMENU Aですね。ご希望の日にちを選択してください。",
+                  "wrap": true,
+                  "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
                 }
               ]
             },
@@ -530,9 +534,9 @@ const handlePostbackEvent = async (ev) => {
               "contents": [
                 {
                   "type": "text",
-                  "text": "ユーザーさん、次のご予約はMENU Bですね。ご希望の日にちを選択してください。",
-                  "wrap": true
-                  // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
+                  // "text": "ユーザーさん、次のご予約はMENU Bですね。ご希望の日にちを選択してください。",
+                  "wrap": true,
+                  "text":`${pro.displayName}さん、次のご予約はカット&シャンプーですね。ご希望の日にちを選択してください。`
                 }
               ]
             },
@@ -585,9 +589,9 @@ const handlePostbackEvent = async (ev) => {
               "contents": [
                 {
                   "type": "text",
-                  "text": "ユーザーさん、次のご予約はMENU Cですね。ご希望の日にちを選択してください。",
-                  "wrap": true
-                  // "text":`${pro.displayName}さん、次のご予約はカットですね。ご希望の日にちを選択してください。`
+                  // "text": "ユーザーさん、次のご予約はMENU Cですね。ご希望の日にちを選択してください。",
+                  "wrap": true,
+                  "text":`${pro.displayName}さん、次のご予約はカラーリングですね。ご希望の日にちを選択してください。`
                 }
               ]
             },
@@ -630,13 +634,18 @@ const handlePostbackEvent = async (ev) => {
     resetReservationOrder(rp,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
+    // 施術時間を計算する
+    calcTreatmentTime(id);
+
+    console.log('reservation_order.date:',reservation_order.date);
     const now = new Date().getTime();
     const targetDate = new Date(reservation_order.date).getTime();
     console.log('now:',now);
     console.log('targetDate:',targetDate);
     // ここはもうちょっと厳密に比較する必要があり
     if(targetDate>=now){
-      checkReservableTimes(ev,TIMES_OF_MENU[reservation_order.menu]*1000);
+      checkReservableTimes(ev);
+      // checkReservableTimes(ev,TIMES_OF_MENU[reservation_order.menu]*1000);
     }else{
       client.replyMessage(rp,{
         "type":"text",
@@ -653,7 +662,7 @@ const handlePostbackEvent = async (ev) => {
     console.log('result:',result);
     if(result[1] === 'yes'){
       const s_time = reservation_order.reservable[parseInt(result[2])][parseInt(result[3])];
-      const e_time = s_time + TIMES_OF_MENU[reservation_order.menu]*1000;
+      const e_time = s_time + reservation_order.treatTime[reservation_order.menu];
       console.log('s_time:',get_Date(s_time,1));
       console.log('e_time:',get_Date(e_time,1));
       const insert_query = {
@@ -708,11 +717,32 @@ const handlePostbackEvent = async (ev) => {
   }
 }
 
+const calcTreatmentTime = (id) => {
+  const select_query = {
+    text:`SELECT * FROM users WHERE line_uid=${id};`
+  }
+  connection.query(select_query)
+    .then(res=>{
+      if(res.rows.length){
+        const cuttime = res.rows[0].cuttime*60*1000;
+        const cstime = cuttime+10*60*1000;
+        const colortime = res.rows[0].colortime*60*1000;
+        console.log('treattime:',cuttime,colortime);
+        reservation_order.treatTime = [cuttime,cstime,colortime];
+      }else{
+        console.log('一致するLINE IDを持つユーザーが見つかりません。');
+        return;
+      }
+    })
+    .catch(e=>console.log(e.stack));
+}
+
 const resetReservationOrder = (rp,num) => {
   reservation_order.menu = null;
   reservation_order.date = null;
   reservation_order.reservable = null;
   reservation_order.reserved = null;
+  reservation_order.treatTime = null;
   if(num === 1){
     client.replyMessage(rp,{
       "type":"text",
@@ -722,11 +752,12 @@ const resetReservationOrder = (rp,num) => {
   // console.log('reservation_order:',reservation_order);
 }
 
-const checkReservableTimes = (ev,treatTime) => {
+const checkReservableTimes = (ev) => {
   const oneHour = 3600000;
   const timeStamps = [];
   const arrangedArray = [];
   const reservableArray = [];
+  const treatTime = reservation_order.treatTime[reservation_order.menu];
   for(let i=0;i<12;i++){
     let baseTime = new Date(`${reservation_order.date} ${9+i}:00`);
     timeStamps.push(baseTime.getTime());
@@ -743,9 +774,7 @@ const checkReservableTimes = (ev,treatTime) => {
         const reservedArray = res.rows.map(object=>{
           return [parseInt(object.starttime),parseInt(object.endtime)];
         });
-        reservedArray.forEach(array=>{
-          // console.log('予約日時：',`${new Date(array[0])} - ${new Date(array[1])}`);
-        });
+
         for(let i=0;i<11;i++){
           const filteredArray = reservedArray.filter(array=>{
             if((array[0]-timeStamps[i]-treatTime>=0 && array[0]-timeStamps[i]-treatTime<=oneHour) || 
@@ -757,7 +786,6 @@ const checkReservableTimes = (ev,treatTime) => {
           });
           arrangedArray.push(filteredArray);
         }
-        // console.log('arrangedArray:',arrangedArray);
 
         const offsetArray = arrangedArray.map((array,i)=>{
           return array.map(element=>{

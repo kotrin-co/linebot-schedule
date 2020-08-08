@@ -124,6 +124,7 @@ const displayDialog = (u_id) => {
     const pName = document.createElement('p');
     pName.textContent = '名前：';
     const nameElement = document.createElement('input');
+    nameElement.setAttribute('name','name');
     nameElement.value = targetUser.display_name;
     nameElement.disabled = true;
     pName.appendChild(nameElement);
@@ -134,25 +135,27 @@ const displayDialog = (u_id) => {
     pCut.textContent = 'カット時間(分)：';
     const cutInput = document.createElement('input');
     cutInput.setAttribute('class','timeInput');
+    cutInput.setAttribute('name','cuttime');
     cutInput.value = targetUser.cuttime;
     cutInput.disabled = true;
     pCut.appendChild(cutInput);
     formElement.appendChild(pCut);
 
-    const pCutAndShampoo = document.createElement('p');
-    pCutAndShampoo.textContent = 'カット＆シャンプー時間(分)：';
-    const csInput = document.createElement('input');
-    csInput.setAttribute('class','timeInput');
-    csInput.value = targetUser.colortime;
-    csInput.disabled = true;
-    pCutAndShampoo.appendChild(csInput);
-    formElement.appendChild(pCutAndShampoo);
+    // const pCutAndShampoo = document.createElement('p');
+    // pCutAndShampoo.textContent = 'カット＆シャンプー時間(分)：';
+    // const csInput = document.createElement('input');
+    // csInput.setAttribute('class','timeInput');
+    // csInput.value = targetUser.colortime;
+    // csInput.disabled = true;
+    // pCutAndShampoo.appendChild(csInput);
+    // formElement.appendChild(pCutAndShampoo);
     
     const pColor = document.createElement('p');
     pColor.textContent = 'カラーリング時間(分)：';
     const colorInput = document.createElement('input');
     colorInput.setAttribute('class','timeInput');
-    colorInput.value = 30;
+    colorInput.setAttribute('name','colortime');
+    colorInput.value = targetUser.colortime;
     colorInput.disabled = true;
     pColor.appendChild(colorInput);
     formElement.appendChild(pColor);
@@ -180,6 +183,7 @@ const displayDialog = (u_id) => {
         colorInput.disabled = false;
         editButton.value = '送信';
         editButton.type = 'submit';
+        formElement.setAttribute('action',`/api/todos/${targetUser.id}`)
     });
     divButton.appendChild(editButton);
 

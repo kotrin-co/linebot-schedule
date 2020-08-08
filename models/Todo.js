@@ -46,6 +46,19 @@ class Create {
     }
 }
 
+class User {
+    constructor({name,cuttime,colortime}){
+        this.name = name;
+        this.cuttime = cuttime;
+        this.colortime = colortime;
+    }
+
+    queryArray(){
+        console.log('queryArray実行');
+        return [this.name,this.cuttime,this.colortime];
+    }
+}
+
 module.exports = {
     findAll:()=>{
         return new Promise((resolve,reject)=>{
@@ -172,5 +185,26 @@ module.exports = {
                 })
                 .catch(e=>console.log(e.stack));
         });
+    },
+
+    updateUser:({parsedId,name,cuttime,colortime})=>{
+        return new Promise((resolve,reject)=>{
+            const newUser = User({
+                name:name,
+                cuttime,cuttime,
+                colortime:colortime
+            }).queryArray();
+            console.log('newUser:',newUser);
+
+            const update_query = {
+                text:`UPDATE users SET (display_name,cuttime,colortime) = ('${name}',${cuttime},${colortime}) WHERE id=${parsedId};`
+            }
+            connection(update_query)
+                .then(res=>{
+                    console.log('ユーザーテーブル更新成功！');
+                    resolve('ユーザーテーブル更新成功！!!');
+                })
+                .catch(e=>console.log(e.stack));
+        })
     }
 };

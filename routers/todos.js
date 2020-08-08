@@ -15,4 +15,8 @@ router
     .route('/remove/:id')
     .post(controller.removeTodo);
 
+router 
+    .route('/users/:id')
+    .post(controller.postUser);
+
 module.exports = router;

@@ -635,23 +635,27 @@ const handlePostbackEvent = async (ev) => {
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
     // 施術時間を計算する
-    calcTreatmentTime(id);
-
-    console.log('reservation_order.date:',reservation_order.date);
-    const now = new Date().getTime();
-    const targetDate = new Date(reservation_order.date).getTime();
-    console.log('now:',now);
-    console.log('targetDate:',targetDate);
-    // ここはもうちょっと厳密に比較する必要があり
-    if(targetDate>=now){
-      checkReservableTimes(ev);
-      // checkReservableTimes(ev,TIMES_OF_MENU[reservation_order.menu]*1000);
-    }else{
-      client.replyMessage(rp,{
-        "type":"text",
-        "text":"過去の日にちは指定できません。"
-      });
-    }
+    calcTreatmentTime(id)
+      .then(message=>{
+        console.log('message:',message);
+        console.log('reservation_order.date:',reservation_order.date);
+        const now = new Date().getTime();
+        const targetDate = new Date(reservation_order.date).getTime();
+        console.log('now:',now);
+        console.log('targetDate:',targetDate);
+        // ここはもうちょっと厳密に比較する必要があり
+        if(targetDate>=now){
+          checkReservableTimes(ev);
+          // checkReservableTimes(ev,TIMES_OF_MENU[reservation_order.menu]*1000);
+        }else{
+          client.replyMessage(rp,{
+            "type":"text",
+            "text":"過去の日にちは指定できません。"
+          });
+        }
+      })
+      .catch(e=>console.log(e.stack));
+    
   }else if(ev.postback.data.slice(0,4) === 'time'){
     time = parseInt(ev.postback.data.slice(4));
     console.log('postback time proceeding! time:',time);
@@ -718,23 +722,26 @@ const handlePostbackEvent = async (ev) => {
 }
 
 const calcTreatmentTime = (id) => {
-  const select_query = {
-    text:`SELECT * FROM users WHERE line_uid=${id};`
-  }
-  connection.query(select_query)
-    .then(res=>{
-      if(res.rows.length){
-        const cuttime = res.rows[0].cuttime*60*1000;
-        const cstime = cuttime+10*60*1000;
-        const colortime = res.rows[0].colortime*60*1000;
-        console.log('treattime:',cuttime,colortime);
-        reservation_order.treatTime = [cuttime,cstime,colortime];
-      }else{
-        console.log('一致するLINE IDを持つユーザーが見つかりません。');
-        return;
-      }
-    })
-    .catch(e=>console.log(e.stack));
+  return new Promise((resolve,reject)=>{
+    const select_query = {
+      text:`SELECT * FROM users WHERE line_uid=${id};`
+    }
+    connection.query(select_query)
+      .then(res=>{
+        if(res.rows.length){
+          const cuttime = res.rows[0].cuttime*60*1000;
+          const cstime = cuttime+10*60*1000;
+          const colortime = res.rows[0].colortime*60*1000;
+          console.log('treattime:',cuttime,colortime);
+          reservation_order.treatTime = [cuttime,cstime,colortime];
+        }else{
+          console.log('一致するLINE IDを持つユーザーが見つかりません。');
+          return;
+        }
+        resolve('calcTreatmentTime successfully completed!');
+      })
+      .catch(e=>console.log(e.stack));
+  });
 }
 
 const resetReservationOrder = (rp,num) => {
@@ -757,6 +764,7 @@ const checkReservableTimes = (ev) => {
   const timeStamps = [];
   const arrangedArray = [];
   const reservableArray = [];
+  console.log('@@@',reservation_order.treatTime);
   const treatTime = reservation_order.treatTime[reservation_order.menu];
   console.log('treatTime:',treatTime);
   for(let i=0;i<12;i++){

@@ -174,7 +174,7 @@ const displayDialog = (u_id) => {
         submitButton.value = '送信';
         submitButton.type = 'submit';
         formElement.setAttribute('action',`/api/todos/users/${targetUser.id}`);
-        editButton.setAttribute('class','dialogButton');
+        submitButton.setAttribute('class','dialogButton');
         editButton.style.display = 'none';
         deleteButton.style.display = 'none';
         divButton.appendChild(submitButton);
@@ -187,10 +187,10 @@ const displayDialog = (u_id) => {
     deleteButton.type = 'button';
     deleteButton.addEventListener('click',()=>{
         const submitButton = document.createElement('input');
-        submitButton.value = '本当に削除しますよ';
+        submitButton.value = '本当に削除する';
         submitButton.type = 'submit';
         formElement.setAttribute('action',`/api/todos/users/remove/${targetUser.id}`);
-        deleteButton.setAttribute('class','dialogButton');
+        submitButton.setAttribute('class','dialogButton');
         deleteButton.style.display = 'none';
         editButton.style.display = 'none';
         divButton.appendChild(submitButton);

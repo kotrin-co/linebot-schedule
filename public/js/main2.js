@@ -55,11 +55,10 @@ const createTable = () => {
                     console.log('nexRev:',nextRev);
                     const length = nextRev.length;
                     if(length){
-                        td.textContent = new Date(nextRev[length-1].starttime);
+                        td.textContent = getDate(nextRev[length-1].starttime - 9*3600000);
                     }else{
                         td.textContent = '予約なし';
-                    }
-                    
+                    }                    
                 }else if(j===7){
                     const button = document.createElement('button');
                     button.textContent = '編集';
@@ -76,6 +75,16 @@ const createTable = () => {
             }
         }
     }
+}
+
+const getDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const y = date.getFullYear();
+    const m = ("0" + (date.getMonth()+1)).slice(-2);
+    const d = ("0" + date.getDate()).slice(-2);
+    const h = ("0" + date.getHours()).slice(-2);
+    const i = ("0" + date.getMinutes()).slice(-2);
+    return `${y}/${m}/${d} ${h}:${i}`;
 }
 
 const findNextReservation = (target) => {

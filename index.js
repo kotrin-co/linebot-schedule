@@ -814,7 +814,6 @@ const checkReservableTimes = (ev) => {
           console.log('offsetArray:',offsetArray);
 
           for(let i=0;i<offsetArray.length;i++){
-            console.log('offsetArray.length:',offsetArray.length);
             reservableArray[i] = [];
             if(offsetArray[i].length){
               for(let j=0;j<offsetArray[i].length;j++){
@@ -829,7 +828,7 @@ const checkReservableTimes = (ev) => {
                 }else if(j===offsetArray[i].length-1){
                   if(offsetArray[i][j][1]<oneHour){
                     let a = 0;
-                    if(offsetArray[i+1]){
+                    if(offsetArray[i+1].length){
                       a = oneHour - offsetArray[i][j][1];
                     }else{
                       a = oneHour + treatTime - offsetArray[i][j][1];

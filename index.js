@@ -837,7 +837,8 @@ const checkReservableTimes = (ev) => {
                       a = oneHour + treatTime - offsetArray[i][j][1];
                     }
                     let b = 0;
-                    while(a>=treatTime){
+                    // >=を>へ変更
+                    while(a>treatTime){
                       console.log('i a b',i,a,b);
                       reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
                       a -= treatTime;

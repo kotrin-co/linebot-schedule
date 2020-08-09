@@ -828,10 +828,11 @@ const checkReservableTimes = (ev) => {
                   }
                 }else if(j===offsetArray[i].length-1){
                   if(offsetArray[i][j][1]<oneHour){
+                    let a = 0;
                     if(offsetArray[i+1]){
-                      let a = oneHour - offsetArray[i][j][1];
+                      a = oneHour - offsetArray[i][j][1];
                     }else{
-                      let a = oneHour + treatTime - offsetArray[i][j][1];
+                      a = oneHour + treatTime - offsetArray[i][j][1];
                     }
                     let b = 0;
                     while(a>=treatTime){

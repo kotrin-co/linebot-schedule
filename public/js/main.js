@@ -66,16 +66,13 @@ const getDateElements = (timestamp) => {
     return [y,m,d,w];
 }
 
-const getReservationDisplay = (timestamp,name,menu,id) => {
-    const h = ('0'+new Date(timestamp-oneHour*9).getHours()).slice(-2);
-    const m = ('0'+new Date(timestamp-oneHour*9).getMinutes()).slice(-2);
-    let mn = '';
-    if(menu === 'cut&shampoo'){
-        mn = 'C&S'
-    }else{
-        mn = menu;
-    }
-    return `<a href="#" onclick="js_confirm(${id})">■${h}：${m}<br>　 ${mn}<br></a>`;
+const getReservationDisplay = (starttime,endtime,name,menu,id) => {
+    const s_h = ('0'+new Date(starttime-oneHour*9).getHours()).slice(-2);
+    const s_m = ('0'+new Date(starttime-oneHour*9).getMinutes()).slice(-2);
+    const e_h = ('0'+new Date(endtime-oneHour*9).getHours()).slice(-2);
+    const e_m = ('0'+new Date(endtime-oneHour*9).getMinutes()).slice(-2);
+
+    return `<a href="#" onclick="js_confirm(${id})">◯${s_h}：${s_m} - ${e_h}：${e_m}<br></a>`;
 }
 
 const weeks = ['日','月','火','水','木','金','土'];
@@ -169,7 +166,7 @@ const displayCalendar = (data) =>{
             if(filteredArray.length){
                 let rsv = '';
                 filteredArray.forEach(obj=>{
-                    rsv += getReservationDisplay(obj.starttime,obj.name,obj.menu,parseInt(obj.id));
+                    rsv += getReservationDisplay(obj.starttime,obj.endtime,obj.name,obj.menu,parseInt(obj.id));
                 });
                 tdElement.innerHTML = rsv;
             }else{

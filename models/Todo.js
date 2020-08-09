@@ -8,10 +8,8 @@ const connection = new Client({
   });
 connection.connect();
 
-const TIMES_OF_MENU = [900000,1200000,1800000];
-
 class Create {
-    constructor({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu}){
+    constructor({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,endtime_h,endtime_m,menu}){
         this.line_uid = line_uid;
         this.name = name;
         this.year = year;
@@ -19,6 +17,8 @@ class Create {
         this.date_d = date_d;
         this.starttime_h = starttime_h;
         this.starttime_m = starttime_m;
+        this.endtime_h = endtime_h;
+        this.endtime_m = endttime_m;
         this.menu = menu;
     }
 
@@ -26,21 +26,7 @@ class Create {
         console.log('queryArray実行');
         const scheduledate = `${this.year}/${this.date_m}/${this.date_d}`;
         const starttime = new Date(`${scheduledate} ${this.starttime_h}:${this.starttime_m}`).getTime();
-        let menuTime = 0;
-        switch(this.menu){
-            case 'cut':
-                menuTime = TIMES_OF_MENU[0];
-                break;
-            case 'cut&shampoo':
-                menuTime = TIMES_OF_MENU[1];
-                break;
-            case 'color':
-                menuTime = TIMES_OF_MENU[2];
-                break;
-            default:
-                menuTime = 0;
-        }
-        const endtime = starttime + menuTime;
+        const endtime = new Date(`${scheduledate} ${this.endtime_h}:${this.endtime_m}`).getTime();
         console.log('queryArray:',[this.line_uid,this.name,scheduledate,starttime,endtime,menuTime]);
         return [this.line_uid,this.name,scheduledate,starttime,endtime,this.menu];
     }
@@ -91,12 +77,9 @@ module.exports = {
         });
     },
 
-    create:({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})=>{
+    create:({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,endtime_h,endtime_m,menu})=>{
         return new Promise((resolve,reject)=>{
-            // if(!menu || !date || !starttime_h || !starttime_m){
-            //     throw new Error('必須項目が未入力です。');
-            // }
-    
+
             const createReservation = new Create({
                 line_uid:line_uid,
                 name:name,
@@ -105,6 +88,8 @@ module.exports = {
                 date_d:date_d,
                 starttime_h:starttime_h,
                 starttime_m:starttime_m,
+                endtime_h:endtime_h,
+                endtime_m:endtime_m,
                 menu:menu
             }).queryArray();
 
@@ -123,7 +108,7 @@ module.exports = {
         })
     },
 
-    update:({parsedId,line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})=>{
+    update:({parsedId,line_uid,name,year,date_m,date_d,starttime_h,starttime_m,endtime_h,endtime_m,menu})=>{
         return new Promise((resolve,reject)=>{
             console.log('line_uid:',line_uid);
             const createReservation = new Create({
@@ -134,6 +119,8 @@ module.exports = {
                 date_d:date_d,
                 starttime_h:starttime_h,
                 starttime_m:starttime_m,
+                endtime_h:endtime_h,
+                endtime_m:endtime_m,
                 menu:menu
             }).queryArray();
             console.log('createReservation:',createReservation);

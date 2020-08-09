@@ -783,92 +783,92 @@ const checkReservableTimes = (ev) => {
     };
 
     connection.query(select_query)
-    .then(res=>{
-      if(res.rows.length){
-        const reservedArray = res.rows.map(object=>{
-          return [parseInt(object.starttime),parseInt(object.endtime)];
-        });
-
-        for(let i=0;i<11;i++){
-          const filteredArray = reservedArray.filter(array=>{
-            if((array[0]-timeStamps[i]-treatTime>=0 && array[0]-timeStamps[i]-treatTime<oneHour) || 
-                array[1]-timeStamps[i]>0 && array[1]-timeStamps[i]<oneHour){
-              return true;
-            }else{
-              return false;
-            }
+      .then(res=>{
+        if(res.rows.length){
+          const reservedArray = res.rows.map(object=>{
+            return [parseInt(object.starttime),parseInt(object.endtime)];
           });
-          console.log('filteredArray:',i,filteredArray);
-          arrangedArray.push(filteredArray);
-        }
-        console.log('arrangedArray:',arrangedArray);
 
-        const offsetArray = arrangedArray.map((array,i)=>{
-          return array.map(element=>{
-            return element.map(value=>{
-              console.log('value sub:',value - new Date(`${reservation_order.date} ${9+i}:00`).getTime());
-              return value - new Date(`${reservation_order.date} ${9+i}:00`).getTime()
+          for(let i=0;i<11;i++){
+            const filteredArray = reservedArray.filter(array=>{
+              if((array[0]-timeStamps[i]-treatTime>=0 && array[0]-timeStamps[i]-treatTime<oneHour) || 
+                  array[1]-timeStamps[i]>0 && array[1]-timeStamps[i]<oneHour){
+                return true;
+              }else{
+                return false;
+              }
+            });
+            console.log('filteredArray:',i,filteredArray);
+            arrangedArray.push(filteredArray);
+          }
+          console.log('arrangedArray:',arrangedArray);
+
+          const offsetArray = arrangedArray.map((array,i)=>{
+            return array.map(element=>{
+              return element.map(value=>{
+                console.log('value sub:',value - new Date(`${reservation_order.date} ${9+i}:00`).getTime());
+                return value - new Date(`${reservation_order.date} ${9+i}:00`).getTime()
+              });
             });
           });
-        });
-        console.log('offsetArray:',offsetArray);
+          console.log('offsetArray:',offsetArray);
 
-        for(let i=0;i<offsetArray.length;i++){
-          reservableArray[i] = [];
-          if(offsetArray[i].length){
-            for(let j=0;j<offsetArray[i].length;j++){
-              if(j===0 && offsetArray[i][j][0]>=treatTime){
-                let x = offsetArray[i][j][0];
-                let k = 0;
-                while(x>=treatTime){
-                  reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime()+k*treatTime);
-                  x -= treatTime;
-                  k++;
-                }
-              }else if(j===offsetArray[i].length-1){
-                if(offsetArray[i][j][1]<oneHour){
-                  let a = oneHour - offsetArray[i][j][1];
-                  let b = 0;
-                  while(a>=treatTime){
-                    reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
-                    a -= treatTime;
-                    b++;
+          for(let i=0;i<offsetArray.length;i++){
+            reservableArray[i] = [];
+            if(offsetArray[i].length){
+              for(let j=0;j<offsetArray[i].length;j++){
+                if(j===0 && offsetArray[i][j][0]>=treatTime){
+                  let x = offsetArray[i][j][0];
+                  let k = 0;
+                  while(x>=treatTime){
+                    reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime()+k*treatTime);
+                    x -= treatTime;
+                    k++;
+                  }
+                }else if(j===offsetArray[i].length-1){
+                  if(offsetArray[i][j][1]<oneHour){
+                    let a = oneHour - offsetArray[i][j][1];
+                    let b = 0;
+                    while(a>=treatTime){
+                      reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
+                      a -= treatTime;
+                      b++;
+                    }
+                  }
+                }else{
+                  let y = offsetArray[i][j+1][0] - offsetArray[i][j][1];
+                  let l = 0;
+                  while(y>=treatTime){
+                    reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + offsetArray[i][j][1] + l*treatTime);
+                    y -= treatTime;
+                    l++;
                   }
                 }
-              }else{
-                let y = offsetArray[i][j+1][0] - offsetArray[i][j][1];
-                let l = 0;
-                while(y>=treatTime){
-                  reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + offsetArray[i][j][1] + l*treatTime);
-                  y -= treatTime;
-                  l++;
-                }
               }
+            }else{
+              let z = oneHour;
+              let m = 0;
+              while(z>=treatTime){
+                reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + m*treatTime);
+                z -= treatTime;
+                m++;
+              }
+            }  
+          }
+        }else{
+          for(let i=0;i<11;i++){
+            reservableArray[i] = [];
+            let c = 0;
+            while(c<oneHour){
+              reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + c);
+              c+=treatTime;
             }
-          }else{
-            let z = oneHour;
-            let m = 0;
-            while(z>=treatTime){
-              reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + m*treatTime);
-              z -= treatTime;
-              m++;
-            }
-          }  
-        }
-      }else{
-        for(let i=0;i<11;i++){
-          reservableArray[i] = [];
-          let c = 0;
-          while(c<oneHour){
-            reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + c);
-            c+=treatTime;
           }
         }
-      }
-      reservation_order.reservable = reservableArray;
-      console.log('reservation_order.reservable:',reservation_order.reservable);
-      pushTimeSelector(ev);
-      resolve('checkReservableTimes終了');
+        reservation_order.reservable = reservableArray;
+        console.log('reservation_order.reservable:',reservation_order.reservable);
+        pushTimeSelector(ev);
+        resolve('checkReservableTimes終了');
     })
     .catch(e=>console.error(e.stack));
   });  

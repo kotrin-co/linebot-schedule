@@ -11,8 +11,8 @@ module.exports = {
 
     postTodo: (req,res) => {
         try{
-            const {line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu} = req.body;
-            Todo.create({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})
+            const {line_uid,name,year,date_m,date_d,starttime_h,starttime_m,endtime_h,endtime_m,menu} = req.body;
+            Todo.create({line_uid,name,year,date_m,date_d,starttime_h,starttime_m,endtime_h,endtime_m,menu})
                 .then(message=>{
                     console.log('message:',message);
                     res.status(200).redirect('/reservations');
@@ -28,10 +28,10 @@ module.exports = {
 
     putTodo: (req,res) => {
         const id = req.params.id;
-        const {line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu} = req.body;
+        const {line_uid,name,year,date_m,date_d,starttime_h,starttime_m,endtime_h,endtime_m,menu} = req.body;
         const parsedId = parseInt(id,10);
         try{
-            Todo.update({parsedId,line_uid,name,year,date_m,date_d,starttime_h,starttime_m,menu})
+            Todo.update({parsedId,line_uid,name,year,date_m,date_d,starttime_h,starttime_m,endtime_h,endtime_m,menu})
                 .then(message=>{
                     console.log('message:',message);
                     res.status(200).redirect('/reservations');

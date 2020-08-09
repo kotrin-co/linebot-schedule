@@ -252,7 +252,7 @@ editButton.addEventListener('click',()=>{
     deleteButton.style.display='none';
     const id = parseInt(revId.textContent,10);
     console.log('id:',id);
-    registration_form.setAttribute("action",`/api/todos/users/${id}`);
+    registration_form.setAttribute("action",`/api/todos/${id}`);
     console.log('この中にformのdisabledをfalseにする関数を入れる');
 });
 

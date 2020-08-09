@@ -18,7 +18,7 @@ class Create {
         this.starttime_h = starttime_h;
         this.starttime_m = starttime_m;
         this.endtime_h = endtime_h;
-        this.endtime_m = endttime_m;
+        this.endtime_m = endtime_m;
         this.menu = menu;
     }
 

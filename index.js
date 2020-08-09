@@ -53,7 +53,6 @@ const reservation_order = {
 
 
 const MENU = ['cut','cut&shampoo','color'];
-// const TIMES_OF_MENU = [900,1200,1800];
 
 app
   .use(express.static(path.join(__dirname, 'public')))
@@ -317,6 +316,8 @@ const handleMessageEvent = (ev) => {
       .then(existence=>{
         console.log('existence:',existence);
         if(existence){
+          
+          // 未来の予約が入っているかチェックし、すでに未来に１つ予約をしていたら２つ以上の予約はできないようにする
           pickupReservedOrder(ev)
             .then(reservedArray=>{
               if(reservedArray.length){
@@ -326,7 +327,7 @@ const handleMessageEvent = (ev) => {
                   "wrap": true
                 });
               }else{
-                resetReservationOrder(rp,0);
+                // resetReservationOrder(rp,0);
                 client.replyMessage(rp,{
                   "type":"flex",
                   "altText":"FlexMessage",
@@ -467,7 +468,8 @@ const handlePostbackEvent = async (ev) => {
   console.log('postback event:',ev);
   
   if(ev.postback.data === 'cut'){
-    reservation_order.menu = 0;
+    // reservation_order箇所
+    // reservation_order.menu = 0;
       client.replyMessage(rp,{
         "type":"flex",
         "altText":"date_selector",
@@ -522,7 +524,8 @@ const handlePostbackEvent = async (ev) => {
           }
         });
   }else if(ev.postback.data === 'cutandshampoo'){
-    reservation_order.menu = 1;
+    // reservation_order箇所
+    // reservation_order.menu = 1;
       client.replyMessage(rp,{
         "type":"flex",
         "altText":"date_selector",
@@ -577,7 +580,8 @@ const handlePostbackEvent = async (ev) => {
           }
         });
   }else if(ev.postback.data === 'color'){
-    reservation_order.menu = 2;
+    // reservation_order箇所
+    // reservation_order.menu = 2;
       client.replyMessage(rp,{
         "type":"flex",
         "altText":"date_selector",
@@ -634,14 +638,16 @@ const handlePostbackEvent = async (ev) => {
   }else if(ev.postback.data === 'cancel'){
     resetReservationOrder(rp,1);
   }else if(ev.postback.data === 'date_select'){
-    reservation_order.date = ev.postback.params.date;
+    // reservation_order.date設定箇所
+    // reservation_order.date = ev.postback.params.date;
+    const reservationDate = ev.postback.params.date;
+
     // 施術時間を計算する
     calcTreatmentTime(id)
-      .then(message=>{
-        console.log('message:',message);
-        console.log('reservation_order.date:',reservation_order.date);
+      .then(treatTime=>{
+        console.log('treatTime:',treatTime);
         const now = new Date().getTime();
-        const targetDate = new Date(reservation_order.date).getTime();
+        const targetDate = new Date(reservationDate).getTime();
         console.log('now:',now);
         console.log('targetDate:',targetDate);
         // ここはもうちょっと厳密に比較する必要があり
@@ -661,7 +667,8 @@ const handlePostbackEvent = async (ev) => {
       .catch(e=>console.log(e.stack));
     
   }else if(ev.postback.data.slice(0,4) === 'time'){
-    time = parseInt(ev.postback.data.slice(4));
+    // 下のtimeってconstいらんの？
+    const time = parseInt(ev.postback.data.slice(4));
     console.log('postback time proceeding! time:',time);
     confirmReservation(ev,time,0);
 
@@ -738,12 +745,14 @@ const calcTreatmentTime = (id) => {
           const cstime = cuttime+10*60*1000;
           const colortime = res.rows[0].colortime*60*1000;
           console.log('treattime:',cuttime,colortime);
-          reservation_order.treatTime = [cuttime,cstime,colortime];
+          // reservation_orderで設定するのではなく、resolveの引数として返す
+          // reservation_order.treatTime = [cuttime,cstime,colortime];
+          const treatTime = [cuttime,cstime,colortime];
+          resolve(treatTime);
         }else{
           console.log('一致するLINE IDを持つユーザーが見つかりません。');
           return;
         }
-        resolve('calcTreatmentTime successfully completed!');
       })
       .catch(e=>console.log(e.stack));
   });

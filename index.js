@@ -789,9 +789,12 @@ const checkReservableTimes = (ev) => {
             return [parseInt(object.starttime),parseInt(object.endtime)];
           });
 
+          console.log('reservedArray:',reservedArray);
+
           for(let i=0;i<11;i++){
             const filteredArray = reservedArray.filter(array=>{
-              if((array[0]-timeStamps[i]-treatTime>=0 && array[0]-timeStamps[i]-treatTime<oneHour) || 
+              // array[0]-timeStamps[i]-treatTimeとなっていたが、-treatTimeは削除（treatでかいと逃してしまう）
+              if((array[0]-timeStamps[i]>=0 && array[0]-timeStamps[i]-treatTime<oneHour) || 
                   array[1]-timeStamps[i]>0 && array[1]-timeStamps[i]<oneHour){
                 return true;
               }else{

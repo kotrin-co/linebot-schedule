@@ -27,7 +27,6 @@ class Create {
         const scheduledate = `${this.year}/${this.date_m}/${this.date_d}`;
         const starttime = new Date(`${scheduledate} ${this.starttime_h}:${this.starttime_m}`).getTime();
         const endtime = new Date(`${scheduledate} ${this.endtime_h}:${this.endtime_m}`).getTime();
-        console.log('queryArray:',[this.line_uid,this.name,scheduledate,starttime,endtime,menuTime]);
         return [this.line_uid,this.name,scheduledate,starttime,endtime,this.menu];
     }
 }

@@ -313,8 +313,8 @@ const handleMessageEvent = (ev) => {
 
   if(text === '予約'){
     // 現時点より先に予約が入っていたら予約できないようにする。
-    const test = new Test(text);
-    console.log('test:',test.str);
+    const test = new Test(text).comeon();
+    console.log('test:',test;
     checkUserExistence(ev)
       .then(existence=>{
         console.log('existence:',existence);
@@ -421,7 +421,7 @@ class Test{
   constructor(str){
     this.str = str;
   }
-  get str(){
+  comeon(){
     return this.str;
   }
 }
@@ -476,7 +476,7 @@ const handlePostbackEvent = async (ev) => {
   const id = ev.source.userId;
   const rp = ev.replyToken;
   console.log('postback event:',ev);
-  const test = new Test('テスト');
+  const test = new Test('テスト').comeon();
   console.log('test:',test);
   
   if(ev.postback.data === 'cut'){

@@ -644,14 +644,15 @@ const handlePostbackEvent = async (ev) => {
       .then(treatTime=>{
         console.log('treattime:',treatTime);
         const now = new Date().getTime();
-        const targetDate = new Date(ORDER.date).getTime();
+        const targetDate = new Date(reservationDate).getTime();
         console.log('now:',now);
         console.log('targetDate:',targetDate);
         // ここはもうちょっと厳密に比較する必要があり
         if(targetDate>now || (targetDate<now && (targetDate+9*60*60*1000)>now)){
-          checkReservableTimes(ev)
-            .then(message=>{
-              console.log('message:',message);
+          checkReservableTimes(ev,reservationDate,treatTime)
+            .then(reservableArray=>{
+              console.log('reservableArray:',reservableArray);
+              pushTimeSelector(ev,reservableArray,reservationDate);
             })
             .catch(e=>console.log(e.stack));
         }else{
@@ -778,23 +779,23 @@ const resetReservationOrder = (rp,num) => {
   }
 }
 
-const checkReservableTimes = (ev) => {
+const checkReservableTimes = (ev,date,treatTime) => {
   return new Promise((resolve,reject)=>{
     const oneHour = 3600000;
     const timeStamps = [];
     const arrangedArray = [];
     const reservableArray = [];
-    console.log('@@@',ORDER.treatTime);
-    const treatTime = ORDER.treatTime[ORDER.menu];
-    console.log('treatTime:',treatTime);
+    // console.log('@@@',ORDER.treatTime);
+    // const treatTime = ORDER.treatTime[ORDER.menu];
+    // console.log('treatTime:',treatTime);
     for(let i=0;i<12;i++){
-      let baseTime = new Date(`${ORDER.date} ${9+i}:00`);
+      let baseTime = new Date(`${date} ${9+i}:00`);
       timeStamps.push(baseTime.getTime());
     }
     
     const select_query = {
       text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
-      values:[`${ORDER.date}`]
+      values:[`${date}`]
     };
 
     connection.query(select_query)
@@ -824,8 +825,8 @@ const checkReservableTimes = (ev) => {
           const offsetArray = arrangedArray.map((array,i)=>{
             return array.map(element=>{
               return element.map(value=>{
-                console.log('value sub:',value - new Date(`${ORDER.date} ${9+i}:00`).getTime());
-                return value - new Date(`${ORDER.date} ${9+i}:00`).getTime()
+                console.log('value sub:',value - new Date(`${date} ${9+i}:00`).getTime());
+                return value - new Date(`${date} ${9+i}:00`).getTime()
               });
             });
           });
@@ -839,7 +840,7 @@ const checkReservableTimes = (ev) => {
                   let x = offsetArray[i][j][0];
                   let k = 0;
                   while(x>=treatTime){
-                    reservableArray[i].push(new Date(`${ORDER.date} ${9+i}:00`).getTime()+k*treatTime);
+                    reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+k*treatTime);
                     x -= treatTime;
                     k++;
                   }
@@ -855,7 +856,7 @@ const checkReservableTimes = (ev) => {
                     // >=を>へ変更
                     while(a>treatTime){
                       console.log('i a b',i,a,b);
-                      reservableArray[i].push(new Date(`${ORDER.date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
+                      reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
                       a -= treatTime;
                       b++;
                     }
@@ -864,7 +865,7 @@ const checkReservableTimes = (ev) => {
                   let y = offsetArray[i][j+1][0] - offsetArray[i][j][1];
                   let l = 0;
                   while(y>=treatTime){
-                    reservableArray[i].push(new Date(`${ORDER.date} ${9+i}:00`).getTime() + offsetArray[i][j][1] + l*treatTime);
+                    reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime() + offsetArray[i][j][1] + l*treatTime);
                     y -= treatTime;
                     l++;
                   }
@@ -874,7 +875,7 @@ const checkReservableTimes = (ev) => {
               let z = oneHour;
               let m = 0;
               while(z>=treatTime){
-                reservableArray[i].push(new Date(`${ORDER.date} ${9+i}:00`).getTime() + m*treatTime);
+                reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime() + m*treatTime);
                 z -= treatTime;
                 m++;
               }
@@ -885,26 +886,25 @@ const checkReservableTimes = (ev) => {
             reservableArray[i] = [];
             let c = 0;
             while(c<oneHour){
-              reservableArray[i].push(new Date(`${ORDER.date} ${9+i}:00`).getTime() + c);
+              reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime() + c);
               c+=treatTime;
             }
           }
         }
-        ORDER.reservable = reservableArray;
-        console.log('ORDER.reservable:',ORDER.reservable);
-        pushTimeSelector(ev);
-        resolve('checkReservableTimes終了');
+        // ORDER.reservable = reservableArray;
+        // console.log('ORDER.reservable:',ORDER.reservable);
+        resolve(reservableArray);
     })
     .catch(e=>console.error(e.stack));
   });  
 }
 
-const pushTimeSelector = (ev) => {
+const pushTimeSelector = (ev,reservable,date) => {
   const rp = ev.replyToken;
-  console.log('ORDER.reservable:',ORDER.reservable);
+  console.log('ORDER.reservable:',reservable);
   const color = [];
-  for(let i=0;i<ORDER.reservable.length;i++){
-    if(ORDER.reservable[i].length){
+  for(let i=0;i<reservable.length;i++){
+    if(reservable[i].length){
       color.push('#00AA00');
     }else{
       color.push('#FF0000');
@@ -924,7 +924,7 @@ const pushTimeSelector = (ev) => {
         "contents": [
           {
             "type": "text",
-            "text": `${ORDER.date}`,
+            "text": `${date}`,
             "weight": "bold",
             "size": "lg",
             "align": "center"

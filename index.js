@@ -908,6 +908,7 @@
                       x -= treatTime;
                       k++;
                     }
+                  }
                     // ここから追加
                   if(j===0 && offsetArray[i].length === 1 && offsetArray[i][j][1]<oneHour){
                     let a = 0;
@@ -929,7 +930,7 @@
                   // ここまで
 
                   // j>1条件を追加
-                  }else if(j>1 && j===offsetArray[i].length-1){
+                  else if(j>1 && j===offsetArray[i].length-1){
                     if(offsetArray[i][j][1]<oneHour){
                       let a = 0;
                       if(offsetArray[i+1].length){

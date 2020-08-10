@@ -657,13 +657,13 @@
                 console.log('reservableArray:',reservableArray);
                 
                 // ここで初めてグローバル変数のORDERに代入する
-                ORDER.id = ev.source.userId;
-                ORDER.menu = menuNumber;
-                ORDER.reservable = reservableArray;
-                ORDER.date = reservationDate;
-                ORDER.treatTime = treatTime;
+                // ORDER.id = ev.source.userId;
+                // ORDER.menu = menuNumber;
+                // ORDER.reservable = reservableArray;
+                // ORDER.date = reservationDate;
+                // ORDER.treatTime = treatTime;
 
-                pushTimeSelector(ev,reservableArray,reservationDate);
+                pushTimeSelector(ev,reservableArray,menuNumber,reservationDate,treatTime);
               })
               .catch(e=>console.log(e.stack));
           }else{
@@ -676,23 +676,17 @@
         .catch(e=>console.log(e.stack));
       
     }else if(ev.postback.data.slice(0,4) === 'time'){
-      if(ev.source.userId === ORDER.id){
-        const menuNumber = ORDER.menu;
-        const reservationDate = ORDER.date;
-        // const reservableArray = ORDER.reservable;
-        const treatTime = ORDER.treatTime;
-        resetReservationOrder(rp,0);
-
-        const time = parseInt(ev.postback.data.slice(4));
-        console.log('postback time proceeding! time:',time);
-        confirmReservation(ev,time,reservationDate,treatTime,menuNumber,0);
-      }else{
-        client.replyMessage(rp,{
-          "type":"text",
-          "text":"不正なアクセスです。終了します。"
-        });
-        resetReservationOrder(rp,0);
-      }
+      // const menuNumber = ORDER.menu;
+      // const reservationDate = ORDER.date;
+      // const reservableArray = ORDER.reservable;
+      // const treatTime = ORDER.treatTime;
+      // resetReservationOrder(rp,0);
+      const data = ev.postback.data.split('-');
+      console.log('data:',data);
+      // `time0-${menu}-${date}-${treatTime}`
+      const time = parseInt(ev.postback.data.slice(4,5));
+      console.log('postback time proceeding! time:',time);
+      confirmReservation(ev,time,reservationDate,treatTime,menuNumber,0);
   
     }else if(ev.postback.data.slice(0,6) === 'answer'){
       // グローバルのORDERから値を取り出し、リセット
@@ -941,7 +935,7 @@
     });  
   }
   
-  const pushTimeSelector = (ev,reservable,date) => {
+  const pushTimeSelector = (ev,reservable,menu,date,treatTime) => {
     const rp = ev.replyToken;
     const color = [];
     for(let i=0;i<reservable.length;i++){
@@ -996,7 +990,8 @@
                   "action": {
                     "type": "postback",
                     "label": "9時-",
-                    "data": "time0"
+                    "data":`time0-${menu}-${date}-${treatTime}`
+                    // "data": "time0"
                   },
                   "style": "primary",
                   "color": `${color[0]}`,
@@ -1007,7 +1002,7 @@
                   "action": {
                     "type": "postback",
                     "label": "10時-",
-                    "data": "time1"
+                    "data": `time1-${menu}-${date}-${treatTime}`
                   },
                   "style": "primary",
                   "color": `${color[1]}`,
@@ -1018,7 +1013,7 @@
                   "action": {
                     "type": "postback",
                     "label": "11時-",
-                    "data": "time2"
+                    "data": `time2-${menu}-${date}-${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1035,7 +1030,7 @@
                   "action": {
                     "type": "postback",
                     "label": "12時-",
-                    "data": "time3"
+                    "data": `time3-${menu}-${date}-${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1046,7 +1041,7 @@
                   "action": {
                     "type": "postback",
                     "label": "13時-",
-                    "data": "time4"
+                    "data": `time4-${menu}-${date}-${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1057,7 +1052,7 @@
                   "action": {
                     "type": "postback",
                     "label": "14時-",
-                    "data": "time5"
+                    "data": `time5-${menu}-${date}-${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1075,7 +1070,7 @@
                   "action": {
                     "type": "postback",
                     "label": "15時-",
-                    "data": "time6"
+                    "data": `time6-${menu}-${date}-${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1086,7 +1081,7 @@
                   "action": {
                     "type": "postback",
                     "label": "16時-",
-                    "data": "time7"
+                    "data": `time7-${menu}-${date}-${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1097,7 +1092,7 @@
                   "action": {
                     "type": "postback",
                     "label": "17時-",
-                    "data": "time8"
+                    "data": `time8-${menu}-${date}-${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1115,7 +1110,7 @@
                   "action": {
                     "type": "postback",
                     "label": "18時-",
-                    "data": "time9"
+                    "data": `time9-${menu}-${date}-${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1126,7 +1121,7 @@
                   "action": {
                     "type": "postback",
                     "label": "19時-",
-                    "data": "time10"
+                    "data": `time10-${menu}-${date}-${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",

@@ -469,7 +469,7 @@
     return new Promise((resolve,reject)=>{
       let answer = null;
       const pickup_query = {
-        text:`SELECT * FROM schedules WHERE endttime>=${s_time};`
+        text:`SELECT * FROM schedules WHERE endtime>=${s_time};`
       }
       connection.query(pickup_query)
         .then(res=>{

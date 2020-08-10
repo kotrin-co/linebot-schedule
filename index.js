@@ -314,7 +314,7 @@ const handleMessageEvent = (ev) => {
   if(text === '予約'){
     // 現時点より先に予約が入っていたら予約できないようにする。
     const test = new Test(text).comeon();
-    console.log('test:',test;
+    console.log('test:',test);
     checkUserExistence(ev)
       .then(existence=>{
         console.log('existence:',existence);

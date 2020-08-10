@@ -863,100 +863,100 @@
             for(let i=0;i<offsetArray.length;i++){
               reservableArray[i] = [];
               if(offsetArray[i].length){
-                let j = 1;
-                if(offsetArray[i][0][0]>=treatTime){
-                  let x = offsetArray[i][0][0];
-                  let k = 0;
-                  while(x<=treatTime*(k+1)){
-                    reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+treatTime*k);
-                    k++;
-                  }
-                }
-                if(offsetArray[i].length>j){
-                  let x = offsetArray[i][j-1][1] - offsetArray[i][j][0];
-                  let k = 0;
-                  while(x<=treatTime*(k+1)){
-                    reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j-1][1]+treatTime*k);
-                    k++;
-                  }
-                  j++;
-                }else if(offsetArray[i].length===j){
-                  if(offsetArray[i][j-1][1]<oneHour){
-                    if(offsetArray[i+1].length && offsetArray[i+1][0][0]>=0){
-                      let x = oneHour - offsetArray[i][j-1][1] + offsetArray[i+1][0][0];
-                      let k = 0;
-                      while(x<=treatTime*(k+1)){
-                        reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j-1][1]+treatTime*k);
-                        k++;
-                      }
-                    }else if(!offsetArray[i+1].length){
-                      let k = 0;
-                      while(offsetArray[i][j-1][1]+treatTime*k<oneHour){
-                        reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j-1][1]+treatTime*k);
-                        k++;
-                      }
-                    }
-                  }
-                }
-                
-                // for(let j=0;j<offsetArray[i].length;j++){
-                //   if(j===0 && offsetArray[i][j][0]>=treatTime){
-                //     let x = offsetArray[i][j][0];
-                //     let k = 0;
-                //     while(x>=treatTime){
-                //       reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+k*treatTime);
-                //       x -= treatTime;
-                //       k++;
-                //     }
-                //     // ここから追加
-                //   if(j===0 && offsetArray[i].length === 1 && offsetArray[i][j][1]<oneHour){
-                //     let a = 0;
-                //       if(offsetArray[i+1].length){
-                //         // a = oneHour - offsetArray[i][j][1]; これで良いのか未検証
-                //         a = oneHour - offsetArray[i][j][1] + offsetArray[i+1][0][0];
-                //       }else{
-                //         a = oneHour + treatTime - offsetArray[i][j][1];
-                //       }
-                //       let b = 0;
-                //       // >=を>へ変更
-                //       while(a>treatTime){
-                //         console.log('i a b',i,a,b);
-                //         reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
-                //         a -= treatTime;
-                //         b++;
-                //       }
+                // let j = 1;
+                // if(offsetArray[i][0][0]>=treatTime){
+                //   let x = offsetArray[i][0][0];
+                //   let k = 0;
+                //   while(x<=treatTime*(k+1)){
+                //     reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+treatTime*k);
+                //     k++;
                 //   }
-                //   // ここまで
-
-                //   // j>1条件を追加
-                //   }else if(j>1 && j===offsetArray[i].length-1){
-                //     if(offsetArray[i][j][1]<oneHour){
-                //       let a = 0;
-                //       if(offsetArray[i+1].length){
-                //         // a = oneHour - offsetArray[i][j][1]; これで良いのか未検証
-                //         a = oneHour - offsetArray[i][j][1] + offsetArray[i+1][0][0];
-                //       }else{
-                //         a = oneHour + treatTime - offsetArray[i][j][1];
+                // }
+                // if(offsetArray[i].length>j){
+                //   let x = offsetArray[i][j-1][1] - offsetArray[i][j][0];
+                //   let k = 0;
+                //   while(x<=treatTime*(k+1)){
+                //     reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j-1][1]+treatTime*k);
+                //     k++;
+                //   }
+                //   j++;
+                // }else if(offsetArray[i].length===j){
+                //   if(offsetArray[i][j-1][1]<oneHour){
+                //     if(offsetArray[i+1].length && offsetArray[i+1][0][0]>=0){
+                //       let x = oneHour - offsetArray[i][j-1][1] + offsetArray[i+1][0][0];
+                //       let k = 0;
+                //       while(x<=treatTime*(k+1)){
+                //         reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j-1][1]+treatTime*k);
+                //         k++;
                 //       }
-                //       let b = 0;
-                //       // >=を>へ変更
-                //       while(a>treatTime){
-                //         console.log('i a b',i,a,b);
-                //         reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
-                //         a -= treatTime;
-                //         b++;
+                //     }else if(!offsetArray[i+1].length){
+                //       let k = 0;
+                //       while(offsetArray[i][j-1][1]+treatTime*k<oneHour){
+                //         reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j-1][1]+treatTime*k);
+                //         k++;
                 //       }
-                //     }
-                //   }else{
-                //     let y = offsetArray[i][j+1][0] - offsetArray[i][j][1];
-                //     let l = 0;
-                //     while(y>=treatTime){
-                //       reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime() + offsetArray[i][j][1] + l*treatTime);
-                //       y -= treatTime;
-                //       l++;
                 //     }
                 //   }
                 // }
+                
+                for(let j=0;j<offsetArray[i].length;j++){
+                  if(j===0 && offsetArray[i][j][0]>=treatTime){
+                    let x = offsetArray[i][j][0];
+                    let k = 0;
+                    while(x>=treatTime){
+                      reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+k*treatTime);
+                      x -= treatTime;
+                      k++;
+                    }
+                    // ここから追加
+                  if(j===0 && offsetArray[i].length === 1 && offsetArray[i][j][1]<oneHour){
+                    let a = 0;
+                      if(offsetArray[i+1].length){
+                        // a = oneHour - offsetArray[i][j][1]; これで良いのか未検証
+                        a = oneHour - offsetArray[i][j][1] + offsetArray[i+1][0][0];
+                      }else{
+                        a = oneHour + treatTime - offsetArray[i][j][1];
+                      }
+                      let b = 0;
+                      // >=を>へ変更
+                      while(a>treatTime){
+                        console.log('i a b',i,a,b);
+                        reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
+                        a -= treatTime;
+                        b++;
+                      }
+                  }
+                  // ここまで
+
+                  // j>1条件を追加
+                  }else if(j>1 && j===offsetArray[i].length-1){
+                    if(offsetArray[i][j][1]<oneHour){
+                      let a = 0;
+                      if(offsetArray[i+1].length){
+                        // a = oneHour - offsetArray[i][j][1]; これで良いのか未検証
+                        a = oneHour - offsetArray[i][j][1] + offsetArray[i+1][0][0];
+                      }else{
+                        a = oneHour + treatTime - offsetArray[i][j][1];
+                      }
+                      let b = 0;
+                      // >=を>へ変更
+                      while(a>treatTime){
+                        console.log('i a b',i,a,b);
+                        reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
+                        a -= treatTime;
+                        b++;
+                      }
+                    }
+                  }else{
+                    let y = offsetArray[i][j+1][0] - offsetArray[i][j][1];
+                    let l = 0;
+                    while(y>=treatTime){
+                      reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime() + offsetArray[i][j][1] + l*treatTime);
+                      y -= treatTime;
+                      l++;
+                    }
+                  }
+                }
               }else{
                 let m = 0;
                 while(m<oneHour){

@@ -681,11 +681,13 @@
       // const reservableArray = ORDER.reservable;
       // const treatTime = ORDER.treatTime;
       // resetReservationOrder(rp,0);
-      const data = ev.postback.data.split('-');
+      const data = ev.postback.data.split('&');
       console.log('data:',data);
       // `time0-${menu}-${date}-${treatTime}`
       const time = parseInt(ev.postback.data.slice(4,5));
-      console.log('postback time proceeding! time:',time);
+      data[1] = parseInt(data[1]);
+      data[3] = parseInt(data[3]);
+      console.log('changed data:',data);
       confirmReservation(ev,time,reservationDate,treatTime,menuNumber,0);
   
     }else if(ev.postback.data.slice(0,6) === 'answer'){
@@ -990,7 +992,7 @@
                   "action": {
                     "type": "postback",
                     "label": "9時-",
-                    "data":`time0-${menu}-${date}-${treatTime}`
+                    "data":`time0&${menu}&${date}&${treatTime}`
                     // "data": "time0"
                   },
                   "style": "primary",
@@ -1002,7 +1004,7 @@
                   "action": {
                     "type": "postback",
                     "label": "10時-",
-                    "data": `time1-${menu}-${date}-${treatTime}`
+                    "data": `time1&${menu}&${date}&${treatTime}`
                   },
                   "style": "primary",
                   "color": `${color[1]}`,
@@ -1013,7 +1015,7 @@
                   "action": {
                     "type": "postback",
                     "label": "11時-",
-                    "data": `time2-${menu}-${date}-${treatTime}`
+                    "data": `time2&${menu}&${date}&${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1030,7 +1032,7 @@
                   "action": {
                     "type": "postback",
                     "label": "12時-",
-                    "data": `time3-${menu}-${date}-${treatTime}`
+                    "data": `time3&${menu}&${date}&${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1041,7 +1043,7 @@
                   "action": {
                     "type": "postback",
                     "label": "13時-",
-                    "data": `time4-${menu}-${date}-${treatTime}`
+                    "data": `time4&${menu}&${date}&${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1052,7 +1054,7 @@
                   "action": {
                     "type": "postback",
                     "label": "14時-",
-                    "data": `time5-${menu}-${date}-${treatTime}`
+                    "data": `time5&${menu}&${date}&${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1070,7 +1072,7 @@
                   "action": {
                     "type": "postback",
                     "label": "15時-",
-                    "data": `time6-${menu}-${date}-${treatTime}`
+                    "data": `time6&${menu}&${date}&${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1081,7 +1083,7 @@
                   "action": {
                     "type": "postback",
                     "label": "16時-",
-                    "data": `time7-${menu}-${date}-${treatTime}`
+                    "data": `time7&${menu}&${date}&${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1092,7 +1094,7 @@
                   "action": {
                     "type": "postback",
                     "label": "17時-",
-                    "data": `time8-${menu}-${date}-${treatTime}`
+                    "data": `time8&${menu}&${date}&${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1110,7 +1112,7 @@
                   "action": {
                     "type": "postback",
                     "label": "18時-",
-                    "data": `time9-${menu}-${date}-${treatTime}`
+                    "data": `time9&${menu}&${date}&${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",
@@ -1121,7 +1123,7 @@
                   "action": {
                     "type": "postback",
                     "label": "19時-",
-                    "data": `time10-${menu}-${date}-${treatTime}`
+                    "data": `time10&${menu}&${date}&${treatTime}`
                   },
                   "margin": "md",
                   "style": "primary",

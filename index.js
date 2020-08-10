@@ -43,17 +43,7 @@
       console.log('table schedules created successfully!!');
     })
     .catch(e=>console.error(e.stack));
-  
-  // このグローバル変数は廃止
-  const ORDER = {
-    id:null,
-    menu:null,
-    date:null,
-    reservable:null,
-    reserved:null,
-    treatTime:null
-  };
-  
+
   
   const MENU = ['cut','cut&shampoo','color'];
   // const TIMES_OF_MENU = [900,1200,1800];
@@ -331,7 +321,6 @@
                     "wrap": true
                   });
                 }else{
-                  resetReservationOrder(rp,0);
                   client.replyMessage(rp,{
                     "type":"flex",
                     "altText":"FlexMessage",
@@ -499,7 +488,6 @@
     console.log('postback event:',ev);
     
     if(ev.postback.data === 'cut'){
-      // ORDER.menu = 0;
         client.replyMessage(rp,{
           "type":"flex",
           "altText":"date_selector",
@@ -554,7 +542,6 @@
             }
           });
     }else if(ev.postback.data === 'cutandshampoo'){
-      // ORDER.menu = 1;
         client.replyMessage(rp,{
           "type":"flex",
           "altText":"date_selector",
@@ -609,7 +596,6 @@
             }
           });
     }else if(ev.postback.data === 'color'){
-      // ORDER.menu = 2;
         client.replyMessage(rp,{
           "type":"flex",
           "altText":"date_selector",
@@ -664,10 +650,9 @@
             }
           });
     }else if(ev.postback.data === 'cancel'){
-      resetReservationOrder(rp,1);
+      // メッセージリプライを入れる
     }else if(ev.postback.data.slice(0,11) === 'date_select'){
       const menuNumber = parseInt(ev.postback.data.slice(-1));
-      // ORDER.date = ev.postback.params.date;
       const reservationDate = ev.postback.params.date;
   
       // 施術時間を計算する
@@ -683,13 +668,6 @@
             checkReservableTimes(ev,reservationDate,treatTime)
               .then(reservableArray=>{
                 console.log('reservableArray:',reservableArray);
-                
-                // ここで初めてグローバル変数のORDERに代入する
-                // ORDER.id = ev.source.userId;
-                // ORDER.menu = menuNumber;
-                // ORDER.reservable = reservableArray;
-                // ORDER.date = reservationDate;
-                // ORDER.treatTime = treatTime;
 
                 pushTimeSelector(ev,reservableArray,menuNumber,reservationDate,treatTime);
               })
@@ -704,11 +682,6 @@
         .catch(e=>console.log(e.stack));
       
     }else if(ev.postback.data.slice(0,4) === 'time'){
-      // const menuNumber = ORDER.menu;
-      // const reservationDate = ORDER.date;
-      // const reservableArray = ORDER.reservable;
-      // const treatTime = ORDER.treatTime;
-      // resetReservationOrder(rp,0);
       const data = ev.postback.data.split('&');
       console.log('data:',data);
       const time = parseInt(data[0].slice(4));
@@ -825,7 +798,7 @@
             }
   
             console.log('treattime:',treatTime);
-            // ORDER.treatTime = [cuttime,cstime,colortime];
+
           }else{
             console.log('一致するLINE IDを持つユーザーが見つかりません。');
             return;
@@ -836,30 +809,13 @@
     });
   }
   
-  const resetReservationOrder = (rp,num) => {
-    ORDER.id = null;
-    ORDER.menu = null;
-    ORDER.date = null;
-    ORDER.reservable = null;
-    ORDER.reserved = null;
-    ORDER.treatTime = null;
-    if(num === 1){
-      client.replyMessage(rp,{
-        "type":"text",
-        "text":"終了します。"
-      });
-    }
-  }
-  
   const checkReservableTimes = (ev,date,treatTime) => {
     return new Promise((resolve,reject)=>{
       const oneHour = 3600000;
       const timeStamps = [];
       const arrangedArray = [];
       const reservableArray = [];
-      // console.log('@@@',ORDER.treatTime);
-      // const treatTime = ORDER.treatTime[ORDER.menu];
-      // console.log('treatTime:',treatTime);
+
       for(let i=0;i<12;i++){
         let baseTime = new Date(`${date} ${9+i}:00`);
         timeStamps.push(baseTime.getTime());
@@ -916,11 +872,33 @@
                       x -= treatTime;
                       k++;
                     }
-                  }else if(j===offsetArray[i].length-1){
+                    // ここから追加
+                  if(j===0 && offsetArray[i].length === 1 && offsetArray[i][j][1]<oneHour){
+                    let a = 0;
+                      if(offsetArray[i+1].length){
+                        // a = oneHour - offsetArray[i][j][1]; これで良いのか未検証
+                        a = oneHour - offsetArray[i][j][1] + offsetArray[i+1][0][0];
+                      }else{
+                        a = oneHour + treatTime - offsetArray[i][j][1];
+                      }
+                      let b = 0;
+                      // >=を>へ変更
+                      while(a>treatTime){
+                        console.log('i a b',i,a,b);
+                        reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
+                        a -= treatTime;
+                        b++;
+                      }
+                  }
+                  // ここまで
+
+                  // j>1条件を追加
+                  }else if(j>1 && j===offsetArray[i].length-1){
                     if(offsetArray[i][j][1]<oneHour){
                       let a = 0;
                       if(offsetArray[i+1].length){
-                        a = oneHour - offsetArray[i][j][1];
+                        // a = oneHour - offsetArray[i][j][1]; これで良いのか未検証
+                        a = oneHour - offsetArray[i][j][1] + offsetArray[i+1][0][0];
                       }else{
                         a = oneHour + treatTime - offsetArray[i][j][1];
                       }
@@ -1194,13 +1172,6 @@
           console.log('reservableTimes[i]:',reservableTimes[i]);
           const proposalTime = get_Date(reservableTimes[i],1);
           console.log('proposalTime:',proposalTime);
-
-          // グローバルのORDERに値を格納
-          // ORDER.id = ev.source.userId;
-          // ORDER.menu = menu;
-          // ORDER.date = date;
-          // ORDER.treatTime = treatTime;
-          // ORDER.reservable = reservableArray;
       
           client.replyMessage(rp,
             {

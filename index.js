@@ -46,6 +46,7 @@
   
   // このグローバル変数は廃止
   const ORDER = {
+    id:null,
     menu:null,
     date:null,
     reservable:null,
@@ -654,6 +655,14 @@
             checkReservableTimes(ev,reservationDate,treatTime)
               .then(reservableArray=>{
                 console.log('reservableArray:',reservableArray);
+                
+                // ここで初めてグローバル変数のORDERに代入する
+                ORDER.id = ev.source.userId;
+                ORDER.menu = menuNumber;
+                ORDER.reservable = reservableArray;
+                ORDER.date = reservationDate;
+                ORDER.treatTime = treatTime;
+
                 pushTimeSelector(ev,reservableArray,reservationDate);
               })
               .catch(e=>console.log(e.stack));
@@ -667,28 +676,50 @@
         .catch(e=>console.log(e.stack));
       
     }else if(ev.postback.data.slice(0,4) === 'time'){
-      time = parseInt(ev.postback.data.slice(4));
-      console.log('postback time proceeding! time:',time);
-      confirmReservation(ev,time,0);
+      if(ev.source.userId === ORDER.id){
+        const menuNumber = ORDER.menu;
+        const reservationDate = ORDER.date;
+        // const reservableArray = ORDER.reservable;
+        const treatTime = ORDER.treatTime;
+        resetReservationOrder(rp,0);
+
+        const time = parseInt(ev.postback.data.slice(4));
+        console.log('postback time proceeding! time:',time);
+        confirmReservation(ev,time,reservationDate,treatTime,menuNumber,0);
+      }else{
+        client.replyMessage(rp,{
+          "type":"text",
+          "text":"不正なアクセスです。終了します。"
+        });
+        resetReservationOrder(rp,0);
+      }
   
     }else if(ev.postback.data.slice(0,6) === 'answer'){
-      const result = ev.postback.data.split('-');
-      console.log('result:',result);
-      if(result[1] === 'yes'){
-        const s_time = ORDER.reservable[parseInt(result[2])][parseInt(result[3])];
-        const e_time = s_time + ORDER.treatTime[ORDER.menu];
-        console.log('s_time:',get_Date(s_time,1));
-        console.log('e_time:',get_Date(e_time,1));
-        const insert_query = {
+      // グローバルのORDERから値を取り出し、リセット
+      if(ev.source.userId === ORDER.id){
+        const menuNumber = ORDER.menu;
+        const reservationDate = ORDER.date;
+        const reservableArray = ORDER.reservable;
+        const treatTime = ORDER.treatTime;
+        resetReservationOrder(rp,0);
+
+        const result = ev.postback.data.split('-');
+        console.log('result:',result);
+        if(result[1] === 'yes'){
+          const s_time = reservableArray[parseInt(result[2])][parseInt(result[3])];
+          const e_time = s_time + treatTime;
+          console.log('s_time:',get_Date(s_time,1));
+          console.log('e_time:',get_Date(e_time,1));
+          const insert_query = {
             text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-            values:[id,pro.displayName,ORDER.date,s_time,e_time,MENU[ORDER.menu]]
+            values:[id,pro.displayName,reservationDate,s_time,e_time,MENU[menuNumber]]
           };
           connection.query(insert_query)
             .then(res=>{
               const reservedTime = get_Date(s_time,1);
               client.replyMessage(rp,[{
                 "type":"text",
-                "text":`${ORDER.date}  ${reservedTime}に予約しました。ご来店を心よりお待ちしております。`,
+                "text":`${reservationDate}  ${reservedTime}に予約しました。ご来店を心よりお待ちしております。`,
                 "wrap": true
               },
               {
@@ -699,10 +730,18 @@
               resetReservationOrder(rp,0);
             })
             .catch(e=>console.error(e.stack));
+        }else{
+          confirmReservation(ev,parseInt(result[2]),reservationDate,treatTime,menuNumber,parseInt(result[3])+1);
+        }
       }else{
-        confirmReservation(ev,parseInt(result[2]),parseInt(result[3])+1);
+        client.replyMessage(rp,{
+          "type":"text",
+          "text":"不正なアクセスです。終了します。"
+        });
+        resetReservationOrder(rp,0);
       }
-    }else if(ev.postback.data.slice(0,6) === 'delete'){
+    }
+    else if(ev.postback.data.slice(0,6) === 'delete'){
       console.log('ORDER.reserved:',ORDER.reserved);
       const result = ev.postback.data.split('-');
       if(result[1] === 'yes'){
@@ -768,6 +807,7 @@
   }
   
   const resetReservationOrder = (rp,num) => {
+    ORDER.id = null;
     ORDER.menu = null;
     ORDER.date = null;
     ORDER.reservable = null;
@@ -903,7 +943,6 @@
   
   const pushTimeSelector = (ev,reservable,date) => {
     const rp = ev.replyToken;
-    console.log('ORDER.reservable:',reservable);
     const color = [];
     for(let i=0;i<reservable.length;i++){
       if(reservable[i].length){
@@ -1113,66 +1152,77 @@
     );
   }
   
-  
-  
-  const confirmReservation = (ev,time,i) => {
+
+  const confirmReservation = (ev,time,date,treatTime,menu,i) => {
     const rp = ev.replyToken;
-    const reservableTimes = ORDER.reservable[time];
-    if(reservableTimes[i]){
-      console.log('reservableTimes[i]:',reservableTimes[i]);
-      const proposalTime = get_Date(reservableTimes[i],1);
-      console.log('proposalTime:',proposalTime);
-  
-      client.replyMessage(rp,
-        {
-          "type":"flex",
-          "altText":"FlexMessage",
-          "contents":
-          {
-            "type": "bubble",
-            "body": {
-              "type": "box",
-              "layout": "vertical",
-              "contents": [
-                {
-                  "type": "text",
-                  "text": `次回ご予約は ${proposalTime}〜 でいかがでしょうか。`,
-                  "wrap": true
-                }
-              ]
-            },
-            "footer": {
-              "type": "box",
-              "layout": "horizontal",
-              "contents": [
-                {
-                  "type": "button",
-                  "action": {
-                    "type": "postback",
-                    "label": "はい",
-                    "data": `answer-yes-${time}-${i}`
-                  }
+
+    checkReservableTimes(ev,date,treatTime)
+      .then(reservableArray=>{
+        const reservableTimes = reservableArray[time];
+        if(reservableTimes[i]){
+          console.log('reservableTimes[i]:',reservableTimes[i]);
+          const proposalTime = get_Date(reservableTimes[i],1);
+          console.log('proposalTime:',proposalTime);
+
+          // グローバルのORDERに値を格納
+          ORDER.id = ev.source.userId;
+          ORDER.menu = menu;
+          ORDER.date = date;
+          ORDER.treatTime = treatTime;
+          ORDER.reservable = reservableArray;
+      
+          client.replyMessage(rp,
+            {
+              "type":"flex",
+              "altText":"FlexMessage",
+              "contents":
+              {
+                "type": "bubble",
+                "body": {
+                  "type": "box",
+                  "layout": "vertical",
+                  "contents": [
+                    {
+                      "type": "text",
+                      "text": `次回ご予約は ${proposalTime}〜 でいかがでしょうか。`,
+                      "wrap": true
+                    }
+                  ]
                 },
-                {
-                  "type": "button",
-                  "action": {
-                    "type": "postback",
-                    "label": "いいえ",
-                    "data": `answer-no-${time}-${i}`
-                  }
+                "footer": {
+                  "type": "box",
+                  "layout": "horizontal",
+                  "contents": [
+                    {
+                      "type": "button",
+                      "action": {
+                        "type": "postback",
+                        "label": "はい",
+                        "data": `answer-yes-${time}-${i}`
+                      }
+                    },
+                    {
+                      "type": "button",
+                      "action": {
+                        "type": "postback",
+                        "label": "いいえ",
+                        "data": `answer-no-${time}-${i}`
+                      }
+                    }
+                  ]
                 }
-              ]
+              }
             }
-          }
+          );
+        }else{
+          client.replyMessage(rp,{
+            "type":"text",
+            "text":"この時間帯には予約可能な時間はありません。別の時間帯を選択してください。",
+            "wrap": true
+          });
         }
-      );
-    }else{
-      client.replyMessage(rp,{
-        "type":"text",
-        "text":"この時間帯には予約可能な時間はありません。別の時間帯を選択してください。",
-        "wrap": true
-      });
-    }
+      })
+      .catch(e=>console.log(e.stack))
   }
   
 

@@ -648,6 +648,7 @@ const handlePostbackEvent = async (ev) => {
     resetReservationOrder(rp,1);
   }else if(ev.postback.data === 'date_select'){
     reservation_order.date = ev.postback.params.date;
+    console.log('test in date_select:',test);
     // 施術時間を計算する
     calcTreatmentTime(id)
       .then(message=>{

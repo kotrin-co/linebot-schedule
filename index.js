@@ -905,12 +905,10 @@
                   }
                 }
               }else{
-                let z = oneHour;
                 let m = 0;
-                while(z>=treatTime){
-                  reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime() + m*treatTime);
-                  z -= treatTime;
-                  m++;
+                while(m<oneHour){
+                  reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime() + m);
+                  m+=treatTime;
                 }
               }  
             }
@@ -924,8 +922,7 @@
               }
             }
           }
-          // ORDER.reservable = reservableArray;
-          // console.log('ORDER.reservable:',ORDER.reservable);
+          console.log('reservableArray:',reservableArray);
           resolve(reservableArray);
       })
       .catch(e=>console.error(e.stack));

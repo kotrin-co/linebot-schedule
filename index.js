@@ -868,8 +868,11 @@
             for(let i=0;i<offsetArray.length;i++){
               reservableArray[i] = [];
               if(offsetArray[i].length){
+                console.log('チェック１');
                 for(let j=0;j<offsetArray[i].length;j++){
+                  console.log('チェック2');
                   if(j===0 && offsetArray[i][j][0]>=treatTime){
+                    console.log('チェック3');
                     let x = offsetArray[i][j][0];
                     let k = 0;
                     while(x>=treatTime){
@@ -878,16 +881,20 @@
                       k++;
                     }
                   }else if(j===offsetArray[i].length-1){
+                    console.log('チェック4');
                     if(offsetArray[i][j][1]<oneHour){
+                      console.log('チェック5');
                       let a = 0;
                       if(offsetArray[i+1].length){
                         a = oneHour - offsetArray[i][j][1];
                       }else{
+                        console.log('チェック6');
                         a = oneHour + treatTime - offsetArray[i][j][1];
                       }
                       let b = 0;
                       // >=を>へ変更
                       while(a>treatTime){
+                        console.log('チェック7');
                         console.log('i a b',i,a,b);
                         reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
                         a -= treatTime;
@@ -895,9 +902,11 @@
                       }
                     }
                   }else{
+                    console.log('チェック8');
                     let y = offsetArray[i][j+1][0] - offsetArray[i][j][1];
                     let l = 0;
                     while(y>=treatTime){
+                      console.log('チェック9');
                       reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime() + offsetArray[i][j][1] + l*treatTime);
                       y -= treatTime;
                       l++;
@@ -905,9 +914,11 @@
                   }
                 }
               }else{
+                console.log('チェック10');
                 let z = oneHour;
                 let m = 0;
                 while(z>=treatTime){
+                  console.log('チェック11');
                   reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime() + m*treatTime);
                   z -= treatTime;
                   m++;
@@ -915,10 +926,13 @@
               }  
             }
           }else{
+            console.log('チェック12');
             for(let i=0;i<11;i++){
+              console.log('チェック13');
               reservableArray[i] = [];
               let c = 0;
               while(c<oneHour){
+                console.log('チェック14');
                 reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime() + c);
                 c+=treatTime;
               }

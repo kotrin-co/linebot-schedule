@@ -43,7 +43,7 @@ connection.query(create_stable)
   .catch(e=>console.error(e.stack));
 
 // このグローバル変数は廃止
-const reservation_order = {
+const ORDER = {
   menu:null,
   date:null,
   reservable:null,
@@ -210,7 +210,7 @@ const handleMessageEvent = (ev) => {
               if(reservedArray.length){
                 let reservedDate='';
                 reservedArray.forEach(object=>{
-                  reservation_order.reserved = object;
+                  ORDER.reserved = object;
                   reservedDate += `${get_Date(parseInt(object.starttime),2)}`;
                 });
                 client.replyMessage(rp,{
@@ -313,8 +313,6 @@ const handleMessageEvent = (ev) => {
 
   if(text === '予約'){
     // 現時点より先に予約が入っていたら予約できないようにする。
-    const test = new Test(text).comeon();
-    console.log('test:',test);
     checkUserExistence(ev)
       .then(existence=>{
         console.log('existence:',existence);
@@ -417,14 +415,6 @@ const handleMessageEvent = (ev) => {
   }
 }
 
-class Test{
-  constructor(str){
-    this.str = str;
-  }
-  comeon(){
-    return this.str;
-  }
-}
 
 const checkUserExistence = (ev) => {
   return new Promise((resolve,reject)=>{
@@ -476,11 +466,9 @@ const handlePostbackEvent = async (ev) => {
   const id = ev.source.userId;
   const rp = ev.replyToken;
   console.log('postback event:',ev);
-  const test = new Test('テスト').comeon();
-  console.log('test:',test);
   
   if(ev.postback.data === 'cut'){
-    reservation_order.menu = 0;
+    // ORDER.menu = 0;
       client.replyMessage(rp,{
         "type":"flex",
         "altText":"date_selector",
@@ -512,7 +500,7 @@ const handlePostbackEvent = async (ev) => {
                   "action": {
                     "type": "datetimepicker",
                     "label": "日にちの選択",
-                    "data": "date_select",
+                    "data": "date_select-menu0",
                     "mode": "date"
                   },
                   "position": "relative",
@@ -535,7 +523,7 @@ const handlePostbackEvent = async (ev) => {
           }
         });
   }else if(ev.postback.data === 'cutandshampoo'){
-    reservation_order.menu = 1;
+    // ORDER.menu = 1;
       client.replyMessage(rp,{
         "type":"flex",
         "altText":"date_selector",
@@ -567,7 +555,7 @@ const handlePostbackEvent = async (ev) => {
                   "action": {
                     "type": "datetimepicker",
                     "label": "日にちの選択",
-                    "data": "date_select",
+                    "data": "date_select-menu1",
                     "mode": "date"
                   },
                   "position": "relative",
@@ -590,7 +578,7 @@ const handlePostbackEvent = async (ev) => {
           }
         });
   }else if(ev.postback.data === 'color'){
-    reservation_order.menu = 2;
+    // ORDER.menu = 2;
       client.replyMessage(rp,{
         "type":"flex",
         "altText":"date_selector",
@@ -622,7 +610,7 @@ const handlePostbackEvent = async (ev) => {
                   "action": {
                     "type": "datetimepicker",
                     "label": "日にちの選択",
-                    "data": "date_select",
+                    "data": "date_select-menu2",
                     "mode": "date"
                   },
                   "position": "relative",
@@ -646,16 +634,18 @@ const handlePostbackEvent = async (ev) => {
         });
   }else if(ev.postback.data === 'cancel'){
     resetReservationOrder(rp,1);
-  }else if(ev.postback.data === 'date_select'){
-    reservation_order.date = ev.postback.params.date;
+  }else if(ev.postback.data.slice(0,11) === 'date_select'){
+    const menuNumber = parseInt(ev.postback.data.slice(-1));
+    console.log('menu:',menuNumber);
+    ORDER.date = ev.postback.params.date;
     console.log('test in date_select:',test);
     // 施術時間を計算する
     calcTreatmentTime(id)
       .then(message=>{
         console.log('message:',message);
-        console.log('reservation_order.date:',reservation_order.date);
+        console.log('ORDER.date:',ORDER.date);
         const now = new Date().getTime();
-        const targetDate = new Date(reservation_order.date).getTime();
+        const targetDate = new Date(ORDER.date).getTime();
         console.log('now:',now);
         console.log('targetDate:',targetDate);
         // ここはもうちょっと厳密に比較する必要があり
@@ -683,20 +673,20 @@ const handlePostbackEvent = async (ev) => {
     const result = ev.postback.data.split('-');
     console.log('result:',result);
     if(result[1] === 'yes'){
-      const s_time = reservation_order.reservable[parseInt(result[2])][parseInt(result[3])];
-      const e_time = s_time + reservation_order.treatTime[reservation_order.menu];
+      const s_time = ORDER.reservable[parseInt(result[2])][parseInt(result[3])];
+      const e_time = s_time + ORDER.treatTime[ORDER.menu];
       console.log('s_time:',get_Date(s_time,1));
       console.log('e_time:',get_Date(e_time,1));
       const insert_query = {
           text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-          values:[id,pro.displayName,reservation_order.date,s_time,e_time,MENU[reservation_order.menu]]
+          values:[id,pro.displayName,ORDER.date,s_time,e_time,MENU[ORDER.menu]]
         };
         connection.query(insert_query)
           .then(res=>{
             const reservedTime = get_Date(s_time,1);
             client.replyMessage(rp,[{
               "type":"text",
-              "text":`${reservation_order.date}  ${reservedTime}に予約しました。ご来店を心よりお待ちしております。`,
+              "text":`${ORDER.date}  ${reservedTime}に予約しました。ご来店を心よりお待ちしております。`,
               "wrap": true
             },
             {
@@ -711,10 +701,10 @@ const handlePostbackEvent = async (ev) => {
       confirmReservation(ev,parseInt(result[2]),parseInt(result[3])+1);
     }
   }else if(ev.postback.data.slice(0,6) === 'delete'){
-    console.log('reservation_order.reserved:',reservation_order.reserved);
+    console.log('ORDER.reserved:',ORDER.reserved);
     const result = ev.postback.data.split('-');
     if(result[1] === 'yes'){
-      const target = reservation_order.reserved.starttime;
+      const target = ORDER.reserved.starttime;
       const delete_query = {
         text:'DELETE FROM schedules WHERE starttime = $1;',
         values:[`${target}`]
@@ -752,7 +742,7 @@ const calcTreatmentTime = (id) => {
           const cstime = cuttime+10*60*1000;
           const colortime = res.rows[0].colortime*60*1000;
           console.log('treattime:',cuttime,colortime);
-          reservation_order.treatTime = [cuttime,cstime,colortime];
+          ORDER.treatTime = [cuttime,cstime,colortime];
         }else{
           console.log('一致するLINE IDを持つユーザーが見つかりません。');
           return;
@@ -764,11 +754,11 @@ const calcTreatmentTime = (id) => {
 }
 
 const resetReservationOrder = (rp,num) => {
-  reservation_order.menu = null;
-  reservation_order.date = null;
-  reservation_order.reservable = null;
-  reservation_order.reserved = null;
-  reservation_order.treatTime = null;
+  ORDER.menu = null;
+  ORDER.date = null;
+  ORDER.reservable = null;
+  ORDER.reserved = null;
+  ORDER.treatTime = null;
   if(num === 1){
     client.replyMessage(rp,{
       "type":"text",
@@ -783,17 +773,17 @@ const checkReservableTimes = (ev) => {
     const timeStamps = [];
     const arrangedArray = [];
     const reservableArray = [];
-    console.log('@@@',reservation_order.treatTime);
-    const treatTime = reservation_order.treatTime[reservation_order.menu];
+    console.log('@@@',ORDER.treatTime);
+    const treatTime = ORDER.treatTime[ORDER.menu];
     console.log('treatTime:',treatTime);
     for(let i=0;i<12;i++){
-      let baseTime = new Date(`${reservation_order.date} ${9+i}:00`);
+      let baseTime = new Date(`${ORDER.date} ${9+i}:00`);
       timeStamps.push(baseTime.getTime());
     }
     
     const select_query = {
       text:'SELECT * FROM schedules WHERE scheduledate = $1 ORDER BY starttime ASC;',
-      values:[`${reservation_order.date}`]
+      values:[`${ORDER.date}`]
     };
 
     connection.query(select_query)
@@ -823,8 +813,8 @@ const checkReservableTimes = (ev) => {
           const offsetArray = arrangedArray.map((array,i)=>{
             return array.map(element=>{
               return element.map(value=>{
-                console.log('value sub:',value - new Date(`${reservation_order.date} ${9+i}:00`).getTime());
-                return value - new Date(`${reservation_order.date} ${9+i}:00`).getTime()
+                console.log('value sub:',value - new Date(`${ORDER.date} ${9+i}:00`).getTime());
+                return value - new Date(`${ORDER.date} ${9+i}:00`).getTime()
               });
             });
           });
@@ -838,7 +828,7 @@ const checkReservableTimes = (ev) => {
                   let x = offsetArray[i][j][0];
                   let k = 0;
                   while(x>=treatTime){
-                    reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime()+k*treatTime);
+                    reservableArray[i].push(new Date(`${ORDER.date} ${9+i}:00`).getTime()+k*treatTime);
                     x -= treatTime;
                     k++;
                   }
@@ -854,7 +844,7 @@ const checkReservableTimes = (ev) => {
                     // >=を>へ変更
                     while(a>treatTime){
                       console.log('i a b',i,a,b);
-                      reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
+                      reservableArray[i].push(new Date(`${ORDER.date} ${9+i}:00`).getTime()+offsetArray[i][j][1]+b*treatTime);
                       a -= treatTime;
                       b++;
                     }
@@ -863,7 +853,7 @@ const checkReservableTimes = (ev) => {
                   let y = offsetArray[i][j+1][0] - offsetArray[i][j][1];
                   let l = 0;
                   while(y>=treatTime){
-                    reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + offsetArray[i][j][1] + l*treatTime);
+                    reservableArray[i].push(new Date(`${ORDER.date} ${9+i}:00`).getTime() + offsetArray[i][j][1] + l*treatTime);
                     y -= treatTime;
                     l++;
                   }
@@ -873,7 +863,7 @@ const checkReservableTimes = (ev) => {
               let z = oneHour;
               let m = 0;
               while(z>=treatTime){
-                reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + m*treatTime);
+                reservableArray[i].push(new Date(`${ORDER.date} ${9+i}:00`).getTime() + m*treatTime);
                 z -= treatTime;
                 m++;
               }
@@ -884,13 +874,13 @@ const checkReservableTimes = (ev) => {
             reservableArray[i] = [];
             let c = 0;
             while(c<oneHour){
-              reservableArray[i].push(new Date(`${reservation_order.date} ${9+i}:00`).getTime() + c);
+              reservableArray[i].push(new Date(`${ORDER.date} ${9+i}:00`).getTime() + c);
               c+=treatTime;
             }
           }
         }
-        reservation_order.reservable = reservableArray;
-        console.log('reservation_order.reservable:',reservation_order.reservable);
+        ORDER.reservable = reservableArray;
+        console.log('ORDER.reservable:',ORDER.reservable);
         pushTimeSelector(ev);
         resolve('checkReservableTimes終了');
     })
@@ -900,10 +890,10 @@ const checkReservableTimes = (ev) => {
 
 const pushTimeSelector = (ev) => {
   const rp = ev.replyToken;
-  console.log('reservation_order.reservable:',reservation_order.reservable);
+  console.log('ORDER.reservable:',ORDER.reservable);
   const color = [];
-  for(let i=0;i<reservation_order.reservable.length;i++){
-    if(reservation_order.reservable[i].length){
+  for(let i=0;i<ORDER.reservable.length;i++){
+    if(ORDER.reservable[i].length){
       color.push('#00AA00');
     }else{
       color.push('#FF0000');
@@ -923,7 +913,7 @@ const pushTimeSelector = (ev) => {
         "contents": [
           {
             "type": "text",
-            "text": `${reservation_order.date}`,
+            "text": `${ORDER.date}`,
             "weight": "bold",
             "size": "lg",
             "align": "center"
@@ -1114,7 +1104,7 @@ const pushTimeSelector = (ev) => {
 
 const confirmReservation = (ev,time,i) => {
   const rp = ev.replyToken;
-  const reservableTimes = reservation_order.reservable[time];
+  const reservableTimes = ORDER.reservable[time];
   if(reservableTimes[i]){
     console.log('reservableTimes[i]:',reservableTimes[i]);
     const proposalTime = get_Date(reservableTimes[i],1);

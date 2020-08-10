@@ -930,7 +930,7 @@
                   // ここまで
 
                   // j>1条件を追加
-                  else if(j>1 && j===offsetArray[i].length-1){
+                  else if(j>0 && j===offsetArray[i].length-1){
                     if(offsetArray[i][j][1]<oneHour){
                       let a = 0;
                       if(offsetArray[i+1].length){

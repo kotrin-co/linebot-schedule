@@ -726,6 +726,7 @@
       const menuNumber = parseInt(data[4]);
       const reservationDate = data[5];
       const treatTime = parseInt(data[6]);
+      const proposalTime = parseInt(data[7]);
       const array = [menuNumber,reservationDate,treatTime];
       console.log('data:',data);
       if(data[1] === 'yes'){
@@ -736,7 +737,7 @@
             finalInsertCheck(s_time,e_time)
               .then(answer=>{
                 console.log('answer:',answer);
-                if(answer){
+                if(answer && proposalTime===s_time){
                   console.log('s_time:',get_Date(s_time,1));
                   console.log('e_time:',get_Date(e_time,1));
                   const insert_query = {
@@ -1228,7 +1229,7 @@
                       "action": {
                         "type": "postback",
                         "label": "はい",
-                        "data": `answer&yes&${time}&${i}&${menu}&${date}&${treatTime}`
+                        "data": `answer&yes&${time}&${i}&${menu}&${date}&${treatTime}&${reservableTimes[i]}`
                       }
                     },
                     {
@@ -1236,7 +1237,7 @@
                       "action": {
                         "type": "postback",
                         "label": "いいえ",
-                        "data": `answer&no&${time}&${i}&${menu}&${date}&${treatTime}`
+                        "data": `answer&no&${time}&${i}&${menu}&${date}&${treatTime}&${reservableTimes[i]}`
                       }
                     }
                   ]

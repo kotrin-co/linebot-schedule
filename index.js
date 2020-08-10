@@ -736,7 +736,7 @@
             finalInsertCheck(s_time,e_time)
               .then(answer=>{
                 console.log('answer:',answer);
-                if(anser){
+                if(answer){
                   console.log('s_time:',get_Date(s_time,1));
                   console.log('e_time:',get_Date(e_time,1));
                   const insert_query = {

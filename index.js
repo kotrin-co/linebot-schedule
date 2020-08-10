@@ -641,9 +641,8 @@ const handlePostbackEvent = async (ev) => {
 
     // 施術時間を計算する
     calcTreatmentTime(id,menuNumber)
-      .then(message=>{
-        console.log('message:',message);
-        console.log('ORDER.date:',ORDER.date);
+      .then(treatTime=>{
+        console.log('treattime:',treatTime);
         const now = new Date().getTime();
         const targetDate = new Date(ORDER.date).getTime();
         console.log('now:',now);

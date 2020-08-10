@@ -464,6 +464,32 @@
         .catch(e=>console.log(e.stack));
     });
   }
+
+  const finalInsertCheck = (s_time,e_time) => {
+    return new Promise((resolve,reject)=>{
+      let answer = null;
+      const pickup_query = {
+        text:`SELECT * FROM schedules WHERE endttime>=${s_time};`
+      }
+      connection.query(pickup_query)
+        .then(res=>{
+          if(res.rows.length){
+            const filteredArray = res.rows.filter(object=>{
+              return ((object.endtime>s_time && object.starttime<=s_time) || (object.endtime>=e_time && object.starttime<=e_time) || (s_time<=object.starttime && e_time>=object.endtime))
+            });
+            if(filteredArray.length){
+              answer = false;
+            }else{
+              answer = true;
+            }
+          }else{
+            answer = true;
+          }
+          resolve(answer);
+        })
+        .catch(e=>console.log(e.stack));
+    });
+  }
   
   
   const handlePostbackEvent = async (ev) => {
@@ -707,27 +733,39 @@
           .then(reservableArray=>{
             const s_time = reservableArray[data[2]][data[3]];
             const e_time = s_time + treatTime;
-            console.log('s_time:',get_Date(s_time,1));
-            console.log('e_time:',get_Date(e_time,1));
-            const insert_query = {
-              text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-              values:[id,pro.displayName,reservationDate,s_time,e_time,MENU[menuNumber]]
-            };
-            connection.query(insert_query)
-              .then(res=>{
-                const reservedTime = get_Date(s_time,1);
-                client.replyMessage(rp,[{
-                  "type":"text",
-                  "text":`${reservationDate}  ${reservedTime}に予約しました。ご来店を心よりお待ちしております。`,
-                  "wrap": true
-                },
-                {
-                  "type":"sticker",
-                  "packageId":"11539",
-                  "stickerId":"52114115"
-                }]);
+            finalInsertCheck(s_time,e_time)
+              .then(answer=>{
+                console.log('answer:',answer);
+                if(anser){
+                  console.log('s_time:',get_Date(s_time,1));
+                  console.log('e_time:',get_Date(e_time,1));
+                  const insert_query = {
+                    text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+                    values:[id,pro.displayName,reservationDate,s_time,e_time,MENU[menuNumber]]
+                  };
+                  connection.query(insert_query)
+                    .then(res=>{
+                      const reservedTime = get_Date(s_time,1);
+                      client.replyMessage(rp,[{
+                        "type":"text",
+                        "text":`${reservationDate}  ${reservedTime}に予約しました。ご来店を心よりお待ちしております。`,
+                        "wrap": true
+                      },
+                      {
+                        "type":"sticker",
+                        "packageId":"11539",
+                        "stickerId":"52114115"
+                      }]);
+                    })
+                    .catch(e=>console.error(e.stack));
+                }else{
+                  client.replyMessage(rp,{
+                    "type":"text",
+                    "text":"先に予約されてしまいました。やり直してください。"
+                  });
+                }
               })
-              .catch(e=>console.error(e.stack));
+              .catch(e=>console.log(e.stack));
           })
           .catch(e=>console.log(e.stack));
       }else{

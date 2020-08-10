@@ -863,42 +863,7 @@
             for(let i=0;i<offsetArray.length;i++){
               reservableArray[i] = [];
               if(offsetArray[i].length){
-                // let j = 1;
-                // if(offsetArray[i][0][0]>=treatTime){
-                //   let x = offsetArray[i][0][0];
-                //   let k = 0;
-                //   while(x<=treatTime*(k+1)){
-                //     reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+treatTime*k);
-                //     k++;
-                //   }
-                // }
-                // if(offsetArray[i].length>j){
-                //   let x = offsetArray[i][j-1][1] - offsetArray[i][j][0];
-                //   let k = 0;
-                //   while(x<=treatTime*(k+1)){
-                //     reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j-1][1]+treatTime*k);
-                //     k++;
-                //   }
-                //   j++;
-                // }else if(offsetArray[i].length===j){
-                //   if(offsetArray[i][j-1][1]<oneHour){
-                //     if(offsetArray[i+1].length && offsetArray[i+1][0][0]>=0){
-                //       let x = oneHour - offsetArray[i][j-1][1] + offsetArray[i+1][0][0];
-                //       let k = 0;
-                //       while(x<=treatTime*(k+1)){
-                //         reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j-1][1]+treatTime*k);
-                //         k++;
-                //       }
-                //     }else if(!offsetArray[i+1].length){
-                //       let k = 0;
-                //       while(offsetArray[i][j-1][1]+treatTime*k<oneHour){
-                //         reservableArray[i].push(new Date(`${date} ${9+i}:00`).getTime()+offsetArray[i][j-1][1]+treatTime*k);
-                //         k++;
-                //       }
-                //     }
-                //   }
-                // }
-                
+
                 for(let j=0;j<offsetArray[i].length;j++){
                   if(j===0 && offsetArray[i][j][0]>=treatTime){
                     let x = offsetArray[i][j][0];
@@ -909,7 +874,6 @@
                       k++;
                     }
                   }
-                    // ここから追加
                   if(j===0 && offsetArray[i].length === 1 && offsetArray[i][j][1]<oneHour){
                     let a = 0;
                       if(offsetArray[i+1].length){
@@ -927,9 +891,6 @@
                         b++;
                       }
                   }
-                  // ここまで
-
-                  // j>1条件を追加
                   else if(j>0 && j===offsetArray[i].length-1){
                     if(offsetArray[i][j][1]<oneHour){
                       let a = 0;

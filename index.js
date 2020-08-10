@@ -636,11 +636,11 @@ const handlePostbackEvent = async (ev) => {
     resetReservationOrder(rp,1);
   }else if(ev.postback.data.slice(0,11) === 'date_select'){
     const menuNumber = parseInt(ev.postback.data.slice(-1));
-    console.log('menu:',menuNumber);
-    ORDER.date = ev.postback.params.date;
-    console.log('test in date_select:',test);
+    // ORDER.date = ev.postback.params.date;
+    const reservationDate = ev.postback.params.date;
+
     // 施術時間を計算する
-    calcTreatmentTime(id)
+    calcTreatmentTime(id,menuNumber)
       .then(message=>{
         console.log('message:',message);
         console.log('ORDER.date:',ORDER.date);
@@ -729,7 +729,7 @@ const handlePostbackEvent = async (ev) => {
   }
 }
 
-const calcTreatmentTime = (id) => {
+const calcTreatmentTime = (id,menuNumber) => {
   return new Promise((resolve,reject)=>{
     const select_query = {
       text:'SELECT * FROM users WHERE line_uid = $1;',
@@ -737,17 +737,29 @@ const calcTreatmentTime = (id) => {
     };
     connection.query(select_query)
       .then(res=>{
+        let treatTime = 0;
         if(res.rows.length){
-          const cuttime = res.rows[0].cuttime*60*1000;
-          const cstime = cuttime+10*60*1000;
-          const colortime = res.rows[0].colortime*60*1000;
-          console.log('treattime:',cuttime,colortime);
-          ORDER.treatTime = [cuttime,cstime,colortime];
+          switch (menuNumber){
+            case 0:
+              treatTime = res.rows[0].cuttime*60*1000;
+              break;
+            
+            case 1:
+              treatTime  = (res.rows[0].cuttime + 10)*60*1000;
+              break;
+            
+            case 2:
+              treatTime = res.rows[0].colortime*60*1000;
+              break;
+          }
+
+          console.log('treattime:',treatTime);
+          // ORDER.treatTime = [cuttime,cstime,colortime];
         }else{
           console.log('一致するLINE IDを持つユーザーが見つかりません。');
           return;
         }
-        resolve('calcTreatmentTime successfully completed!');
+        resolve(treatTime);
       })
       .catch(e=>console.log(e.stack));
   });

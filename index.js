@@ -683,58 +683,53 @@
       // resetReservationOrder(rp,0);
       const data = ev.postback.data.split('&');
       console.log('data:',data);
-      // `time0-${menu}-${date}-${treatTime}`
-      const time = parseInt(ev.postback.data.slice(4,5));
-      data[1] = parseInt(data[1]);
-      data[3] = parseInt(data[3]);
+      const time = parseInt(data[0].slice(4));
+      console.log('time:',time);
+      data.shift();
+      data[0] = parseInt(data[0]);
+      data[2] = parseInt(data[2]);
       console.log('changed data:',data);
-      confirmReservation(ev,time,reservationDate,treatTime,menuNumber,0);
+      confirmReservation(ev,time,data,0);
   
     }else if(ev.postback.data.slice(0,6) === 'answer'){
-      // グローバルのORDERから値を取り出し、リセット
-      if(ev.source.userId === ORDER.id){
-        const menuNumber = ORDER.menu;
-        const reservationDate = ORDER.date;
-        const reservableArray = ORDER.reservable;
-        const treatTime = ORDER.treatTime;
-        resetReservationOrder(rp,0);
-
-        const result = ev.postback.data.split('-');
-        console.log('result:',result);
-        if(result[1] === 'yes'){
-          const s_time = reservableArray[parseInt(result[2])][parseInt(result[3])];
-          const e_time = s_time + treatTime;
-          console.log('s_time:',get_Date(s_time,1));
-          console.log('e_time:',get_Date(e_time,1));
-          const insert_query = {
-            text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
-            values:[id,pro.displayName,reservationDate,s_time,e_time,MENU[menuNumber]]
-          };
-          connection.query(insert_query)
-            .then(res=>{
-              const reservedTime = get_Date(s_time,1);
-              client.replyMessage(rp,[{
-                "type":"text",
-                "text":`${reservationDate}  ${reservedTime}に予約しました。ご来店を心よりお待ちしております。`,
-                "wrap": true
-              },
-              {
-                "type":"sticker",
-                "packageId":"11539",
-                "stickerId":"52114115"
-              }]);
-              resetReservationOrder(rp,0);
-            })
-            .catch(e=>console.error(e.stack));
-        }else{
-          confirmReservation(ev,parseInt(result[2]),reservationDate,treatTime,menuNumber,parseInt(result[3])+1);
-        }
+      const data = ev.postback.data.split('&');
+      data[2] = parseInt(data[2]);
+      data[3] = parseInt(data[3]);
+      const menuNumber = parseInt(data[4]);
+      const reservationDate = data[5];
+      const treatTime = parseInt(data[6]);
+      const array = [menuNumber,reservationDate,treatTime];
+      console.log('data:',data);
+      if(data[1] === 'yes'){
+        checkReservableTimes(ev,reservationDate,treatTime)
+          .then(reservableArray=>{
+            const s_time = reservableArray[data[2]][data[3]];
+            const e_time = s_time + treatTime;
+            console.log('s_time:',get_Date(s_time,1));
+            console.log('e_time:',get_Date(e_time,1));
+            const insert_query = {
+              text:'INSERT INTO schedules (line_uid, name, scheduledate, starttime, endtime, menu) VALUES($1,$2,$3,$4,$5,$6)',
+              values:[id,pro.displayName,reservationDate,s_time,e_time,MENU[menuNumber]]
+            };
+            connection.query(insert_query)
+              .then(res=>{
+                const reservedTime = get_Date(s_time,1);
+                client.replyMessage(rp,[{
+                  "type":"text",
+                  "text":`${reservationDate}  ${reservedTime}に予約しました。ご来店を心よりお待ちしております。`,
+                  "wrap": true
+                },
+                {
+                  "type":"sticker",
+                  "packageId":"11539",
+                  "stickerId":"52114115"
+                }]);
+              })
+              .catch(e=>console.error(e.stack));
+          })
+          .catch(e=>console.log(e.stack));
       }else{
-        client.replyMessage(rp,{
-          "type":"text",
-          "text":"不正なアクセスです。終了します。"
-        });
-        resetReservationOrder(rp,0);
+        confirmReservation(ev,data[2],array,data[3]+1);
       }
     }
     else if(ev.postback.data.slice(0,6) === 'delete'){
@@ -1150,8 +1145,11 @@
   }
   
 
-  const confirmReservation = (ev,time,date,treatTime,menu,i) => {
+  const confirmReservation = (ev,time,data,i) => {
     const rp = ev.replyToken;
+    const menu = data[0];
+    const date = data[1];
+    const treatTime = data[2];
 
     checkReservableTimes(ev,date,treatTime)
       .then(reservableArray=>{
@@ -1162,11 +1160,11 @@
           console.log('proposalTime:',proposalTime);
 
           // グローバルのORDERに値を格納
-          ORDER.id = ev.source.userId;
-          ORDER.menu = menu;
-          ORDER.date = date;
-          ORDER.treatTime = treatTime;
-          ORDER.reservable = reservableArray;
+          // ORDER.id = ev.source.userId;
+          // ORDER.menu = menu;
+          // ORDER.date = date;
+          // ORDER.treatTime = treatTime;
+          // ORDER.reservable = reservableArray;
       
           client.replyMessage(rp,
             {
@@ -1195,7 +1193,7 @@
                       "action": {
                         "type": "postback",
                         "label": "はい",
-                        "data": `answer-yes-${time}-${i}`
+                        "data": `answer&yes&${time}&${i}&${menu}&${date}&${treatTime}`
                       }
                     },
                     {
@@ -1203,7 +1201,7 @@
                       "action": {
                         "type": "postback",
                         "label": "いいえ",
-                        "data": `answer-no-${time}-${i}`
+                        "data": `answer&no&${time}&${i}&${menu}&${date}&${treatTime}`
                       }
                     }
                   ]

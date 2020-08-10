@@ -212,9 +212,11 @@
               .then(reservedArray=>{
                 if(reservedArray.length){
                   let reservedDate='';
+                  let startTime = 0;
+                  // 未来の予約は１つのはずであるが、念の為forEachを使っておく
                   reservedArray.forEach(object=>{
-                    ORDER.reserved = object;
                     reservedDate += `${get_Date(parseInt(object.starttime),2)}`;
+                    startTime = parseInt(object.starttime);
                   });
                   client.replyMessage(rp,{
                     "type":"flex",
@@ -242,7 +244,7 @@
                             "action": {
                               "type": "postback",
                               "label": "はい",
-                              "data": "delete-yes"
+                              "data": `delete&yes&${startTime}`
                             }
                           },
                           {
@@ -250,7 +252,7 @@
                             "action": {
                               "type": "postback",
                               "label": "いいえ",
-                              "data": "delete-no"
+                              "data": `delete&no&${startTime}`
                             }
                           }
                         ]
@@ -733,17 +735,16 @@
       }
     }
     else if(ev.postback.data.slice(0,6) === 'delete'){
-      console.log('ORDER.reserved:',ORDER.reserved);
-      const result = ev.postback.data.split('-');
-      if(result[1] === 'yes'){
-        const target = ORDER.reserved.starttime;
+      const data = ev.postback.data.split('&');
+      data[2] = parseInt(data[2]);
+      const target = data[2];
+      if(data[1] === 'yes'){
         const delete_query = {
           text:'DELETE FROM schedules WHERE starttime = $1;',
           values:[`${target}`]
         };
         connection.query(delete_query)
           .then(res=>{
-            console.log('delete res.rows:',res.rows);
             client.replyMessage(rp,{
               "type":"text",
               "text":"予約キャンセルを受け付けました。またのご予約をお待ちしております。",
@@ -756,7 +757,6 @@
           "type":"text",
           "text":"キャンセルを取りやめした。"
         });
-        resetReservationOrder(rp,0);
       }
     }
   }
